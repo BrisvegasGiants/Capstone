@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="bvgiants.diary3.EatActivity"
+    tools:showIn="@layout/activity_eat">
+
+    <!--\\\\\\\\\\ Eat menu buttons /////////-->
+    <Button
+        style="@style/ButtonStyle"
+        android:text="Today"
+        android:id="@+id/buttonToday"
+        android:layout_alignTop="@+id/buttonWeek"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        style="@style/ButtonStyle"
+        android:text="Week"
+        android:id="@+id/buttonWeek"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/buttonToday"
+        android:layout_toEndOf="@+id/buttonToday" />
+
+    <Button
+        style="@style/ButtonStyle"
+        android:text="Month"
+        android:id="@+id/buttonMonth"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/buttonWeek"
+        android:layout_toEndOf="@+id/buttonWeek" />
+
+    <Button
+        style="@style/ButtonStyle"
+        android:text="More"
+        android:id="@+id/buttonMore"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/buttonMonth"
+        android:layout_toEndOf="@+id/buttonMonth" />
+
+    <!--\\\\\ New Entry Button /////-->
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonAddEntry"
+        android:textColor="#2f4f4f"
+        android:layout_marginTop="55dp"
+        android:text="@string/add_entry_food"
+        android:background="@drawable/buttonchanges"
+        android:layout_below="@+id/tableLayout"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:onClick="newEntry"  />
+
+
+    <!--\\\\\\\\\\ Static calorie table //////////////-->
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/buttonWeek"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="59dp"
+        android:stretchColumns="1"
+        android:id="@+id/tableLayout">
+
+        <TableRow>
+            <TextView
+                android:layout_column="1"
+                android:text="@string/table_time"
+                android:paddingBottom="20dip" />
+            <TextView
+                android:text="@string/table_food"
+                android:gravity="center"
+                android:padding="3dip" />
+            <TextView
+                android:text="@string/table_calories"
+                android:gravity="center"
+                android:padding="3dip" />
+        </TableRow>
+
+        <View
+            android:layout_height="1dip"
+            android:background="#FF909090" />
+
+        <TableRow>
+            <TextView
+                android:layout_column="1"
+                android:text="7:23am"
+                android:paddingBottom="20dip" />
+            <TextView
+                android:text="Apple"
+                android:gravity="right"
+                android:padding="3dip" />
+            <TextView
+                android:text="102"
+                android:gravity="right"
+                android:padding="3dip" />
+        </TableRow>
+
+        <View
+            android:layout_height="1dip"
+            android:background="#FF909090" />
+
+        <TableRow>
+            <TextView
+                android:layout_column="1"
+                android:text="10:30am"
+                android:padding="3dip" />
+            <TextView
+                android:text="Coffee"
+                android:gravity="right"
+                android:padding="3dip" />
+            <TextView
+                android:text="65"
+                android:gravity="right"
+                android:padding="2dip" />
+        </TableRow>
+
+        <View
+            android:layout_height="4dip"
+            android:background="#FF909090" />
+    </TableLayout>
+
+</RelativeLayout>
