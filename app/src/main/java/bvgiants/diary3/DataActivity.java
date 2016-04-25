@@ -20,16 +20,29 @@ public class DataActivity extends AppCompatActivity {
         // Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         // setSupportActionBar(toolbar);
 
-        Button buttonMaps = (Button) findViewById(R.id.buttonMaps);
-        buttonMaps.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent startMaps = new Intent(DataActivity.this, Map.class);
-                startActivity(startMaps);
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
             }
         });
+    }
+    public void menuSelect( View v ) {
+
+        switch (v.getId()) {
+            case (R.id.buttonMaps):
+                Intent startMaps = new Intent(this, MapsActivity.class);
+                startActivity(startMaps);
+                break;
+    }
+
+
+    }
+
     }
 
 
 
-        }
+

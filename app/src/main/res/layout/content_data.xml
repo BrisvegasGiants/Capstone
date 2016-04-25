@@ -25,12 +25,15 @@
         android:layout_centerHorizontal="true" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Maps"
+        style="@style/menuButtons"
         android:id="@+id/buttonMaps"
-        android:layout_marginTop="66dp"
+        android:background="@drawable/buttonchanges"
+        android:text="Maps"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="55dp"
         android:layout_below="@+id/titleData"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:visibility="visible" />
 
 </RelativeLayout>
