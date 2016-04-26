@@ -25,4 +25,36 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:id="@+id/stepCounterView"
+        android:layout_marginTop="77dp"
+        android:textSize="32dp"
+        android:layout_below="@+id/runTitle"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="steps"
+        android:id="@+id/stepsSuffix"
+        android:textSize="32dp"
+        android:layout_alignTop="@+id/stepCounterView"
+        android:layout_toEndOf="@+id/stepCounterView"
+        android:layout_marginStart="15dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="You have walked"
+        android:id="@+id/textSummary"
+        android:layout_above="@+id/stepsSuffix"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="28dp"
+        android:textSize="25dp" />
+
 </RelativeLayout>
