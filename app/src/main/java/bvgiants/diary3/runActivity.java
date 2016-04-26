@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -55,38 +56,17 @@ public class runActivity extends AppCompatActivity implements
         mApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Fitness.SENSORS_API)
                 .addScope(Fitness.SCOPE_ACTIVITY_READ_WRITE)
-                //.addScope(new Scope(Scope.FITNESS_ACTIVITY_READ_WRITE))
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
+    } // End onCreate
 
-
-        /*
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Fitness.SENSORS_API)
-                        //.addApi(Fitness.SCOPE_BODY_READ_WRITE)
-                .useDefaultAccount()
-                .addScope(Fitness.SCOPE_BODY_READ_WRITE)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        */
-    } //End oncreate
 
     @Override
     public void onStart() {
         super.onStart();
         mApiClient.connect();
-    }
+    } // End onStart
 
 
     @Override
@@ -104,11 +84,10 @@ public class runActivity extends AppCompatActivity implements
                         registerFitnessDataListener(dataSource, DataType.TYPE_STEP_COUNT_CUMULATIVE);
                     }
                 }
-            }
-        };
+            } //End onResult
+        }; //End ResultCallback
 
-        Fitness.SensorsApi.findDataSources(mApiClient, dataSourceRequest)
-                .setResultCallback(dataSourcesResultCallback);
+        Fitness.SensorsApi.findDataSources(mApiClient, dataSourceRequest).setResultCallback(dataSourcesResultCallback);
 
         /*
         // Connected to Google Fit Client.
@@ -118,14 +97,14 @@ public class runActivity extends AppCompatActivity implements
                         .setDataType(DataType.TYPE_STEP_COUNT_CUMULATIVE)
                         .build(),
                 this);
-                */
+        */
     } // end onConnected
 
     private void registerFitnessDataListener(DataSource dataSource, DataType dataType){
         SensorRequest request = new SensorRequest.Builder()
                 .setDataSource( dataSource )
                 .setDataType( dataType )
-                .setSamplingRate(3, TimeUnit.SECONDS )
+                .setSamplingRate(2, TimeUnit.SECONDS )
                 .build();
 
         Fitness.SensorsApi.add(mApiClient, request, this)
@@ -137,12 +116,16 @@ public class runActivity extends AppCompatActivity implements
                         }
                     }
                 });
-    }
+    } // End regsterFitnessDataListener
+
 
     @Override
     public void onConnectionSuspended(int i) {
         // The connection has been interrupted. Wait until onConnected() is called.
-    }
+        // Do something...
+
+    } // End onConnectionSuspended
+
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
@@ -152,13 +135,14 @@ public class runActivity extends AppCompatActivity implements
                 authInProgress = true;
                 connectionResult.startResolutionForResult(runActivity.this, REQUEST_OAUTH);
             } catch (IntentSender.SendIntentException e) {
+                //Err...
 
             }
         } else {
             Log.e("GoogleFit", "authInProgress");
         }
 
-            // Error while connecting. Try to resolve using the pending intent returned.
+        // Error while connecting. Try to resolve using the pending intent returned.
         /*
         if (result.getErrorCode() == FitnessStatusCodes.NEEDS_OAUTH_PERMISSIONS) {
             try {
@@ -166,7 +150,8 @@ public class runActivity extends AppCompatActivity implements
             } catch (SendIntentException e) {
             }
         }*/
-    }
+    } // End onConnectionFailed
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -182,7 +167,7 @@ public class runActivity extends AppCompatActivity implements
         } else {
             Log.e("GoogleFit", "requestCode NOT request_oauth");
         }
-    }
+    } // End onActivityResult
 
 
     @Override
@@ -192,28 +177,18 @@ public class runActivity extends AppCompatActivity implements
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(getApplicationContext(), "Field: " + field.getName() + " Value: " + value, Toast.LENGTH_SHORT).show();
+                    //Use toast for debugging
+                    //Toast.makeText(getApplicationContext(), "Field: " + field.getName() + " Value: " + value, Toast.LENGTH_SHORT).show();
+                    ((TextView)findViewById(R.id.stepCounterView)).setText(""+value);
                 }
             });
         }
-    }
-
-
-/*  //Not included in tutorial
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_OAUTH && resultCode == RESULT_OK) {
-            mGoogleApiClient.connect();
-        }
-    } // End Onactivity result
-*/
-
+    } // End onDataPoint
 
 
     @Override
     protected void onStop() {
         super.onStop();
-
         Fitness.SensorsApi.remove( mApiClient, this )
                 .setResultCallback(new ResultCallback<Status>() {
                     @Override
@@ -223,14 +198,13 @@ public class runActivity extends AppCompatActivity implements
                         }
                     }
                 });
-    }
+    } // End onStop
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(AUTH_PENDING, authInProgress);
-    }
-
-
+    } // End onSaveInstanceState
 
 }// End all
