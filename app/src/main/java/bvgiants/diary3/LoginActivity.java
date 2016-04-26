@@ -91,6 +91,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
+        //Button which acts to load SQLiteDB data
+        Button loadData = (Button) findViewById(R.id.loadData);
+        //loadData.setOnClickListener((view){someMethod();});
+
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
     }
