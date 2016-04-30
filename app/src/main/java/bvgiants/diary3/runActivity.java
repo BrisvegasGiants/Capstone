@@ -173,13 +173,27 @@ public class runActivity extends AppCompatActivity implements
     @Override
     public void onDataPoint(DataPoint dataPoint) {
         for( final Field field : dataPoint.getDataType().getFields() ) {
-            final Value value = dataPoint.getValue( field );
+            // Access final datapoint, find it's value
+            Value value = dataPoint.getValue( field );
+            // Manipulate it's value to match
+            final Value totalSteps = value;
+            //Calc Distance (No. Steps * Step Length).
+            int amtSteps = value.asInt();
+            final float distanceValue = (float) (amtSteps * 0.75); // STEP LENGTH GOES HERE
+            // Calculate Percentage to goal
+            final float percentageValue = ((float)amtSteps / 10000) * 100; // STEP GOAL GOES HERE
+
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     //Use toast for debugging
                     //Toast.makeText(getApplicationContext(), "Field: " + field.getName() + " Value: " + value, Toast.LENGTH_SHORT).show();
-                    ((TextView)findViewById(R.id.stepCounterView)).setText(""+value);
+                    //Toast.makeText(getApplicationContext(), "Field: " + field.getName() + " Value: " + totalSteps, Toast.LENGTH_SHORT).show();
+
+                    // Update Text Fields
+                    ((TextView)findViewById(R.id.stepCounterView)).setText(""+totalSteps);
+                    ((TextView)findViewById(R.id.distanceCounterView)).setText(""+distanceValue);
+                    ((TextView)findViewById(R.id.percentageCounterView)).setText(""+percentageValue);
                 }
             });
         }
