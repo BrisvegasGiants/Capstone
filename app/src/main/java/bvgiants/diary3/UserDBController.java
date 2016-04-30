@@ -17,6 +17,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 /**
  * Created by Ken on 26/04/2016.
@@ -35,20 +36,25 @@ public class UserDBController extends SQLiteOpenHelper {
     public static final String CONTACTS_COLUMN_ALIAS = "Alias";
     public static final String CONTACTS_COLUMN_TEAM = "Team";
 
-    public UserDBController(Context context) {
 
+    public UserDBController(Context context) {
         super(context, DATABASE_NAME, null, 1);
     }
 
+
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("Create Table User " +
-                "ID integer primary key, EmailAdd text, Password text, Alias text,Team text");
+                "(ID integer primary key autoincrement, EmailAdd text, Password text, Alias text,Team text);");
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // TODO Auto-generated method stub
         db.execSQL("DROP TABLE IF EXISTS User");
         onCreate(db);
+    }
+
+    public void delete(SQLiteDatabase db){
+        db.execSQL("delete from " + TABLE_NAME);
     }
 
     //Inserts a User if one were to register
@@ -65,11 +71,21 @@ public class UserDBController extends SQLiteOpenHelper {
     }
 
     //Will use this to verify user exists in database.  If no will enable login
-    public Cursor getUser(String email, String pw) {
+    public boolean getUser(String email, String pw) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from User where EmailAdd=" + email + ""
-                + "and Password=" + pw + "", null);
-        return res;
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE EmailAdd=? AND Password=?",
+                new String[]{email,pw});
+        if(res.moveToFirst()) {
+            res.close();
+            db.close();
+            return true;
+        }
+        else {
+            System.out.print("FUCKER ISN'T FOUND");
+            res.close();
+            db.close();
+            return false;
+        }
     }
 
     //If user needs to update their details.  Will need a to call getUser first to gain user ID!
@@ -108,7 +124,8 @@ public class UserDBController extends SQLiteOpenHelper {
         for (int i = 0; i < userString.size(); i++) {
             String[] input;
             userLine = userString.get(i);
-            input = userLine.split(",");
+            input = userLine.split(" ");
+            System.out.printf("%s\n%s\n%s\n%s\n",input[0],input[1],input[2],input[3]);
             insertUser(input[0],input[1],input[2],input[3]);
         }
 
