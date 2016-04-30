@@ -25,6 +25,7 @@
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
     <string name="action_sign_in">Sign in or register</string>
+
     <!--DBButton Remove when no longer needed -->
     <string name="load_local_data">Load DB From File</string>
     <string name="action_sign_in_short">Sign in</string>
@@ -35,8 +36,19 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_maps">Map</string>
     <string name="maps">Maps</string>
+
+    <!-- Run Page Strings -->
+    <string name="step_prefix">You have walked...</string>
+    <string name="step_suffix">steps</string>
+    <string name="distance_prefix">or a distance of</string>
+    <string name="distance_suffix">metres</string>
+    <string name="percentage_prefix">and are</string>
+    <string name="percentage_progress">%</string>
+    <string name="percentage_suffix">towards your daily step goal!</string>
+    <string name="default_value">0</string>
 
 </resources>

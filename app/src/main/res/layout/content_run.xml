@@ -28,20 +28,31 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0"
+        android:text="@string/default_value"
         android:id="@+id/stepCounterView"
-        android:layout_marginTop="77dp"
-        android:textSize="32dp"
-        android:layout_below="@+id/runTitle"
+        android:layout_marginTop="10dp"
+        android:textSize="32sp"
+        android:layout_below="@+id/textSummary"
         android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/step_prefix"
+        android:id="@+id/textSummary"
+        android:textSize="25sp"
+        android:layout_below="@+id/runTitle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="steps"
+        android:text="@string/step_suffix"
         android:id="@+id/stepsSuffix"
-        android:textSize="32dp"
+        android:textSize="32sp"
         android:layout_alignTop="@+id/stepCounterView"
         android:layout_toEndOf="@+id/stepCounterView"
         android:layout_marginStart="15dp" />
@@ -49,12 +60,69 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="You have walked"
-        android:id="@+id/textSummary"
-        android:layout_above="@+id/stepsSuffix"
+        android:text="@string/distance_prefix"
+        android:id="@+id/distanceSummary"
+        android:layout_below="@+id/stepCounterView"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="28dp"
-        android:textSize="25dp" />
+        android:layout_marginTop="30dp"
+        android:textSize="25sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/distance_suffix"
+        android:id="@+id/distanceSuffix"
+        android:layout_marginTop="15dp"
+        android:textSize="32sp"
+        android:layout_below="@+id/distanceSummary"
+        android:layout_alignStart="@+id/stepsSuffix" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/percentage_prefix"
+        android:id="@+id/goalSummaryPre"
+        android:layout_marginTop="30dp"
+        android:textSize="25sp"
+        android:layout_below="@+id/distanceSuffix"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/percentage_progress"
+        android:id="@+id/percentSuffix"
+        android:layout_marginTop="15dp"
+        android:textSize="32sp"
+        android:layout_below="@+id/goalSummaryPre"
+        android:layout_alignStart="@+id/distanceSuffix" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/percentage_suffix"
+        android:id="@+id/goalSummaryPost"
+        android:textSize="25sp"
+        android:layout_below="@+id/percentSuffix"
+        android:layout_marginTop="15dp"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_value"
+        android:id="@+id/distanceCounterView"
+        android:textSize="32sp"
+        android:layout_alignTop="@+id/distanceSuffix"
+        android:layout_toStartOf="@+id/stepsSuffix" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_value"
+        android:id="@+id/percentageCounterView"
+        android:textSize="32sp"
+        android:layout_alignTop="@+id/percentSuffix"
+        android:layout_alignStart="@+id/distanceCounterView" />
 
 </RelativeLayout>
