@@ -31,12 +31,25 @@ import com.google.android.gms.fitness.result.DataSourcesResult;
 import java.lang.Override;
 import java.util.concurrent.TimeUnit;
 
+/**
+* Created by Dylan Schumacher on 15/4/2016
+ * Establishes listener on window creation
+ * Updates output to the user every second
+ */
+
+//TODO: Add button to maps page to track activity for the day
 
 public class runActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         OnDataPointListener {
 
+    //User Defined Variables [Default]
+    double stepLength = 0.75;
+    int stepGoal = 10000;
+    //TODO: Request users step goals and step lengths
+
+    //API Variables
     private static final int REQUEST_OAUTH = 1;
     private static final String AUTH_PENDING = "auth_state_pending";
     private boolean authInProgress = false;
@@ -89,15 +102,6 @@ public class runActivity extends AppCompatActivity implements
 
         Fitness.SensorsApi.findDataSources(mApiClient, dataSourceRequest).setResultCallback(dataSourcesResultCallback);
 
-        /*
-        // Connected to Google Fit Client.
-        Fitness.SensorsApi.add(
-                mGoogleApiClient,
-                new SensorRequest.Builder()
-                        .setDataType(DataType.TYPE_STEP_COUNT_CUMULATIVE)
-                        .build(),
-                this);
-        */
     } // end onConnected
 
     private void registerFitnessDataListener(DataSource dataSource, DataType dataType){
@@ -123,7 +127,6 @@ public class runActivity extends AppCompatActivity implements
     public void onConnectionSuspended(int i) {
         // The connection has been interrupted. Wait until onConnected() is called.
         // Do something...
-
     } // End onConnectionSuspended
 
 
@@ -136,7 +139,6 @@ public class runActivity extends AppCompatActivity implements
                 connectionResult.startResolutionForResult(runActivity.this, REQUEST_OAUTH);
             } catch (IntentSender.SendIntentException e) {
                 //Err...
-
             }
         } else {
             Log.e("GoogleFit", "authInProgress");
@@ -179,9 +181,9 @@ public class runActivity extends AppCompatActivity implements
             final Value totalSteps = value;
             //Calc Distance (No. Steps * Step Length).
             int amtSteps = value.asInt();
-            final float distanceValue = (float) (amtSteps * 0.75); // STEP LENGTH GOES HERE
+            final float distanceValue = (float) (amtSteps * stepLength);
             // Calculate Percentage to goal
-            final float percentageValue = ((float)amtSteps / 10000) * 100; // STEP GOAL GOES HERE
+            final float percentageValue = ((float)amtSteps / stepGoal) * 100;
 
             runOnUiThread(new Runnable() {
                 @Override

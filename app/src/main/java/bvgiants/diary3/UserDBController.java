@@ -21,8 +21,8 @@ import android.database.sqlite.SQLiteDatabase;
 /**
  * Created by Ken on 26/04/2016.
  * Class is used to create an SQLite database and add the User table
- * User table stores basic user data primarily used to login to the application, identify thier in
- * app alias and to track which team (if any) the user is accociated with
+ * User table stores basic user data primarily used to login to the application, identify their in
+ * app alias and to track which team (if any) the user is associated with
  */
 public class UserDBController extends SQLiteOpenHelper {
 
