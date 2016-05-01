@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -70,6 +71,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     public static Context context;
     public SQLiteDatabase userDB;
     public UserDBController userDBController;
+    public SQLiteDatabase lookupFoodDB;
+    public LookupFoodDBController lookupFoodDBController;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -77,7 +80,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         setContentView(R.layout.activity_login);
 
         context = getApplicationContext();
-        // Set up the login form.
+                // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
@@ -93,6 +96,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
+        //Create databases, please not this has caused unknown faults in the past when creating first
+        //LookupFoodDatabase.  For unknown reasons this works correctly now.
+        userDBController = new UserDBController(context);
+        userDB = userDBController.getWritableDatabase();
+        lookupFoodDBController = new LookupFoodDBController(context);
+        lookupFoodDBController.getWritableDatabase();
+
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -101,21 +111,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
+
         //Button which acts to load SQLiteDB data
         Button loadData = (Button) findViewById(R.id.loadData);
-
-        userDBController = new UserDBController(context);
-        userDB = userDBController.getWritableDatabase();
-
         loadData.setOnClickListener(new OnClickListener() {
 
                 public void onClick(View view) {
                     try{
-                        //Delete any existing USER TABLE (currently just one table exists)
-                        userDBController.delete(userDB);
-                        CharSequence text = "You've successfully loaded the User Table";
+                        userDBController.saveDataToUserTable(context, "Users");
+                        lookupFoodDBController.saveDataToLookupFoodTable(context, "LookupFood");
+                        CharSequence text = "You've successfully loaded SQL Tables";
                         int duration = Toast.LENGTH_LONG;
-                        userDBController.saveDataToUserTable(context,"Users");
                         Toast toast = Toast.makeText(context,text,duration);
                         toast.show();
                     }
@@ -125,6 +131,27 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 }
             });
+
+        //BUTTON to delete all current database data for testing purposes.
+        //@// TODO: 2/05/2016 remove once functional! 
+        Button deleteData = (Button) findViewById(R.id.deleteDBData);
+        deleteData.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try{
+                    String result;
+                    result = userDBController.delete(userDB);
+                    result += lookupFoodDBController.delete(userDB);
+                    int duration = Toast.LENGTH_LONG;
+                    Toast toast = Toast.makeText(context,result,duration);
+                    toast.show();
+                }catch (SQLiteException e){
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
     }

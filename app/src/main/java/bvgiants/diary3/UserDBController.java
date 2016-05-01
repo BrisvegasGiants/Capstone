@@ -1,6 +1,7 @@
 package bvgiants.diary3;
 
 import android.content.res.AssetManager;
+import android.database.sqlite.SQLiteException;
 import android.os.Environment;
 import android.provider.BaseColumns;
 
@@ -53,8 +54,15 @@ public class UserDBController extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void delete(SQLiteDatabase db){
-        db.execSQL("delete from " + TABLE_NAME);
+    public String delete(SQLiteDatabase db) {
+        String success = " Delete " + TABLE_NAME + " Successful";
+        try{
+            db.execSQL("delete from " + TABLE_NAME);
+            return success;
+        }catch (SQLiteException e){
+            System.out.printf("%s\n\n No Table to delete",e);
+        }
+        return TABLE_NAME + "DELETE FAILED!";
     }
 
     //Inserts a User if one were to register
@@ -97,7 +105,7 @@ public class UserDBController extends SQLiteOpenHelper {
         contentValues.put("Password", password);
         contentValues.put("Alias", alias);
         contentValues.put("Team", team);
-        db.update("contacts", contentValues, "id = ? ", new String[]{Integer.toString(id)});
+        db.update("User", contentValues, "id = ? ", new String[]{Integer.toString(id)});
         return true;
     }
 
@@ -130,6 +138,7 @@ public class UserDBController extends SQLiteOpenHelper {
         }
 
     }
+
 }
 
 
