@@ -27,10 +27,8 @@ public class EatActivity extends AppCompatActivity {
 
     private ListView listView;
     public static Context context;
-    public SQLiteDatabase lookupFoodDB;
-    public LookupFoodDBController lookupFoodDBController;
 
-    public ArrayList<LookupFoodDBController.FoodItem> allFood = new ArrayList<LookupFoodDBController.FoodItem>();
+    public ArrayList<FoodItem> allFood = new ArrayList<FoodItem>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

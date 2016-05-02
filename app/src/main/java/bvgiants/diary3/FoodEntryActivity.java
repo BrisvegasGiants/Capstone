@@ -3,6 +3,7 @@ package bvgiants.diary3;
 import android.app.Activity;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.provider.ContactsContract;
 import android.widget.ListView;
 import android.app.ListActivity;
 import android.os.Bundle;
@@ -23,10 +24,10 @@ public class FoodEntryActivity extends Activity {
 
     ListView list;
     public static Context context;
-    public SQLiteDatabase lookupFoodDB;
-    public LookupFoodDBController lookupFoodDBController;
+    public SQLiteDatabase db;
+    public DatabaseHelper databaseHelper;
     public ArrayList <String> foodNames;
-    public ArrayList<LookupFoodDBController.FoodItem> allFood = new ArrayList<LookupFoodDBController.FoodItem>();
+    public ArrayList<FoodItem> allFood = new ArrayList<FoodItem>();
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +36,10 @@ public class FoodEntryActivity extends Activity {
 
         //Firstly Load DB
         context = getApplicationContext();
-        lookupFoodDBController = new LookupFoodDBController(context);
-        lookupFoodDB = lookupFoodDBController.getWritableDatabase();
+        databaseHelper = new DatabaseHelper(context);
+        db = databaseHelper.getWritableDatabase();
 
-        allFood = lookupFoodDBController.allFood();
+        allFood = databaseHelper.allFood();
         foodNames = new ArrayList<String>();
         ArrayList<Integer> imageId = new ArrayList<Integer>();
         for(int i=0; i< allFood.size();i++){

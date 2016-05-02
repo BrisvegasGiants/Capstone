@@ -3,6 +3,7 @@ package bvgiants.diary3;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -69,10 +70,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mLoginFormView;
 
     public static Context context;
-    public SQLiteDatabase userDB;
-    public UserDBController userDBController;
-    public SQLiteDatabase lookupFoodDB;
-    public LookupFoodDBController lookupFoodDBController;
+    public DatabaseHelper databaseHelper;
+    public SQLiteDatabase db;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -98,10 +97,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         //Create databases, please not this has caused unknown faults in the past when creating first
         //LookupFoodDatabase.  For unknown reasons this works correctly now.
-        userDBController = new UserDBController(context);
-        userDB = userDBController.getWritableDatabase();
-        lookupFoodDBController = new LookupFoodDBController(context);
-        lookupFoodDBController.getWritableDatabase();
+
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
@@ -111,6 +107,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
+        databaseHelper = new DatabaseHelper(context);
+        db = databaseHelper.getWritableDatabase();
 
         //Button which acts to load SQLiteDB data
         Button loadData = (Button) findViewById(R.id.loadData);
@@ -118,8 +116,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 public void onClick(View view) {
                     try{
-                        userDBController.saveDataToUserTable(context, "Users");
-                        lookupFoodDBController.saveDataToLookupFoodTable(context, "LookupFood");
+                        databaseHelper.saveDataToUserTable(context, "Users");
+                        databaseHelper.saveDataToLookupFoodTable(context, "LookupFood");
                         CharSequence text = "You've successfully loaded SQL Tables";
                         int duration = Toast.LENGTH_LONG;
                         Toast toast = Toast.makeText(context,text,duration);
@@ -140,8 +138,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             public void onClick(View v) {
                 try{
                     String result;
-                    result = userDBController.delete(userDB);
-                    result += lookupFoodDBController.delete(userDB);
+                    result = databaseHelper.delete(db);
                     int duration = Toast.LENGTH_LONG;
                     Toast toast = Toast.makeText(context,result,duration);
                     toast.show();
@@ -266,7 +263,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         CharSequence notFound = "Invalid Username or Password!";
         int duration = Toast.LENGTH_LONG;
 
-        if (userDBController.getUser(email,pw) == true) {
+        if (databaseHelper.getUser(email,pw) == true) {
             Toast toast = Toast.makeText(context, found, duration);
             toast.show();
             return true;
