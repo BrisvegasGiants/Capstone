@@ -38,6 +38,11 @@
         completions."
     </string>
 
+    <string name="search">Search For Food Item</string>
+    <string name="search_hint">Food Name</string>
+    <string name="food_description">Food</string>
+    <string name="search_settings">Search Food Names</string>
+
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_maps">Map</string>
     <string name="maps">Maps</string>

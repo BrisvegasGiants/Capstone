@@ -42,6 +42,8 @@ public class LookupFoodDBController extends SQLiteOpenHelper {
     public static final String CONTACTS_COLUMN_PROTEIN = "Protein";
     public static final String CONTACTS_COLUMN_IMGLOCAL= "ImgLocal";
 
+
+
     public LookupFoodDBController(Context context) {
         super(context, DATABASE_NAME, null, 1);
     }
@@ -51,6 +53,36 @@ public class LookupFoodDBController extends SQLiteOpenHelper {
                 "(ID integer primary key autoincrement, Name text, Calories integer, Sugar integer" +
                 ", Fat integer, Energy integer, Sodium integer, Protein integer, ImgLocal text);");
         System.out.printf("LookupFoodCreated");
+    }
+
+    //This class is used for the creation of a list of foods for users to select from.  It will
+    //display a foods nutrition info and enable nutrition calculations
+    public class FoodItem {
+        public String name;
+        public int calories;
+        public int sugar;
+        public int fat;
+        public int energy;
+        public int sodium;
+        public int protein;
+        public String imagelocal;
+
+        public FoodItem(String name, int calories, int sugar, int fat, int energy, int sodium,
+                        int protein, String imageLocal) {
+            this.name = name;
+            this.calories = calories;
+            this.sugar = sugar;
+            this.fat = fat;
+            this.energy = energy;
+            this.sodium = sodium;
+            this.protein = protein;
+            this.imagelocal = imageLocal;
+        }
+
+        public String toString(){
+            return "Food: " +this.name + "Calories: " +this.calories + " This is just an example return. " +
+                    "Look at LookupFoodDBController -> FoodItem.toString()";
+        }
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -104,6 +136,24 @@ public class LookupFoodDBController extends SQLiteOpenHelper {
             db.close();
             return false;
         }
+    }
+
+    public ArrayList<FoodItem> allFood(){
+
+        String select = "SELECT * FROM " + TABLE_NAME;
+        ArrayList<FoodItem> results = new ArrayList<FoodItem>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery(select,null);
+        if(res.moveToFirst()){
+            do {
+                FoodItem food = new FoodItem(res.getString(1),res.getInt(2),res.getInt(3),res.getInt(4),
+                        res.getInt(5),res.getInt(6),res.getInt(7),res.getString(8));
+                results.add(food);
+            }while(res.moveToNext());
+            if(res != null && !res.isClosed())
+                res.close();
+        }
+        return results;
     }
 
     //If user needs to update their details.  Will need a to call getUser first to gain user ID!
