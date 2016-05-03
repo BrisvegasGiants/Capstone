@@ -195,10 +195,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /* GET ALL TABLE ITEMS
     GET FOOD
-     */
+
     public ArrayList<FoodItem> allFood(){
 
         String select = "SELECT * FROM " + TABLE_LOOKUPFOOD;
+        ArrayList<FoodItem> results = new ArrayList<FoodItem>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery(select,null);
+        if(res.moveToFirst()){
+            do {
+                FoodItem food = new FoodItem(res.getString(1),res.getInt(2),res.getInt(3),res.getInt(4),
+                        res.getInt(5),res.getInt(6),res.getInt(7),res.getString(8));
+                results.add(food);
+            }while(res.moveToNext());
+            if(res != null && !res.isClosed())
+                res.close();
+        }
+        return results;
+    } */
+
+
+        // GET USER SEARCHED ITEMS
+    public ArrayList<FoodItem> userSearch(String searchResult) {
+        String select = "SELECT * FROM " + TABLE_LOOKUPFOOD + "WHERE Name LIKE" + searchResult;
         ArrayList<FoodItem> results = new ArrayList<FoodItem>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery(select,null);
