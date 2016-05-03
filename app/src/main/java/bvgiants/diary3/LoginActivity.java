@@ -3,8 +3,12 @@ package bvgiants.diary3;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -29,7 +33,9 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,11 +69,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
 
+    public static Context context;
+    public DatabaseHelper databaseHelper;
+    public SQLiteDatabase db;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        // Set up the login form.
+
+        context = getApplicationContext();
+                // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
@@ -83,6 +95,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
+        //Create databases, please not this has caused unknown faults in the past when creating first
+        //LookupFoodDatabase.  For unknown reasons this works correctly now.
+
+
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -91,9 +107,47 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
+        databaseHelper = new DatabaseHelper(context);
+        db = databaseHelper.getWritableDatabase();
+
         //Button which acts to load SQLiteDB data
         Button loadData = (Button) findViewById(R.id.loadData);
-        //loadData.setOnClickListener((view){someMethod();});
+        loadData.setOnClickListener(new OnClickListener() {
+
+                public void onClick(View view) {
+                    try{
+                        databaseHelper.saveDataToUserTable(context, "Users");
+                        databaseHelper.saveDataToLookupFoodTable(context, "LookupFood");
+                        CharSequence text = "You've successfully loaded SQL Tables";
+                        int duration = Toast.LENGTH_LONG;
+                        Toast toast = Toast.makeText(context,text,duration);
+                        toast.show();
+                    }
+                    catch (IOException e){
+                        e.printStackTrace();
+                    }
+
+                }
+            });
+
+        //BUTTON to delete all current database data for testing purposes.
+        //@// TODO: 2/05/2016 remove once functional! 
+        Button deleteData = (Button) findViewById(R.id.deleteDBData);
+        deleteData.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try{
+                    String result;
+                    result = databaseHelper.delete(db);
+                    int duration = Toast.LENGTH_LONG;
+                    Toast toast = Toast.makeText(context,result,duration);
+                    toast.show();
+                }catch (SQLiteException e){
+                    e.printStackTrace();
+                }
+
+            }
+        });
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
@@ -161,11 +215,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
+
         boolean cancel = false;
         View focusView = null;
 
+        //@ToDO Remove this code once final login process is complete
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+        /*if (!TextUtils.isEmpty(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
@@ -180,7 +236,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
             cancel = true;
+        } else */ if (credsChecker(email,password) == false){
+            focusView = mEmailView;
+            cancel = true;
         }
+
 
         if (cancel) {
             // There was an error; don't attempt login and focus the first
@@ -192,6 +252,26 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(true);
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
+        }
+    }
+
+    private boolean credsChecker (String email, String pw){
+
+        //Check String for login, will toast result if user is found in DB or not.
+        // TODO: 30/04/2016  Remove once working!
+        CharSequence found = "Welcome to Health Diary!";
+        CharSequence notFound = "Invalid Username or Password!";
+        int duration = Toast.LENGTH_LONG;
+
+        if (databaseHelper.getUser(email,pw) == true) {
+            Toast toast = Toast.makeText(context, found, duration);
+            toast.show();
+            return true;
+        }
+        else{
+            Toast toast = Toast.makeText(context,notFound,duration);
+            toast.show();
+            return false;
         }
     }
 

@@ -28,6 +28,7 @@
 
     <!--DBButton Remove when no longer needed -->
     <string name="load_local_data">Load DB From File</string>
+    <string name="delete_local_data">Delete Local DBs From File</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
@@ -36,6 +37,11 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
+    <string name="search">Search For Food Item</string>
+    <string name="search_hint">Food Name</string>
+    <string name="food_description">Food</string>
+    <string name="search_settings">Search Food Names</string>
 
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_maps">Map</string>
