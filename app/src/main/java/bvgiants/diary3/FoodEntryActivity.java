@@ -1,7 +1,9 @@
 package bvgiants.diary3;
 
 import android.app.Activity;
+import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.ContactsContract;
 import android.widget.ListView;
@@ -28,6 +30,7 @@ public class FoodEntryActivity extends Activity {
     public DatabaseHelper databaseHelper;
     public ArrayList <String> foodNames;
     public ArrayList<FoodItem> allFood = new ArrayList<FoodItem>();
+    public ArrayList<FoodItem> userSearch = new ArrayList<FoodItem>();
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,12 +42,29 @@ public class FoodEntryActivity extends Activity {
         databaseHelper = new DatabaseHelper(context);
         db = databaseHelper.getWritableDatabase();
 
+       /* //Gets all food items
         allFood = databaseHelper.allFood();
         foodNames = new ArrayList<String>();
         ArrayList<Integer> imageId = new ArrayList<Integer>();
         for(int i=0; i< allFood.size();i++){
             foodNames.add(allFood.get(i).name);
+        } */
+
+
+        // Get food items based on search query
+        Intent intent = getIntent();
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            userSearch = databaseHelper.userSearch(query);
         }
+
+            foodNames = new ArrayList<String>();
+            ArrayList<Integer> imageId = new ArrayList<Integer>();
+            for (int i = 0; i < userSearch.size(); i++) {
+                foodNames.add(userSearch.get(i).name);
+            }
+
+
         //Will need another way to get images eventually
         imageId.add(R.drawable.bigmac);
         imageId.add(R.drawable.cheeseburger);
