@@ -6,6 +6,12 @@ package bvgiants.diary3;
  */
 public class FoodItem {
 
+    //Vars for FoodConsumed Table
+    public int orderID;
+    public int foodId;
+    public String location;
+
+    //Vars for a LookupFood Table
     public String name;
     public int calories;
     public int sugar;
@@ -27,8 +33,18 @@ public class FoodItem {
         this.imagelocal = imageLocal;
     }
 
+    public FoodItem(int orderID,int foodID, String location){
+        this.orderID = orderID;
+        this.foodId = foodID;
+        this.location = location;
+    }
+
     public String toString(){
         return "Food: " +this.name + "Calories: " +this.calories + " This is just an example return. " +
                 "Look at LookupFoodDBController -> FoodItem.toString()";
+    }
+
+    public String dbWriteFoodConsumed(){
+        return this.orderID + " " + this.foodId + " " + this.location +  "\n";
     }
 }
