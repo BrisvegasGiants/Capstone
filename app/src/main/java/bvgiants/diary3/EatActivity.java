@@ -49,6 +49,7 @@ public class EatActivity extends AppCompatActivity {
         Intent intent = new Intent(this,FoodEntryActivity.class);
         startActivity(intent);
 
+
         /*THE BELOW CODE WAS MY PREVIOUS ATTEMPT TO GET IMAGES TO DISPLAY ON THE SEARCH FIELD
         PROBS LEAVE THIS HERE UNTIL WE CONFIRM EVERYTHING IS FUNCTIONING!!!
          */
