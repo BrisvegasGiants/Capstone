@@ -275,7 +275,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /* GET ALL TABLE ITEMS
     GET FOOD
-
+*/
     public ArrayList<FoodItem> allFood(){
 
         String select = "SELECT * FROM " + TABLE_LOOKUPFOOD;
@@ -292,12 +292,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 res.close();
         }
         return results;
-    } */
+    }
 
 
         // GET USER SEARCHED ITEMS
     public ArrayList<FoodItem> userSearch(String searchResult) {
-        String select = "SELECT * FROM " + TABLE_LOOKUPFOOD + "WHERE Name LIKE" + searchResult;
+        String select = "SELECT * FROM " + TABLE_LOOKUPFOOD + "WHERE Name LIKE" + "'%" + searchResult + "%'";
         ArrayList<FoodItem> results = new ArrayList<FoodItem>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery(select,null);

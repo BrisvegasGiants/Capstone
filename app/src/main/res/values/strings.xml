@@ -56,5 +56,6 @@
     <string name="percentage_progress">%</string>
     <string name="percentage_suffix">towards your daily step goal!</string>
     <string name="default_value">0</string>
+    <string name="title_activity_food_entry">foodEntry</string>
 
 </resources>
