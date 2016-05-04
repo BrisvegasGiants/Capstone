@@ -103,18 +103,6 @@
         android:layout_below="@+id/buttonSettings"
         android:layout_alignStart="@+id/buttonSettings" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textStepGoal"
-        android:layout_below="@+id/atAGlanceTitle"
-        android:layout_alignStart="@+id/progressBarStepsGoal"
-        android:layout_marginTop="5dp"
-        android:text="@string/textSteps"
-        android:textSize="15sp"
-        android:textStyle="normal"
-        android:inputType="none" />
-
     <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"
         android:id="@+id/progressBarCalories"
@@ -129,16 +117,24 @@
         android:layout_below="@+id/progressBarStepsGoal"
         android:layout_alignStart="@+id/progressBarStepsGoal" />
 
-    <EditText
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textCalorieGoal"
-        android:layout_marginTop="41dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/textSteps"
+        android:id="@+id/stepGoal"
+        android:layout_marginTop="22dp"
+        android:layout_below="@+id/atAGlanceTitle"
+        android:layout_alignStart="@+id/progressBarStepsGoal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/textCalorie"
-        android:textSize="15sp"
-        android:textStyle="normal"
-        android:layout_below="@+id/progressBarStepsGoal"
-        android:layout_alignStart="@+id/progressBarCalories"
-        android:inputType="none" />
+        android:id="@+id/calorieGoal"
+        android:layout_marginBottom="32dp"
+        android:layout_alignBottom="@+id/progressBarCalories"
+        android:layout_alignStart="@+id/progressBarCalories" />
 
 </RelativeLayout>
