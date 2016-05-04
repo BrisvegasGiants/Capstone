@@ -134,7 +134,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     };
 
     public void dropPin(GoogleMap googleMap, Location location) {
-
+        LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
+        Marker mMarker = mMap.addMarker(new MarkerOptions().position(loc).title("My Location"));
+        if (mMap != null) {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+        }
 
     }
 
