@@ -125,7 +125,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         public void onMyLocationChange(Location location) {
             LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
-            Marker mMarker = mMap.addMarker(new MarkerOptions().position(loc).title("My Location"));
+            // Works but commented out to test if dropPin is working
+            //Marker mMarker = mMap.addMarker(new MarkerOptions().position(loc).title("My Location"));
             if (mMap != null) {
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
