@@ -384,7 +384,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // GET USER SEARCHED ITEMS
     public ArrayList<FoodItem> foodSearch(String searchResult) {
         String select = "SELECT * FROM " + TABLE_LOOKUPFOOD + " WHERE Name LIKE " + searchResult + "%;";
-        System.out.printf("%s",select);
+        ArrayList<FoodItem> foodsFound = new ArrayList<FoodItem>();
+        System.out.printf("%s", select);
+        return foodsFound;
+    }
+
+        // GET USER SEARCHED ITEMS
+    public ArrayList<FoodItem> userSearch(String searchResult) {
+        String select = "SELECT * FROM " + TABLE_LOOKUPFOOD + "WHERE Name LIKE" + "'%" + searchResult + "%'";
+
         ArrayList<FoodItem> results = new ArrayList<FoodItem>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery(select,null);
@@ -716,5 +724,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         }
 
+    }
+
+    public Cursor searchLookupFood (String inputText) throws SQLiteException {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_LOOKUPFOOD + " WHERE Name LIKE=?",
+                new String[]{inputText,"%"});
+
+        if(res != null){
+            res.moveToFirst();
+        }
+        return res;
     }
 }
