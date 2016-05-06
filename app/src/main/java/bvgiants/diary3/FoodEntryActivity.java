@@ -2,10 +2,17 @@ package bvgiants.diary3;
 
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
+import android.app.FragmentManager;
+import android.util.Log;
+import android.util.SparseArray;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.*;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.app.Activity;
@@ -26,7 +33,7 @@ import android.view.MenuItem;
 import android.app.SearchManager;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
-
+import android.util.SparseArray;
 import android.widget.ListView;
 import android.os.Bundle;
 import android.view.View;
@@ -53,7 +60,7 @@ public class FoodEntryActivity extends Activity implements SearchView.OnQueryTex
     public SQLiteDatabase db;
     public DatabaseHelper databaseHelper;
     public ArrayList<String> foodNames = new ArrayList<String>();
-
+    public ArrayList<String> foodDesc = new ArrayList<String>();
 
     public ArrayList<Integer> imageId = new ArrayList<Integer>();
 
@@ -61,6 +68,10 @@ public class FoodEntryActivity extends Activity implements SearchView.OnQueryTex
     private SearchView searchView;
     private MyCustomAdapter defaultAdapter;
     private ArrayList<FoodItem> allFood = new ArrayList<FoodItem>();
+
+    public SparseArray<FoodItem> foodsToSave = new SparseArray<FoodItem>();
+    private ArrayList<FoodItem> usersFoods = new ArrayList<FoodItem>();
+    Fragment fragment;
 
     @Override
 
@@ -78,7 +89,9 @@ public class FoodEntryActivity extends Activity implements SearchView.OnQueryTex
         for (int i = 0; i < allFood.size(); i++) {
             foodNames.add(allFood.get(i).name);
         }
-
+        for(int i = 0; i < allFood.size(); i++){
+            foodDesc.add(allFood.get(i).toString());
+        }
 
         myList = (ListView) findViewById(R.id.list);
 
@@ -112,6 +125,18 @@ public class FoodEntryActivity extends Activity implements SearchView.OnQueryTex
 
         return false;
     }
+
+    public SparseArray<FoodItem> foodsToPass(){
+        return foodsToSave;
+    }
+    public void createUsersSelectedFoods(){
+
+        fragment = new ExpandableListFragment();
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment,fragment);
+        fragmentTransaction.commit();
+    }
     public void doSearch(String query) {
 
         //Will need another way to get images eventually
@@ -136,7 +161,19 @@ public class FoodEntryActivity extends Activity implements SearchView.OnQueryTex
                 // TODO Auto-generated method stub
                 String Selecteditem = foodNames.get(position);
                 Toast.makeText(getApplicationContext(), Selecteditem, Toast.LENGTH_SHORT).show();
-
+                usersFoods.add(allFood.get(position));
+                Log.v("IVE MADE IT HERE", "FUCK SHIT");
+                for (int i = 0; i < usersFoods.size(); i++){
+                    for(int j = 0; j < usersFoods.size(); j++){
+                        usersFoods.get(j).children.add(usersFoods.get(j).toString());
+                    }
+                    foodsToSave.append(i,usersFoods.get(i));
+                    Log.v(foodsToSave.get(i).toString(), " FOODS TO SAVE HOLDS THIS");
+                }
+               for(int i = 0; i < usersFoods.size();i++){
+                   Log.v(usersFoods.get(i).toString(), " FUCK THIS SHIT");
+               }
+                createUsersSelectedFoods();
             }
         });
     }

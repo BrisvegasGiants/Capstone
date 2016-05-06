@@ -131,6 +131,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_LOOKUPFOOD);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERTRAITS);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_FOODCONSUMED);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDERHEADER);
             return "DELETING OF ALL DB TABLES SUCCESSFUL";
         }catch (SQLiteException e){
