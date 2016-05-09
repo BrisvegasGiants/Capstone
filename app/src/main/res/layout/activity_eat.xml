@@ -16,10 +16,6 @@
 
     <include layout="@layout/content_eat" />
 
-
-</android.support.design.widget.CoordinatorLayout>
-
-
     <!-- This is for the top toolbar vv. We'll have to discuss this. -->
 
     <!-- <android.support.v7.widget.Toolbar
@@ -28,6 +24,8 @@
          android:layout_height="?attr/actionBarSize"
          android:background="?attr/colorPrimary"
          app:popupTheme="@style/AppTheme.PopupOverlay" /> -->
+
+    </android.support.design.widget.CoordinatorLayout>
 
     <!--
     <android.support.design.widget.FloatingActionButton

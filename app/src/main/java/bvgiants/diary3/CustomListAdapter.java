@@ -26,7 +26,7 @@ public class CustomListAdapter extends ArrayAdapter<String> {
     private final ArrayList<Integer> imgid;
 
     public CustomListAdapter(Activity context, ArrayList<String> itemname, ArrayList<Integer> imgid) {
-        super(context, R.layout.food_details_fragment, itemname);
+        super(context, R.layout.content_food_entry, itemname);
         // TODO Auto-generated constructor stub
 
         this.context=context;
