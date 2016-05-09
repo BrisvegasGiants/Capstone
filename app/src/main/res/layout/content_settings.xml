@@ -24,4 +24,36 @@
         android:textSize="40sp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="User Profile"
+        android:id="@+id/buttonProfile"
+        android:layout_marginTop="48dp"
+        android:layout_below="@+id/titleSettings"
+        android:layout_centerHorizontal="true"
+        android:clickable="true"
+        android:onClick="openProfile" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set Goals"
+        android:id="@+id/buttonGoals"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:clickable="true" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Change Theme"
+        android:id="@+id/buttonTheme"
+        android:layout_marginBottom="25dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toStartOf="@+id/buttonGoals"
+        android:clickable="true" />
+
 </RelativeLayout>
