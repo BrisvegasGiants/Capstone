@@ -22,15 +22,11 @@ import java.util.ArrayList;
 public class ExpandableListFragment extends Fragment {
 
     private SparseArray<FoodItem> foodsToSave = new SparseArray<FoodItem>();
-    private ArrayList<String> foodNames;
-    private ArrayList<String> foodDesc;
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
 
         View v = inflater.inflate(R.layout.expandable_list,null);
         ExpandableListView listView = (ExpandableListView) v.findViewById(R.id.expandable_list_view);
         listView.setAdapter(new SavedTabsListAdapter());
-        //foodNames = getArguments().getStringArrayList("selectedFoods");
-        //foodDesc = getArguments().getStringArrayList("foodDesc");
         Log.v("INSIDE EXPANDABLELIST"," FUCK THIS SHIT");
 
         FoodEntryActivity activity = (FoodEntryActivity) getActivity();
@@ -43,13 +39,6 @@ public class ExpandableListFragment extends Fragment {
 
 
     public class SavedTabsListAdapter extends BaseExpandableListAdapter {
-
-        private String[][] children = {
-                { "Arnold", "Barry", "Chuck", "David" },
-                { "Ace", "Bandit", "Cha-Cha", "Deuce" },
-                { "Fluffy", "Snuggles" },
-                { "Goldy", "Bubbles" }
-        };
 
         @Override
         public int getGroupCount() {

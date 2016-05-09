@@ -9,10 +9,15 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by kenst on 2/05/2016.
@@ -72,10 +77,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //Table Create Statements
     private static final String CREATE_TABLE_USERS = "CREATE TABLE " + TABLE_USERS + "(" + KEY_ID +
-            " INTEGER PRIMARY KEY AUTOINCREMENT," + USERS_COLUMN_EMAIL + " TEXT," + USERS_COLUMN_PW +
+            " INTEGER PRIMARY KEY, " + USERS_COLUMN_EMAIL + " TEXT," + USERS_COLUMN_PW +
             " TEXT," + USERS_COLUMN_ALIAS + " TEXT, " + USERS_COLUMN_TEAM + " TEXT);";
     private static final String CREATE_TABLE_LOOKUPFOOD = "CREATE TABLE " + TABLE_LOOKUPFOOD + "(" +
-            KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + LUPFOOD_COLUMN_NAME + " INTEGER, " +
+            KEY_ID + " INTEGER PRIMARY KEY," + LUPFOOD_COLUMN_NAME + " INTEGER, " +
             LUPFOOD_COLUMN_CALORIES + " INTEGER, " + LUPFOOD_COLUMN_SUGAR + " INTEGER, " + LUPFOOD_COLUMN_FAT
             + " INTEGER, " + LUPFOOD_COLUMN_ENERGY + " INTEGER, " + LUPFOOD_COLUMN_SODIUM + " INTEGER, "
             + LUPFOOD_COLUMN_PROTEIN + " INTEGER, " + LUPFOOD_COLUMN_IMGLOCAL + " TEXT);";
@@ -90,7 +95,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + " TEXT);";
 
     public static final String CREATE_TABLE_ORDERHEADER = "CREATE TABLE " + TABLE_ORDERHEADER + "(" +
-            ORDERHEADER_COLUMN_ORDERID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + ORDERHEADER_COLUMN_ORDERTYPECODE
+            ORDERHEADER_COLUMN_ORDERID + " INTEGER PRIMARY KEY, " + ORDERHEADER_COLUMN_ORDERTYPECODE
             + " INTEGER, " + ORDERHEADER_COLUMN_ORDERDATE + " DATETIME DEFAULT CURRENT_TIMESTAMP, " +
             ORDERHEADER_COLUMN_USERID + " INTEGER);";
 
@@ -178,9 +183,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     //Inserts a User into USERS TABLE
     //TODO Add feature to enable user to create account
-    public boolean insertUser(String email, String password, String alias, String team) {
+    public boolean insertUser( int id, String email, String password, String alias, String team) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+        contentValues.put("ID", id);
         contentValues.put("EmailAdd", email);
         contentValues.put("Password", password);
         contentValues.put("Alias", alias);
@@ -190,10 +196,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     //Inserts a Food into LOOKUPFOOD
-    public boolean insertFood(String name, int calories, int sugar, int fat, int energy, int sodium,
+    //@// TODO: 8/05/2016 MAKE THIS CONSTRUCTER TAKE A FOOD ITEM!
+    public boolean insertFood(int id,String name, int calories, int sugar, int fat, int energy, int sodium,
                               int protein, String imageLocal) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+        contentValues.put("ID", id);
         contentValues.put("Name", name);
         contentValues.put("Calories", calories);
         contentValues.put("Sugar", sugar);
@@ -225,16 +233,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public boolean insertFoodConsumed(FoodItem food) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("ID", food.orderID);
-        contentValues.put("FoodID", food.foodId);
-        contentValues.put("Location", food.location);
+        contentValues.put("ID", food.getOrderID());
+        contentValues.put("FoodID", food.getFoodId());
+        contentValues.put("Location", food.getLocation());
+        Log.v(food.toString(), "FOOD INSERTED");
         db.insert(TABLE_FOODCONSUMED, null, contentValues);
+        Log.v("AFTER DB INSERT ", "FOOD INSERTED");
         return true;
     }
 
-    public boolean insertOrderHeader(int orderTypeCode, String orderDate, int userID) {
+    public boolean insertOrderHeader(int orderID,int orderTypeCode, String orderDate, int userID) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+        contentValues.put("OrderID", orderID);
         contentValues.put("OrderTypeCode", orderTypeCode);
         contentValues.put("OrderDate", orderDate);
         contentValues.put("UserID", userID);
@@ -318,6 +329,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     /* UPDATE STATEMENTS
     UPDATE USER
     UPDATE FOOD
+    @todo use Objects rather than construction method!
      */
 
     public boolean updateUser(Integer id, String email, String password, String alias, String team) {
@@ -480,7 +492,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             userLine = userString.get(i);
             input = userLine.split(" ");
             System.out.printf("%s\n%s\n%s\n%s\n",input[0],input[1],input[2],input[3]);
-            insertUser(input[0],input[1],input[2],input[3]);
+            insertUser(Integer.parseInt(input[0]),input[1],input[2],input[3],input[4]);
         }
 
     }
@@ -509,221 +521,54 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             input = foodLine.split(" ");
             System.out.printf("%s\n%s\n%s\n%s\n",input[0],input[1],input[2],input[3],input[5],
                     input[6],input[7]);
-            insertFood(input[0],Integer.parseInt(input[1]),Integer.parseInt(input[2])
-                    ,Integer.parseInt(input[3]),Integer.parseInt(input[4]),Integer.parseInt(input[5]),
-                    Integer.parseInt(input[6]),input[7]);
+            insertFood(Integer.parseInt(input[0]),input[1],Integer.parseInt(input[2]),Integer.parseInt(input[3])
+                    ,Integer.parseInt(input[4]),Integer.parseInt(input[5]),Integer.parseInt(input[6]),
+                    Integer.parseInt(input[7]),input[8]);
             System.out.printf("DB LOOKUPFOOD Insert Statement executed successfully");
         }
 
     }
 
-    /*THE FOLLOWING METHODS APPLY TO THIS RULE AS THEY WRITE TO TEXT FILES WHICH DEPEND ON DATA WRITTEN
-     BY OTHER SQL QUERIES!
-    This method is slightly complicated and needs to be done in a few steps.
-        1. Read all the current UserTraits.txt content
-        2. Save that content as Users in userTraitsInTxtFile ArrayList
-        3. Open a new OutputStreamWriter and write blank data to it HOPEFULLY CLEARING THE FILE so
-            we can start fresh again.
-        4. Delete current UserTraits table
-        5. Recreate table and input fresh variables based on those we stored from the origional text
-           file, plus the new ones.
-        6. Re open the OutputStreamWriter and write all lines to file.
+    /*
+    SAVE DATA TO VARIOUS SQLITE DB TABLES.
+    NOTE: IT IS IMPOSSIBLE TO SAVE THESE DB TABLES TO TXT FILES, AS ANYTHING IN THE ASSESTS FOLDER
+    CANNOT BE MODIFIED AFTER RUNTIME!
 
-
-
-        This is all done to attempt to maintain database integrity so we don't get duplicate ID's
-        in the text file.
-
-        Ask Ken if further explanation is required.
+    ONLY OPTION WOULD BE TO SAVE A TXT FILE ON THE LOCAL DEVICE OR USER SERVER HOSTED DB.
       */
-    public void saveDataToUserTraitsTable(Context context, String filename, int userId,
-                                          User user) throws IOException {
+    public void saveDataToUserTraits(Context context, String filename, int userId,
+                                     User user) throws IOException {
 
-        ArrayList<String> allUserTraits= new ArrayList<String>(); //ArrayList to hold lines of txt file
-        ArrayList<User> userTraitsInTxtFile = new ArrayList<User>();
-        String userTraits; //Line of txt form txt file
-
-        //STEP 1
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(context.getAssets()
-                    .open(filename)));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                allUserTraits.add(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        //STEP 2
-        for (int i=0; i < allUserTraits.size();i++){
-            String[] input;
-            userTraits = allUserTraits.get(i);
-            input = userTraits.split(" ");
-            User usersTraits = new User(Integer.parseInt(input[0]),input[1],input[2],Integer.parseInt(input[3])
-                    ,Integer.parseInt(input[3]),Integer.parseInt(input[5]), input[6]);
-            userTraitsInTxtFile.add(usersTraits);
-        }
-        userTraitsInTxtFile.add(user);//Add current users updated object to list for writing
-        //STEP 3
-        try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter
-                    (context.openFileOutput(filename,context.MODE_PRIVATE));
-            outputStreamWriter.write("");
-            outputStreamWriter.close();
-        } catch (IOException e){
-            Log.e("Exception,", " File USERTRAITS Write Failed: " + e.toString());
-
-        }
-        //STEP 4
-        recreateUserTraits();
-        //STEP 5
-        for (int i = 0; i < allUserTraits.size(); i++) {
-            System.out.printf("%s\n",userTraitsInTxtFile.get(i).toString());
-            insertUserTraits(userTraitsInTxtFile.get(i));
+            System.out.printf("%s\n",user.toString());
+            insertUserTraits(user);
             System.out.printf("DB USERTRAITS TABLE Insert Statement executed successfully");
-        }
-
-        //STEP 6
-        try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter
-                    (context.openFileOutput(filename,context.MODE_PRIVATE));
-            for(int i =0; i< userTraitsInTxtFile.size();i++){
-                outputStreamWriter.write(userTraitsInTxtFile.get(i).dbWriteUserTraits());
-            }
-            outputStreamWriter.close();
-        } catch (IOException e){
-            Log.e("Exception,", " File USERTRAITS Write Failed: " + e.toString());
-
-        }
-
 
     }
 
-    public void saveDataToFoodConsumedTable(Context context, String filename, FoodItem
-                                            recordedFoodEaten) throws IOException {
+    public void saveDataToFoodConsumedTable(ArrayList<FoodItem> recordedFoodEaten)
+            throws IOException {
 
-        ArrayList<String> allFoodConsumed= new ArrayList<String>(); //ArrayList to hold lines of txt file
-        ArrayList<FoodItem> foodConsumedinFile = new ArrayList<FoodItem>();
-        String foodConsumed; //Line of txt form txt file
+        //Create a new orderID
+       int orderID = createOrderID();
 
-        //STEP 1
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(context.getAssets()
-                    .open(filename)));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                allFoodConsumed.add(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        //STEP 2
-        for (int i=0; i < allFoodConsumed.size();i++){
-            String[] input;
-            foodConsumed = allFoodConsumed.get(i);
-            input = foodConsumed.split(" ");
-            FoodItem foodItem = new FoodItem(Integer.parseInt(input[0]),Integer.parseInt(input[1]),
-                    input[2]);
-            foodConsumedinFile.add(foodItem);
-        }
-        foodConsumedinFile.add(recordedFoodEaten);//Add current FoodItem updated object to list for writing
-        //STEP 3
-        try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter
-                    (context.openFileOutput(filename,context.MODE_PRIVATE));
-            outputStreamWriter.write("");
-            outputStreamWriter.close();
-        } catch (IOException e){
-            Log.e("Exception,", " File FOOD CONSUMED Write Failed: " + e.toString());
+        //Create Order @// TODO: 9/05/2016 CURRENT JUST ADDS KEN USER
+        saveDataToOrderHeader(orderID,LOOKUPORDERTYPE_FOODENTRY,getDateTime(),1);
+
+        for(int i = 0; i < recordedFoodEaten.size();i++){
+            recordedFoodEaten.get(i).setOrderID(orderID);
+            recordedFoodEaten.get(i).setLocation("FAKE LOCATION");
+            Log.v(recordedFoodEaten.get(i).dbWriteFoodConsumed(), "WRITE TO DB");
+            Log.v("IVE WRITTEN TO FILE OK!", "");
+            insertFoodConsumed(recordedFoodEaten.get(i));
 
         }
-        //STEP 4
-        recreateFoodConsumed();
-        //STEP 5
-        for (int i = 0; i < foodConsumedinFile.size(); i++) {
-            System.out.printf("%s\n",foodConsumedinFile.get(i).toString());
-            insertFoodConsumed(foodConsumedinFile.get(i));
-            System.out.printf("DB CONSUMED FOOD Insert Statement executed successfully");
-        }
 
-
-        //STEP 6
-        try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter
-                    (context.openFileOutput(filename,context.MODE_PRIVATE));
-            for(int i =0; i< foodConsumedinFile.size();i++){
-                outputStreamWriter.write(foodConsumedinFile.get(i).dbWriteFoodConsumed());
-            }
-            outputStreamWriter.close();
-        } catch (IOException e){
-            Log.e("Exception,", " File FOOD CONSUMED Write Failed: " + e.toString());
-
-        }
     }
 
-    public void saveDataToOrderHeader(Context context, String filename, int orderTypeCode, String date,
+    public void saveDataToOrderHeader(int orderID, int orderTypeCode, String date,
                                       int userID) throws IOException {
 
-        ArrayList<String> allOrders= new ArrayList<String>(); //ArrayList to hold lines of txt file
-        ArrayList<OrderRow> ordersPlacedInFile = new ArrayList<OrderRow>();
-        String orderLineFromFile; //Line of txt form txt file
-
-        //STEP 1
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(context.getAssets()
-                    .open(filename)));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                allOrders.add(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        //STEP 2
-        for (int i=0; i < allOrders.size();i++){
-            String[] input;
-            orderLineFromFile = allOrders.get(i);
-            input = orderLineFromFile.split(" ");
-            OrderRow orderRow = new OrderRow(Integer.parseInt(input[0]),Integer.parseInt(input[1]),
-                    input[2], Integer.parseInt(input[3]));
-            ordersPlacedInFile.add(orderRow);
-        }
-        //ordersPlacedInFile.add(recordedFoodEaten);//Add current FoodItem updated object to list for writing
-        //STEP 3
-        try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter
-                    (context.openFileOutput(filename,context.MODE_PRIVATE));
-            outputStreamWriter.write("");
-            outputStreamWriter.close();
-        } catch (IOException e){
-            Log.e("Exception,", " File ORDER HEADER Write Failed: " + e.toString());
-
-        }
-
-        //STEP 5
-        recreateFoodConsumed();
-        //STEP 6
-        for (int i = 0; i < allOrders.size(); i++) {
-            System.out.printf("%s\n",ordersPlacedInFile.get(i).toString());
-            insertOrderHeader(ordersPlacedInFile.get(i).orderTypeCode, ordersPlacedInFile.get(i)
-            .date, ordersPlacedInFile.get(i).userID);
-            System.out.printf("DB ORDERHEADER Insert Statement executed successfully");
-        }
-        insertOrderHeader(orderTypeCode,date,userID);
-        //STEP 4
-        try {
-            ArrayList<OrderRow> orders = new ArrayList<OrderRow>();
-            orders = getAllOrders();
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter
-                    (context.openFileOutput(filename,context.MODE_PRIVATE));
-            for(int i =0; i< orders.size();i++){
-                outputStreamWriter.write(orders.get(i).dbWriteOrdersToFile());
-            }
-            outputStreamWriter.close();
-        } catch (IOException e){
-            Log.e("Exception,", " File ORDERHEADER Write Failed: " + e.toString());
-
-        }
+            insertOrderHeader(orderID,orderTypeCode,date,userID);
 
     }
 
@@ -737,4 +582,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return res;
     }
+
+
+    public Cursor todaysFood() throws SQLiteException{
+        SQLiteDatabase db = this.getReadableDatabase();
+        //Select * from OrderHeader
+        //left outer join FoodConsumed on OrderHeader.OrderID = FoodConsumed.ID
+        //where OrderHeader.Date = todays date
+        String query = "SELECT * FROM " + TABLE_ORDERHEADER + " LEFT OUTER JOIN "
+                + TABLE_FOODCONSUMED + " ON " + TABLE_ORDERHEADER + ".OrderID = " + TABLE_FOODCONSUMED
+                +".ID WHERE "+ TABLE_ORDERHEADER + ".OrderDate >= date('now','-1 day');";
+        String pracQuery = "SELECT * FROM " + TABLE_ORDERHEADER;
+        Cursor res = db.rawQuery(pracQuery,null);
+
+        if(res != null){
+            res.moveToFirst();
+        }
+        else
+            Log.v("TODAYSFOOD QUERY FAIL", "QUERY FAIL");
+        return res;
+    }
+
+    /*
+    HELPER METHODS
+     */
+    private String getDateTime() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        Date date = new Date();
+        return dateFormat.format(date);
+    }
+
+    public int createOrderID(){
+        int orderID = (int) (Math.random() * 10000 + 1);
+        return orderID;
+    }
+
 }

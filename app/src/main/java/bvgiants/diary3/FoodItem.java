@@ -54,6 +54,26 @@ public class FoodItem {
         return this.orderID + " " + this.foodId + " " + this.location +  "\n";
     }
 
+    public void setOrderID(int orderID) {
+        this.orderID = orderID;
+    }
+
+    public int getFoodId() {
+        return foodId;
+    }
+
+    public void setFoodId(int foodId) {
+        this.foodId = foodId;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
     public int getOrderID() {
         return orderID;
     }

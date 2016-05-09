@@ -46,6 +46,7 @@ import android.widget.SearchView;
 
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -73,6 +74,8 @@ public class FoodEntryActivity extends Activity implements SearchView.OnQueryTex
     private ArrayList<FoodItem> usersFoods = new ArrayList<FoodItem>();
     Fragment fragment;
 
+    private Button addToDiary;
+
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,16 +98,31 @@ public class FoodEntryActivity extends Activity implements SearchView.OnQueryTex
 
         myList = (ListView) findViewById(R.id.list);
 
-        //defaultAdapter = new MyCustomAdapter(FoodEntryActivity.this, foodNames);
-        //myList.setAdapter(defaultAdapter);
-
         searchView = (SearchView) findViewById(R.id.search);
         searchView.setIconifiedByDefault(false);
         searchView.setOnQueryTextListener(this);
         searchView.setOnCloseListener(this);
-
+        addToDiary();
     }
 
+    public void addToDiary (){
+        final Intent loadEat = new Intent(this, EatActivity.class);
+        addToDiary = (Button) findViewById(R.id.save_to_diary);
+        addToDiary.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Log.v("ADD TO DIARY! ", " I'VE REGISTERED A CLICK!");
+                try{
+                    databaseHelper.saveDataToFoodConsumedTable(allFood);
+                    startActivity(loadEat);
+                } catch (IOException e){
+                    Log.v(e.toString(), " THERE WAS AN ERROR!");
+                }
+
+
+            }
+        });
+    }
     public boolean onClose() {
         myList.setAdapter(defaultAdapter);
         return false;
@@ -148,10 +166,6 @@ public class FoodEntryActivity extends Activity implements SearchView.OnQueryTex
 
         CustomListAdapter adapter = new CustomListAdapter(this, foodNames, imageId);
         list = (ListView) findViewById(R.id.list);
-
-        //CustomListAdapter adapter = new CustomListAdapter(this, foodNames, imageId);
-        //list = (ListView) findViewById(R.id.list_foods);
-
         list.setAdapter(adapter);
         list.setOnItemClickListener(new OnItemClickListener() {
 
@@ -162,119 +176,21 @@ public class FoodEntryActivity extends Activity implements SearchView.OnQueryTex
                 String Selecteditem = foodNames.get(position);
                 Toast.makeText(getApplicationContext(), Selecteditem, Toast.LENGTH_SHORT).show();
                 usersFoods.add(allFood.get(position));
-                Log.v("IVE MADE IT HERE", "FUCK SHIT");
                 for (int i = 0; i < usersFoods.size(); i++){
-                    for(int j = 0; j < usersFoods.size(); j++){
-                        usersFoods.get(j).children.add(usersFoods.get(j).toString());
-                    }
+                   // for(int j = 0; j < usersFoods.size(); j++){
+                       // usersFoods.get(j).children.add(usersFoods.get(j).toString());
+                   // }
                     foodsToSave.append(i,usersFoods.get(i));
+                    createUsersSelectedFoods();
                     Log.v(foodsToSave.get(i).toString(), " FOODS TO SAVE HOLDS THIS");
                 }
                for(int i = 0; i < usersFoods.size();i++){
-                   Log.v(usersFoods.get(i).toString(), " FUCK THIS SHIT");
+                   Log.v(usersFoods.get(i).toString(), " ZZZZZZZZZZ");
                }
-                createUsersSelectedFoods();
+
             }
         });
     }
 }
 
-
-/*
-
-BELOW HERE IS USELESS CRAP THAT I'M SCARED TO DELETE DUE TO THE FUCK AROUND TO GET THIS WORKING!
-
- */
-    /*private void displayResults(String query) {
-
-        Cursor cursor = databaseHelper.searchLookupFood((query != null ? query : "@@@@"));
-
-        if (cursor != null) {
-            // Specify the view where we want the results to go
-            int[] to = new int[]{R.id.search_result_text_view};
-            String[] from = new String[]{"FOOD NAME"};
-            // Create a simple cursor adapter to keep the search data
-            SimpleCursorAdapter cursorAdapter = new SimpleCursorAdapter(this, R.layout.result_search_item, cursor, from, to, 1);
-            myList.setAdapter(cursorAdapter);
-
-            // Click listener for the searched item that was selected
-            myList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                    // Get the cursor, positioned to the corresponding row in the result set
-                    Cursor cursor = (Cursor) myList.getItemAtPosition(position);
-
-                    // Get the state's capital from this row in the database.
-                    String selectedName = cursor.getString(cursor.getColumnIndexOrThrow("name"));
-                    Toast.makeText(FoodEntryActivity.this, selectedName, Toast.LENGTH_SHORT).show();
-
-                    // Set the default adapter
-                    myList.setAdapter(defaultAdapter);
-
-                    // Find the position for the original list by the selected name from search
-                    for (int pos = 0; pos < foodNames.size(); pos++) {
-                        if (foodNames.get(pos).equals(selectedName)) {
-                            position = pos;
-                            break;
-                        }
-                    }
-
-                    // Create a handler. This is necessary because the adapter has just been set on the list again and
-                    // the list might not be finished setting the adapter by the time we perform setSelection.
-                    Handler handler = new Handler();
-                    final int finalPosition = position;
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            myList.setSelection(finalPosition);
-                        }
-                    });
-
-                    searchView.setQuery("", true);
-                }
-            });
-
-        }
-    }
-
-    /*
-
-    // Create the search menu.
-    // D
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.food_search_menu, menu);
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        MenuItem searchActionBarItem = menu.findItem(R.id.search);
-        SearchView searchView = null;
-        if(searchActionBarItem != null)
-            searchView = (SearchView) searchActionBarItem.getActionView();
-        if(searchView != null)
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(FoodEntryActivity.this.getComponentName()));
-        //searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        return super.onCreateOptionsMenu(menu);
-    }
-    */
-
-/*
-    // Is called whenever the user hits submit.
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        doSearch(query);
-        return false;
-    }
-    //Is called whenever the user changes texts ins search bar.
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        doSearch(newText);
-            return false;
-        }
-
-    }
-
-*/
 
