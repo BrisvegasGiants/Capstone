@@ -57,4 +57,10 @@
     <string name="default_value">0</string>
     <string name="title_activity_food_entry">foodEntry</string>
 
+    <!-- At a Glance Strings -->
+    <string name="glance">At a Glance</string>
+    <string name="textCalorie">Progress towards calorie goal</string>
+    <string name="textSteps">Progress towards step goal</string>
+
+
 </resources>

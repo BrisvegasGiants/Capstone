@@ -1,5 +1,6 @@
 package bvgiants.diary3;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -11,6 +12,8 @@ import android.view.MenuItem;
 import android.content.Intent;
 
 public class MainActivity extends AppCompatActivity {
+
+    Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,8 +30,9 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-    }
+    startBackgroundProcess(this.findViewById(android.R.id.content), mContext);
 
+    }
 
     // Takes user to selected screen(Activity)
     public void menuSelect( View v ) {
@@ -54,6 +58,11 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
         }
+    }
+
+
+    public void startBackgroundProcess(View view, Context c){
+        startService(new Intent(getBaseContext(), BackgroundService.class));
     }
 
 

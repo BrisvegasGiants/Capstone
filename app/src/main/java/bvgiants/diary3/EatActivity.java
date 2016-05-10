@@ -31,6 +31,8 @@ import java.util.List;
 
 public class EatActivity extends AppCompatActivity {
 
+    Context mContext;
+
     private ListView listView;
     private Button today;
 
@@ -45,6 +47,8 @@ public class EatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_eat);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
+        startBackgroundProcess(this.findViewById(android.R.id.content), mContext);
+
         context = getApplicationContext();
         databaseHelper = new DatabaseHelper(context);
         db = databaseHelper.getWritableDatabase();
@@ -52,6 +56,11 @@ public class EatActivity extends AppCompatActivity {
         showTodaysFood();
         showFoodConsumed();
     } //End onCreate
+
+
+    public void startBackgroundProcess(View view, Context c){
+        startService(new Intent(getBaseContext(), BackgroundService.class));
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -65,6 +74,7 @@ public class EatActivity extends AppCompatActivity {
         Intent intent = new Intent(this,FoodEntryActivity.class);
         startActivity(intent);
     }
+
 
     public void addRowsToTable(ArrayList<OrderRow> orders){
         TableLayout table = (TableLayout) findViewById(R.id.tableLayout);
@@ -84,6 +94,12 @@ public class EatActivity extends AppCompatActivity {
             row.addView(calories);
             table.addView(row);
         }
+
+
+        /*THE BELOW CODE WAS MY PREVIOUS ATTEMPT TO GET IMAGES TO DISPLAY ON THE SEARCH FIELD
+        PROBS LEAVE THIS HERE UNTIL WE CONFIRM EVERYTHING IS FUNCTIONING!!!
+         */
+
 
     }
     public void showTodaysFood(){

@@ -1,5 +1,6 @@
 package bvgiants.diary3;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -13,12 +14,16 @@ import java.util.Map;
 
 public class DataActivity extends AppCompatActivity {
 
+    Context mContext;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data);
         // Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         // setSupportActionBar(toolbar);
+
+        startBackgroundProcess(this.findViewById(android.R.id.content), mContext);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -31,17 +36,20 @@ public class DataActivity extends AppCompatActivity {
     }
     public void menuSelect( View v ) {
 
-        switch (v.getId()) {
-            case (R.id.buttonMaps):
-                Intent startMaps = new Intent(this, MapsActivity.class);
-                startActivity(startMaps);
-                break;
-    }
+            switch (v.getId()) {
+                case (R.id.buttonMaps):
+                    Intent startMaps = new Intent(this, MapsActivity.class);
+                    startActivity(startMaps);
+                    break;
+        }
 
 
     }
 
+    public void startBackgroundProcess(View view, Context c){
+        startService(new Intent(getBaseContext(), BackgroundService.class));
     }
+}
 
 
 

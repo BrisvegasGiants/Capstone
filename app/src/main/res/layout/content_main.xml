@@ -11,7 +11,9 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="bvgiants.diary3.MainActivity"
     tools:showIn="@layout/activity_main"
-    android:background="#faf8f8">
+    android:background="#faf8f8"
+    android:clickable="false"
+    android:contextClickable="false">
 
     <!--\\\\\\ Heading ///////-->
 
@@ -72,5 +74,67 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="5dp"
         android:layout_marginRight="10dp" />
+
+    <ProgressBar
+        android:id="@+id/progressBarStepsGoal"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="270dp"
+        android:layout_height="30dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="380dp"
+        android:progress="0"
+        android:secondaryProgress="0"
+        android:indeterminate="false"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentStart="false"
+        android:focusable="false"
+        android:contextClickable="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_marginTop="15dp"
+        android:text="@string/glance"
+        android:id="@+id/atAGlanceTitle"
+        android:textColor="@android:color/holo_blue_light"
+        android:textSize="20sp"
+        android:layout_below="@+id/buttonSettings"
+        android:layout_alignStart="@+id/buttonSettings" />
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:id="@+id/progressBarCalories"
+        android:layout_width="270dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="77dp"
+        android:progress="0"
+        android:secondaryProgress="0"
+        android:indeterminate="false"
+        android:focusable="false"
+        android:contextClickable="true"
+        android:layout_below="@+id/progressBarStepsGoal"
+        android:layout_alignStart="@+id/progressBarStepsGoal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/textSteps"
+        android:id="@+id/stepGoal"
+        android:layout_marginTop="22dp"
+        android:layout_below="@+id/atAGlanceTitle"
+        android:layout_alignStart="@+id/progressBarStepsGoal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/textCalorie"
+        android:id="@+id/calorieGoal"
+        android:layout_marginBottom="32dp"
+        android:layout_alignBottom="@+id/progressBarCalories"
+        android:layout_alignStart="@+id/progressBarCalories" />
 
 </RelativeLayout>

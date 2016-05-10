@@ -1,5 +1,9 @@
 package bvgiants.diary3;
 
+<<<<<<< HEAD
+=======
+import android.content.Context;
+>>>>>>> origin/master
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -10,6 +14,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 public class SettingsActivity extends AppCompatActivity {
+
+    Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +29,7 @@ public class SettingsActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+<<<<<<< HEAD
 
 
     }
@@ -32,3 +39,15 @@ public class SettingsActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ProfileActivity.class);
         startActivity(intent);
     }}
+=======
+        startBackgroundProcess(this.findViewById(android.R.id.content), mContext);
+
+    }
+
+    public void startBackgroundProcess(View view, Context c){
+        startService(new Intent(getBaseContext(), BackgroundService.class));
+    }
+
+
+}
+>>>>>>> origin/master
