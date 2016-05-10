@@ -1,5 +1,7 @@
 package bvgiants.diary3;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -8,6 +10,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 public class SettingsActivity extends AppCompatActivity {
+
+    Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +25,13 @@ public class SettingsActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+        startBackgroundProcess(this.findViewById(android.R.id.content), mContext);
+
     }
+
+    public void startBackgroundProcess(View view, Context c){
+        startService(new Intent(getBaseContext(), BackgroundService.class));
+    }
+
 
 }

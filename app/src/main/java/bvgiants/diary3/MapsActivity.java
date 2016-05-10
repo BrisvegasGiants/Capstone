@@ -1,11 +1,14 @@
 package bvgiants.diary3;
 
+import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +31,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
 
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
+    Context mContext;
 
 
     private GoogleMap mMap;
@@ -43,6 +47,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+        startBackgroundProcess(this.findViewById(android.R.id.content), mContext);
         buildGoogleApiClient();
 
         if(mGoogleApiClient!= null){
@@ -60,6 +65,11 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
+
+    public void startBackgroundProcess(View view, Context c){
+        startService(new Intent(getBaseContext(), BackgroundService.class));
+    }
+
 
     private void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)

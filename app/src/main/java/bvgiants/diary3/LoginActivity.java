@@ -151,7 +151,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        //startBackgroundProcess(this.findViewById(android.R.id.content));
+
+    }// End onCreate
+
+    /*
+    public void startBackgroundProcess(View view){
+        startService(new Intent(getBaseContext(), BackgroundService.class));
     }
+*/
+
 
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {
@@ -264,13 +274,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         int duration = Toast.LENGTH_LONG;
 
         if (databaseHelper.getUser(email,pw) == true) {
-            Toast toast = Toast.makeText(context, found, duration);
-            toast.show();
+            //Toast toast = Toast.makeText(context, found, duration);
+            //toast.show();
             return true;
         }
         else{
-            Toast toast = Toast.makeText(context,notFound,duration);
-            toast.show();
+           // Toast toast = Toast.makeText(context,notFound,duration);
+            //toast.show();
             return false;
         }
     }
