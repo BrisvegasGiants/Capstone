@@ -66,7 +66,7 @@ public class EatActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-<<<<<<< HEAD
+
     public void addRowsToTable(ArrayList<OrderRow> orders){
         TableLayout table = (TableLayout) findViewById(R.id.tableLayout);
         for(int i = 0; i < orders.size();i++) {
@@ -85,12 +85,12 @@ public class EatActivity extends AppCompatActivity {
             row.addView(calories);
             table.addView(row);
         }
-=======
+
 
         /*THE BELOW CODE WAS MY PREVIOUS ATTEMPT TO GET IMAGES TO DISPLAY ON THE SEARCH FIELD
         PROBS LEAVE THIS HERE UNTIL WE CONFIRM EVERYTHING IS FUNCTIONING!!!
          */
->>>>>>> refs/remotes/origin/run-page
+
 
     }
     public void showTodaysFood(){
