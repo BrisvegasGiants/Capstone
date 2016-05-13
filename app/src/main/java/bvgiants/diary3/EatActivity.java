@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class EatActivity extends ActionBarActivity {
+public class EatActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
 
@@ -49,17 +49,13 @@ public class EatActivity extends ActionBarActivity {
     public DatabaseHelper databaseHelper;
 
     public ArrayList<FoodItem> allFood = new ArrayList<FoodItem>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
 
-
-
-        toolbar = (Toolbar) findViewById(R.id.app_bar);
+        toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
-
-
 
         setContentView(R.layout.activity_eat);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -75,21 +71,42 @@ public class EatActivity extends ActionBarActivity {
     } //End onCreate
 
 
-    public void startBackgroundProcess(View view, Context c){
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.eat_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void startBackgroundProcess(View view, Context c) {
         startService(new Intent(getBaseContext(), BackgroundService.class));
     }
 
 
-    public void newEntry(View v)
-    {
-        Intent intent = new Intent(this,FoodEntryActivity.class);
+    public void newEntry(View v) {
+        Intent intent = new Intent(this, FoodEntryActivity.class);
         startActivity(intent);
     }
 
 
-    public void addRowsToTable(ArrayList<OrderRow> orders){
+    public void addRowsToTable(ArrayList<OrderRow> orders) {
         TableLayout table = (TableLayout) findViewById(R.id.tableLayout);
-        for(int i = 0; i < orders.size();i++) {
+        for (int i = 0; i < orders.size(); i++) {
             TableRow row = new TableRow(this);
             TextView orderTime = new TextView(this);
             TextView foodName = new TextView(this);
@@ -113,7 +130,8 @@ public class EatActivity extends ActionBarActivity {
 
 
     }
-    public void showTodaysFood(){
+
+    public void showTodaysFood() {
 
         final ArrayList<OrderRow> orders = databaseHelper.getAllOrders();
         today = (Button) findViewById(R.id.buttonToday);
@@ -129,7 +147,7 @@ public class EatActivity extends ActionBarActivity {
     /*
         BELOW METHODS ARE SIMPLY TO PRINT OUT WHATS IN EACH TABLE!
      */
-    public void showFoodConsumed(){
+    public void showFoodConsumed() {
         final ArrayList<OrderRow> orders = databaseHelper.getAllUsersFoodConsumed(1);
         today = (Button) findViewById(R.id.buttonMonth);
         today.setOnClickListener(new View.OnClickListener() {
@@ -141,9 +159,9 @@ public class EatActivity extends ActionBarActivity {
         });
     }
 
-    public void addRowsToMonths(ArrayList<OrderRow> orders){
+    public void addRowsToMonths(ArrayList<OrderRow> orders) {
         TableLayout table = (TableLayout) findViewById(R.id.tableLayout);
-        for(int i = 0; i < orders.size();i++) {
+        for (int i = 0; i < orders.size(); i++) {
             TableRow row = new TableRow(this);
             TextView orderTime = new TextView(this);
             TextView foodName = new TextView(this);

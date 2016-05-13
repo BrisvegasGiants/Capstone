@@ -12,8 +12,6 @@
     tools:context="bvgiants.diary3.EatActivity"
     tools:showIn="@layout/activity_eat">
 
-
-
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
@@ -26,16 +24,16 @@
 
         <Button
             android:layout_width="70dp"
-            android:layout_height="fill_parent" />
+            android:layout_height="fill_parent"
+            android:id="@+id/buttonToday" />
         <Button
             android:layout_width="70dp"
-            android:layout_height="fill_parent" />
+            android:layout_height="fill_parent"
+            android:id="@+id/buttonMonth" />
         <Button
             android:layout_width="70dp"
-            android:layout_height="fill_parent" />
-        <Button
-            android:layout_width="70dp"
-            android:layout_height="fill_parent" />
+            android:layout_height="fill_parent"
+            android:id="@+id/buttonYear" />
 
     </LinearLayout>
 
@@ -52,9 +50,9 @@
         android:text="@string/add_entry_food"
         android:background="@drawable/buttonchanges"
         android:onClick="newEntry"
+        android:layout_marginTop="84dp"
         android:layout_below="@+id/tableLayout"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="111dp" />
+        android:layout_alignParentEnd="true" />
 
 
     <!--\\\\\\\\\\ Static calorie table //////////////-->

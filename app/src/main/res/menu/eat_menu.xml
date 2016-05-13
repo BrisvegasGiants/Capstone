@@ -4,17 +4,18 @@
     tools:context="bvgiants.diary3.EatActivity">
 
 
-    <item
-        android:id="@+id/action_home"
-        android:icon="@drawable/bigmac"
-        android:title="Favourite"
-        app:showAsAction="always"/>
-
     <!-- Settings, should always be in the overflow -->
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"
         android:icon="@drawable/quarterpounder"
-        app:showAsAction="never"/>
+        android:orderInCategory="100"
+        app:showAsAction="always"/>
+
+     <item android:id="@+id/action_settings2"
+    android:title="@string/action_settings"
+    android:icon="@drawable/quarterpounder"
+    android:orderInCategory="100"
+    app:showAsAction="always"/>
 
 
 </menu>

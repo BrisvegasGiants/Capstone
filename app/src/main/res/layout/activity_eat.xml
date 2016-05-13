@@ -7,15 +7,24 @@
     android:fitsSystemWindows="true"
     tools:context="bvgiants.diary3.EatActivity">
 
-    <!--  <android.support.design.widget.AppBarLayout
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:theme="@style/AppTheme.AppBarOverlay">
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
-     </android.support.design.widget.AppBarLayout> -->
+    </android.support.design.widget.AppBarLayout>
 
-    <include android:id="@+id/app_bar" layout="@layout/app_bar"/>
     <include layout="@layout/content_eat" />
+    <include layout="@layout/app_bar" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@android:drawable/ic_dialog_email" />
+
 
 
 </android.support.design.widget.CoordinatorLayout>

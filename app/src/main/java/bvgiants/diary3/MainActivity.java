@@ -14,7 +14,9 @@ import android.content.Intent;
 
 public class MainActivity extends AppCompatActivity {
 
+
     Context mContext;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,30 @@ public class MainActivity extends AppCompatActivity {
     startBackgroundProcess(this.findViewById(android.R.id.content), mContext);
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.eat_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
 
     // Takes user to selected screen(Activity)
     public void menuSelect( View v ) {
@@ -61,10 +87,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     public void startBackgroundProcess(View view, Context c){
         startService(new Intent(getBaseContext(), BackgroundService.class));
     }
+
+
 
 
 }
