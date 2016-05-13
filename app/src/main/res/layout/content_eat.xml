@@ -12,38 +12,36 @@
     tools:context="bvgiants.diary3.EatActivity"
     tools:showIn="@layout/activity_eat">
 
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="43dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:gravity="center">
+
+        <Button
+            android:layout_width="70dp"
+            android:layout_height="fill_parent" />
+        <Button
+            android:layout_width="70dp"
+            android:layout_height="fill_parent" />
+        <Button
+            android:layout_width="70dp"
+            android:layout_height="fill_parent" />
+        <Button
+            android:layout_width="70dp"
+            android:layout_height="fill_parent" />
+
+    </LinearLayout>
+
+
+
     <!--\\\\\\\\\\ Eat menu buttons /////////-->
-    <Button
-        style="@style/ButtonStyle"
-        android:text="Today"
-        android:id="@+id/buttonToday"
-        android:layout_alignTop="@+id/buttonWeek"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <Button
-        style="@style/ButtonStyle"
-        android:text="Week"
-        android:id="@+id/buttonWeek"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/buttonToday"
-        android:layout_toEndOf="@+id/buttonToday" />
-
-    <Button
-        style="@style/ButtonStyle"
-        android:text="Month"
-        android:id="@+id/buttonMonth"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/buttonWeek"
-        android:layout_toEndOf="@+id/buttonWeek" />
-
-    <Button
-        style="@style/ButtonStyle"
-        android:text="More"
-        android:id="@+id/buttonMore"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/buttonMonth"
-        android:layout_toEndOf="@+id/buttonMonth" />
 
     <!--\\\\\ New Entry Button /////-->
     <Button
@@ -51,13 +49,12 @@
         android:layout_height="wrap_content"
         android:id="@+id/buttonAddEntry"
         android:textColor="#2f4f4f"
-        android:layout_marginTop="55dp"
         android:text="@string/add_entry_food"
         android:background="@drawable/buttonchanges"
+        android:onClick="newEntry"
         android:layout_below="@+id/tableLayout"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:onClick="newEntry"  />
+        android:layout_marginTop="111dp" />
 
 
     <!--\\\\\\\\\\ Static calorie table //////////////-->
@@ -65,9 +62,8 @@
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/buttonWeek"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="59dp"
+        android:layout_marginTop="100dp"
         android:stretchColumns="1"
         android:id="@+id/tableLayout">
 
@@ -128,5 +124,7 @@
             android:layout_height="4dip"
             android:background="#FF909090" />
     </TableLayout>
+
+
 
 </RelativeLayout>

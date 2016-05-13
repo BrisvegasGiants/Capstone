@@ -6,13 +6,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.media.audiofx.BassBoost;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -29,7 +35,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class EatActivity extends AppCompatActivity {
+public class EatActivity extends ActionBarActivity {
+
+    private Toolbar toolbar;
 
     Context mContext;
 
@@ -43,7 +51,16 @@ public class EatActivity extends AppCompatActivity {
     public ArrayList<FoodItem> allFood = new ArrayList<FoodItem>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
+
+
+        toolbar = (Toolbar) findViewById(R.id.app_bar);
+        setSupportActionBar(toolbar);
+
+
+
         setContentView(R.layout.activity_eat);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
@@ -62,12 +79,6 @@ public class EatActivity extends AppCompatActivity {
         startService(new Intent(getBaseContext(), BackgroundService.class));
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
-        return true;
-    }
 
     public void newEntry(View v)
     {

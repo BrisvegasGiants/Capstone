@@ -1,9 +1,7 @@
 package bvgiants.diary3;
 
-<<<<<<< HEAD
-=======
 import android.content.Context;
->>>>>>> origin/master
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -29,25 +27,18 @@ public class SettingsActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-<<<<<<< HEAD
-
-
+        startBackgroundProcess(this.findViewById(android.R.id.content), mContext);
     }
 
     // Takes user to selected screen(Activity)
     public void openProfile(View view){
         Intent intent = new Intent(this, ProfileActivity.class);
         startActivity(intent);
-    }}
-=======
-        startBackgroundProcess(this.findViewById(android.R.id.content), mContext);
-
     }
 
     public void startBackgroundProcess(View view, Context c){
         startService(new Intent(getBaseContext(), BackgroundService.class));
     }
 
-
 }
->>>>>>> origin/master
+

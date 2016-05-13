@@ -23,10 +23,11 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/title_name"
         android:id="@+id/titleName"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
         android:textColor="@android:color/holo_blue_light"
-        android:textSize="40sp" />
+        android:textSize="40sp"
+        android:layout_marginTop="43dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
     <!--\\\\\\\\\\Buttons ////////-->
     <Button
