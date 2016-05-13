@@ -7,7 +7,10 @@
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="bvgiants.diary3.FoodEntryActivity"
-    tools:showIn="@layout/activity_food_entry">>
+    tools:showIn="@layout/activity_food_entry">
+
+
+
 
     <ListView
         android:id="@+id/list_foods"

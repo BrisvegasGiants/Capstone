@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.app.FragmentManager;
+import android.support.v7.widget.*;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -22,6 +23,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.Cursor;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 
 import android.provider.ContactsContract;
 //import android.support.v4.view.MenuItemCompat;
@@ -46,6 +49,7 @@ import android.widget.SearchView;
 
 import android.widget.Toast;
 
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -53,7 +57,7 @@ import java.util.ArrayList;
  * Created by kenst on 2/05/2016.
  * This class will be used to select food to add to users diary.
  */
-public class FoodEntryActivity extends Activity implements SearchView.OnQueryTextListener,
+public class FoodEntryActivity extends AppCompatActivity implements SearchView.OnQueryTextListener,
         SearchView.OnCloseListener {
 
     ListView list;
@@ -80,8 +84,10 @@ public class FoodEntryActivity extends Activity implements SearchView.OnQueryTex
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_food_entry);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(toolbar);
 
         //Firstly Load DB
         context = getApplicationContext();
@@ -103,6 +109,30 @@ public class FoodEntryActivity extends Activity implements SearchView.OnQueryTex
         searchView.setOnQueryTextListener(this);
         searchView.setOnCloseListener(this);
         addToDiary();
+    }
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.eat_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     public void addToDiary (){

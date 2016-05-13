@@ -5,8 +5,17 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+    </android.support.design.widget.AppBarLayout>
+    <include layout="@layout/app_bar" />
+
     <SearchView android:layout_width="wrap_content"
         android:layout_height="wrap_content" android:id="@+id/search"/>
+
 
     <ListView android:id="@+id/list"
     android:layout_width="fill_parent"
@@ -28,5 +37,7 @@
         android:text="Save to Diary"
         android:id="@+id/save_to_diary"
         android:layout_gravity="center_horizontal" />
+
+
 
 </LinearLayout>
