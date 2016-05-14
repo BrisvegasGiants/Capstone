@@ -15,7 +15,7 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:layout_alignParentTop="true"
         android:layout_marginTop="43dp"
         android:layout_alignParentStart="true"
@@ -23,17 +23,23 @@
         android:gravity="center">
 
         <Button
-            android:layout_width="70dp"
+            android:layout_width="100dp"
             android:layout_height="fill_parent"
-            android:id="@+id/buttonToday" />
+            android:id="@+id/buttonToday"
+            android:background="@drawable/buttonchanges"
+            android:text="Today" />
         <Button
-            android:layout_width="70dp"
+            android:layout_width="100dp"
             android:layout_height="fill_parent"
-            android:id="@+id/buttonMonth" />
+            android:background="@drawable/buttonchanges"
+            android:id="@+id/buttonMonth"
+            android:text="Month" />
         <Button
-            android:layout_width="70dp"
+            android:layout_width="100dp"
             android:layout_height="fill_parent"
-            android:id="@+id/buttonYear" />
+            android:background="@drawable/buttonchanges"
+            android:id="@+id/buttonYear"
+            android:text="Year" />
 
     </LinearLayout>
 
@@ -65,7 +71,7 @@
         android:stretchColumns="1"
         android:id="@+id/tableLayout">
 
-        <TableRow>
+       <!--  <TableRow>
             <TextView
                 android:layout_column="1"
                 android:text="@string/table_time"
@@ -78,49 +84,8 @@
                 android:text="@string/table_calories"
                 android:gravity="center"
                 android:padding="3dip" />
-        </TableRow>
+        </TableRow> -->
 
-        <View
-            android:layout_height="1dip"
-            android:background="#FF909090" />
-
-        <TableRow>
-            <TextView
-                android:layout_column="1"
-                android:text="7:23am"
-                android:paddingBottom="20dip" />
-            <TextView
-                android:text="Apple"
-                android:gravity="right"
-                android:padding="3dip" />
-            <TextView
-                android:text="102"
-                android:gravity="right"
-                android:padding="3dip" />
-        </TableRow>
-
-        <View
-            android:layout_height="1dip"
-            android:background="#FF909090" />
-
-        <TableRow>
-            <TextView
-                android:layout_column="1"
-                android:text="10:30am"
-                android:padding="3dip" />
-            <TextView
-                android:text="Coffee"
-                android:gravity="right"
-                android:padding="3dip" />
-            <TextView
-                android:text="65"
-                android:gravity="right"
-                android:padding="2dip" />
-        </TableRow>
-
-        <View
-            android:layout_height="4dip"
-            android:background="#FF909090" />
     </TableLayout>
 
 

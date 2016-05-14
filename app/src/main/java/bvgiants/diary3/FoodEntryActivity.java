@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.app.FragmentManager;
@@ -66,8 +67,10 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
     public DatabaseHelper databaseHelper;
     public ArrayList<String> foodNames = new ArrayList<String>();
     public ArrayList<String> foodDesc = new ArrayList<String>();
+    public ArrayList<String> chosenFoods = new ArrayList<String>();
 
     public ArrayList<Integer> imageId = new ArrayList<Integer>();
+    public ArrayList<Integer> imageIdToAdd = new ArrayList<Integer>();
 
     private ListView myList;
     private SearchView searchView;
@@ -127,8 +130,15 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent startSettings = new Intent(this, SettingsActivity.class);
+            startActivity(startSettings);
+            return true;
+        }
+
+        if (id ==R.id.action_home) {
+            Intent startHome = new Intent(this, MainActivity.class);
+            startActivity(startHome);
             return true;
         }
 
@@ -143,7 +153,7 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
             public void onClick(View v) {
                 //Log.v("ADD TO DIARY! ", " I'VE REGISTERED A CLICK!");
                 try{
-                    databaseHelper.saveDataToFoodConsumedTable(allFood);
+                    databaseHelper.saveDataToFoodConsumedTable(usersFoods);
                     startActivity(loadEat);
                 } catch (IOException e){
                     Log.v(e.toString(), " THERE WAS AN ERROR!");
@@ -159,7 +169,7 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
     }
 
     public boolean onQueryTextSubmit(String query) {
-        doSearch(query + "*");
+       // doSearch(query + "*");
         return false;
     }
 
@@ -174,16 +184,21 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
         return false;
     }
 
+
     public SparseArray<FoodItem> foodsToPass(){
         return foodsToSave;
     }
     public void createUsersSelectedFoods(){
 
-        fragment = new ExpandableListFragment();
+       fragment = new ExpandableListFragment();
         FragmentManager fm = getFragmentManager();
         FragmentTransaction fragmentTransaction = fm.beginTransaction();
         fragmentTransaction.replace(R.id.fragment,fragment);
         fragmentTransaction.commit();
+
+        /*CustomListAdapter userAdapter = new CustomListAdapter(this, chosenFoods, imageIdToAdd);
+        list = (ListView) findViewById(R.id.listTwo);
+        list.setAdapter(userAdapter); */
     }
     public void doSearch(String query) {
 
@@ -202,21 +217,41 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                // TODO Auto-generated method stub
-                String Selecteditem = foodNames.get(position);
-                Toast.makeText(getApplicationContext(), Selecteditem, Toast.LENGTH_SHORT).show();
-                usersFoods.add(allFood.get(position));
-                for (int i = 0; i < usersFoods.size(); i++){
+
+
+                // selectedItem holds a FoodItem object of the item selected from the list
+                FoodItem selecteditem = allFood.get(position);
+
+                // Check if the selected item is in the list of selected foods.
+                // If the item is in the list, take it off the list, and change the background back to white
+                // Otherwise, add the item to the list and make background Blue
+                if (usersFoods.contains(selecteditem)) {
+                    parent.getChildAt(position).setBackgroundColor(Color.WHITE);
+                    usersFoods.remove(usersFoods.indexOf(selecteditem));
+                } else {
+                    Toast.makeText(getApplicationContext(), selecteditem.getName(), Toast.LENGTH_SHORT).show();
+                    usersFoods.add(selecteditem);
+                    parent.getChildAt(position).setBackgroundColor(Color.BLUE);
+                }
+
+
+                //chosenFoods.add(foodNames.get(position));
+
+
+
+               /* for (int i = 0; i < usersFoods.size(); i++){
                    // for(int j = 0; j < usersFoods.size(); j++){
                        // usersFoods.get(j).children.add(usersFoods.get(j).toString());
                    // }
                     foodsToSave.append(i,usersFoods.get(i));
+                   // imageIdToAdd.add(R.drawable.bigmac);
                     createUsersSelectedFoods();
                     Log.v(foodsToSave.get(i).toString(), " FOODS TO SAVE HOLDS THIS");
                 }
+
                for(int i = 0; i < usersFoods.size();i++){
                    Log.v(usersFoods.get(i).toString(), " ZZZZZZZZZZ");
-               }
+               }*/
 
             }
         });

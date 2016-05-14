@@ -38,11 +38,13 @@ public class CustomListAdapter extends ArrayAdapter<String> {
         LayoutInflater inflater=context.getLayoutInflater();
         View rowView=inflater.inflate(R.layout.list_single, null,true);
         TextView txtTitle = (TextView) rowView.findViewById(R.id.txt);
-        ImageView imageView = (ImageView) rowView.findViewById(R.id.img);
+        if (imgid != null) {
+            ImageView imageView = (ImageView) rowView.findViewById(R.id.img);
+            imageView.setImageResource(imgid.get(position));
+        }
         TextView extratxt = (TextView) rowView.findViewById(R.id.textView1);
 
         txtTitle.setText(itemname.get(position));
-        imageView.setImageResource(imgid.get(position));
         extratxt.setText("Description "+itemname.get(position));
         return rowView;
 

@@ -23,7 +23,8 @@
         android:textColor="@android:color/holo_blue_light"
         android:textSize="40sp"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignStart="@+id/goalSummaryPre"
+        android:layout_marginTop="47dp" />
 
     <TextView
         android:layout_width="wrap_content"

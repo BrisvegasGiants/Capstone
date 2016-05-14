@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.media.audiofx.BassBoost;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -15,15 +16,18 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -36,7 +40,6 @@ import java.util.List;
 
 
 public class EatActivity extends AppCompatActivity {
-
 
 
     Context mContext;
@@ -68,7 +71,7 @@ public class EatActivity extends AppCompatActivity {
         db = databaseHelper.getWritableDatabase();
 
         showTodaysFood();
-        showFoodConsumed();
+        //showFoodConsumed();
     } //End onCreate
 
 
@@ -86,8 +89,15 @@ public class EatActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent startSettings = new Intent(this, SettingsActivity.class);
+            startActivity(startSettings);
+            return true;
+        }
+
+        if (id == R.id.action_home) {
+            Intent startHome = new Intent(this, MainActivity.class);
+            startActivity(startHome);
             return true;
         }
 
@@ -107,16 +117,42 @@ public class EatActivity extends AppCompatActivity {
 
     public void addRowsToTable(ArrayList<OrderRow> orders) {
         TableLayout table = (TableLayout) findViewById(R.id.tableLayout);
-        for (int i = 0; i < orders.size(); i++) {
-            TableRow row = new TableRow(this);
-            TextView orderTime = new TextView(this);
-            TextView foodName = new TextView(this);
-            TextView calories = new TextView(this);
+        table.removeAllViews();
+
+        TableRow row = new TableRow(this);
+        View headerLine = new View(this);
+        TextView orderTime = new TextView(this);
+        TextView foodName = new TextView(this);
+        TextView calories = new TextView(this);
+
+        //orderTime.setText("OrderDate: " + orders.get(i).getDate());
+        orderTime.setText("Time");
+        foodName.setText("Food");
+        calories.setText("Calories");
+
+        orderTime.setGravity(Gravity.CENTER);
+        foodName.setGravity(Gravity.CENTER);
+        calories.setGravity(Gravity.CENTER);
+
+        row.addView(orderTime);
+        row.addView(foodName);
+        row.addView(calories);
+        table.addView(row);
+
+       for (int i = 0; i < orders.size(); i++) {
+            row = new TableRow(this);
+            orderTime = new TextView(this);
+            foodName = new TextView(this);
+            calories = new TextView(this);
 
             //orderTime.setText("OrderDate: " + orders.get(i).getDate());
             orderTime.setText("OrderTypeCode: " + String.valueOf(orders.get(i).getOrderTypeCode()));
             foodName.setText("OrderID: " + String.valueOf(orders.get(i).getOrderID()));
             calories.setText("UserID: " + String.valueOf(orders.get(i).getUserID()));
+
+            orderTime.setGravity(Gravity.CENTER);
+            foodName.setGravity(Gravity.CENTER);
+            calories.setGravity(Gravity.CENTER);
 
             row.addView(orderTime);
             row.addView(foodName);
@@ -134,7 +170,7 @@ public class EatActivity extends AppCompatActivity {
 
     public void showTodaysFood() {
 
-        final ArrayList<OrderRow> orders = databaseHelper.getAllOrders();
+        final ArrayList<OrderRow> orders = databaseHelper.getAllUsersFoodConsumed(1);
         today = (Button) findViewById(R.id.buttonToday);
         today.setOnClickListener(new View.OnClickListener() {
 
@@ -142,7 +178,10 @@ public class EatActivity extends AppCompatActivity {
             public void onClick(View v) {
                 addRowsToTable(orders);
             }
+
+
         });
+        addRowsToTable(orders);
     }
 
     /*

@@ -442,6 +442,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return allResults;
     }
 
+    public ArrayList<OrderRow> NEWgetAllUsersFoodConsumed(int userID) {
+        ArrayList<OrderRow> allResults = new ArrayList<OrderRow>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_FOODCONSUMED + " WHERE UserID= " +
+                userID;
+            Cursor res = db.rawQuery(query, null);
+            if(res.moveToFirst()) {
+            OrderRow entry = new OrderRow(res.getInt(0), res.getInt(1),res.getString(2),
+                    res.getInt(3));
+            allResults.add(entry);
+            res.close();
+            db.close();
+        }
+        else {
+            System.out.print("ORDERHEADER GET USERORDERS WASNT FOUND");
+            res.close();
+            db.close();
+        }
+        return allResults;
+    }
+
     public ArrayList<OrderRow> getAllOrders(){
         ArrayList<OrderRow> allRows = new ArrayList<OrderRow>();
         SQLiteDatabase db = this.getReadableDatabase();

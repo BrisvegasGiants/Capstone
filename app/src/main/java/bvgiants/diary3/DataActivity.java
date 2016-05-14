@@ -54,6 +54,14 @@ public class DataActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent startSettings = new Intent(this, SettingsActivity.class);
+            startActivity(startSettings);
+            return true;
+        }
+
+        if (id ==R.id.action_home) {
+            Intent startHome = new Intent(this, MainActivity.class);
+            startActivity(startHome);
             return true;
         }
 
