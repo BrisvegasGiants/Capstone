@@ -25,16 +25,16 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-
 public class MapsActivity extends FragmentActivity implements GoogleApiClient.ConnectionCallbacks,
         OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener {
 
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
+
     Context mContext;
 
 
-    private GoogleMap mMap;
+    private static GoogleMap mMap;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -95,7 +95,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
 
     }
 
-    public void dropPin(Location mLastLocation) {
+    public static void dropPin(Location mLastLocation) {
         double latitude = mLastLocation.getLatitude();
         double longitude = mLastLocation.getLongitude();
 
@@ -153,7 +153,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
                 mGoogleApiClient);
 
         if (mLastLocation != null) {
-            dropPin(mLastLocation);
+            //dropPin(mLastLocation);
         }
 
     }

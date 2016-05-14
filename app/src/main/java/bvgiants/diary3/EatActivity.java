@@ -24,6 +24,8 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +57,7 @@ public class EatActivity extends AppCompatActivity {
 
         showTodaysFood();
         showFoodConsumed();
+
     } //End onCreate
 
 
@@ -73,6 +76,7 @@ public class EatActivity extends AppCompatActivity {
     {
         Intent intent = new Intent(this,FoodEntryActivity.class);
         startActivity(intent);
+
     }
 
 

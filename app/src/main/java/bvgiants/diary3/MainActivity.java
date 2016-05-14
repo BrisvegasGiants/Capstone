@@ -1,6 +1,7 @@
 package bvgiants.diary3;
 
 import android.content.Context;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -14,6 +15,7 @@ import android.content.Intent;
 public class MainActivity extends AppCompatActivity {
 
     Context mContext;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
             case (R.id.buttonSettings):
                 Intent startSettings = new Intent(this, SettingsActivity.class);
                 startActivity(startSettings);
+
                 break;
 
         }
