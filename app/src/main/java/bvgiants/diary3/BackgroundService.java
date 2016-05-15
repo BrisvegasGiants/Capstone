@@ -5,6 +5,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -57,7 +58,8 @@ public class BackgroundService extends Service implements
     private static final int REQUEST_OAUTH = 1;
     private static final String AUTH_PENDING = "auth_state_pending";
     private boolean authInProgress = false;
-    public GoogleApiClient mApiClient;
+    public GoogleApiClient mGoogleFitClient; // NAME UPDATED: Was Previously called mApiClient;
+    GoogleApiClient mGoogleMapsClient; // NAME UPDATED: Was Previously called mGoogleApiClient;
 
     public int globalSteps;
 
@@ -66,11 +68,12 @@ public class BackgroundService extends Service implements
 
     Handler handler;
 
-    GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
+    Location mSecLocation;
     GoogleApiClient client;
     static GoogleMap mMap;
-
+    //SharedPreferences mapReferences;
+    int locationCount;
 
     @Nullable
     @Override
@@ -87,27 +90,28 @@ public class BackgroundService extends Service implements
         handler = new Handler();
 
         // Init Google Fit API Client
-
-        if (mApiClient == null) {
-            mApiClient = new GoogleApiClient.Builder(this)
+        if (mGoogleFitClient == null) {
+            mGoogleFitClient = new GoogleApiClient.Builder(this)
                     .addApi(Fitness.SENSORS_API)
                     .addScope(Fitness.SCOPE_ACTIVITY_READ_WRITE)
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .build();
-            mApiClient.connect();
+            mGoogleFitClient.connect();
+            Log.e("Google Fit", "Google Fit Connected");
         }
 
-        if (mGoogleApiClient == null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
+        if (mGoogleMapsClient == null) {
+            mGoogleMapsClient = new GoogleApiClient.Builder(this)
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API)
                     .build();
+            mGoogleMapsClient.connect();
             Log.e("Google Maps", "Google Maps Connected");
-            mGoogleApiClient.connect();
         }
 
+        /*
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
         client.connect();
@@ -122,6 +126,7 @@ public class BackgroundService extends Service implements
                 Uri.parse("android-app://bvgiants.diary3/http/host/path")
         );
         AppIndex.AppIndexApi.start(client, viewAction);
+    */
 
         return START_STICKY;
 
@@ -141,12 +146,13 @@ public class BackgroundService extends Service implements
     //
     // GOOGLE MAPS API  ----------------------------------------------------------------------------------------------------------------------------
     //
-
+/*
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMyLocationEnabled(true);
     }
-
+*/
+    /*
     public static void dropPin(Location mLastLocation) {
         double latitude = mLastLocation.getLatitude();
         double longitude = mLastLocation.getLongitude();
@@ -158,18 +164,71 @@ public class BackgroundService extends Service implements
             mMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
         }
     }
+    */
 
     public void callLocation(){
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+        mSecLocation = mLastLocation;
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleMapsClient);
+
         if (mLastLocation != null) {
             String myLat = Double.toString(mLastLocation.getLatitude());
             String myLong = Double.toString(mLastLocation.getLongitude());
-            Log.e("GoogleMaps", "Found Location! " + "Lat: " + myLat + " " + "Long: " + myLong);
+            Log.e("Google Maps", "Found Location! " + "Lat: " + myLat + " " + "Long: " + myLong);
+        }
+
+        locationCount++;
+        SharedPreferences mapReferences = this.getSharedPreferences("DropPins", MODE_PRIVATE);
+        SharedPreferences.Editor editor = mapReferences.edit();
+        editor.putString("lat"+ Integer.toString((locationCount-1)), Double.toString(mLastLocation.getLatitude()));
+        editor.putString("lng"+ Integer.toString((locationCount-1)), Double.toString(mLastLocation.getLongitude()));
+        editor.putInt("locationCount", locationCount);
+        editor.apply();
+
+        /*
+        String extractedText = mapReferences.getString("lat0", "No Lat Recorded");
+        Log.e("Google Maps", "Found Logged Location! " + extractedText);
+        */
+
+/*
+        if (mLastLocation != null) {
+
+        }
+
+            Location selected_location = new Location("locationA");
+            selected_location.setLatitude(mLastLocation.getLatitude());
+            selected_location.setLongitude(mLastLocation.getLongitude());
+            Location near_locations = new Location("locationA");
+            near_locations.setLatitude(-27.460584);
+            near_locations.setLongitude(152.975657);
+            double distance = selected_location.distanceTo(near_locations);
+
+            Log.e("Google Maps", "Found Distance! " + String.format("%.2f", distance) + "m");
             //Toast.makeText(getApplicationContext(), myLoc, Toast.LENGTH_SHORT).show();
             //MapsActivity.dropPin(mLastLocation);
-        }
+*/
     }
 
+    /* // Returns in miles?
+
+    //double distanceDif = distance(mLastLocation.getLatitude(), mLastLocation.getLongitude(), -27.460584, 152.975657);
+
+    private double distance(double lat1, double lon1, double lat2, double lon2) {
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515;
+        return (dist);
+    }
+
+    private double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+    private double rad2deg(double rad) {
+        return (rad * 180.0 / Math.PI);
+    }
+*/
 
 
     //
@@ -198,7 +257,7 @@ public class BackgroundService extends Service implements
             } //End onResult
         }; //End ResultCallback
 
-        Fitness.SensorsApi.findDataSources(mApiClient, dataSourceRequest).setResultCallback(dataSourcesResultCallback);
+        Fitness.SensorsApi.findDataSources(mGoogleFitClient, dataSourceRequest).setResultCallback(dataSourcesResultCallback);
 
     }
 
@@ -214,12 +273,12 @@ public class BackgroundService extends Service implements
                 .setSamplingRate(1, TimeUnit.SECONDS )
                 .build();
 
-        Fitness.SensorsApi.add(mApiClient, request, this)
+        Fitness.SensorsApi.add(mGoogleFitClient, request, this)
                 .setResultCallback(new ResultCallback<Status>(){
                     @Override
                     public void onResult(Status status) {
                         if (status.isSuccess()){
-                            Log.e("GoogleFit", "SensorApi Successfully Registered");
+                            Log.e("Google Fit", "SensorApi Successfully Registered");
                         }
                     }
                 });
@@ -231,14 +290,14 @@ public class BackgroundService extends Service implements
         if (requestCode == REQUEST_OAUTH) {
             authInProgress = false;
             if (resultCode == RESULT_OK){
-                if (!mApiClient.isConnecting() && !mApiClient.isConnected()) {
-                    mApiClient.connect();
+                if (!mGoogleFitClient.isConnecting() && !mGoogleFitClient.isConnected()) {
+                    mGoogleFitClient.connect();
                 }
             } else if (resultCode == RESULT_CANCELED) {
-                Log.e("GoogleFit", "RESULT_CANCELED");
+                Log.e("Google Fit", "RESULT_CANCELED");
             }
         } else {
-            Log.e("GoogleFit", "requestCode NOT request_oauth");
+            Log.e("Google Fit", "requestCode NOT request_oauth");
         }
     } // End onActivityResult
 */
@@ -261,14 +320,14 @@ public class BackgroundService extends Service implements
             runActivity.percentageValue = percentageValue;
 
             // DEBUGGING CODE - Displays log of steps
-            Log.e("GoogleFit", "Found Data! - " + globalSteps + " steps");
+            Log.e("Google Fit", "Found Data! - " + globalSteps + " steps");
             callLocation();
 
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     // DEBUGGING CODE - Toasts the Number of steps
-                    Toast.makeText(getApplicationContext(), "Number of Steps: " + totalSteps, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "Number of Steps: " + totalSteps, Toast.LENGTH_SHORT).show();
 
 
                 }

@@ -92,7 +92,7 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
             String myLoc = Double.toString(mLastLocation.getLatitude());
             Toast.makeText(SettingsActivity.this, myLoc, Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this, MapsActivity.class);
-            MapsActivity.dropPin(mLastLocation);
+            //MapsActivity.dropPin(mLastLocation);
             startActivity(intent);
 
         }

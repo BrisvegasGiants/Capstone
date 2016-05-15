@@ -2,12 +2,14 @@ package bvgiants.diary3;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,7 +50,6 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
         setContentView(R.layout.activity_maps);
 
         startBackgroundProcess(this.findViewById(android.R.id.content), mContext);
-        buildGoogleApiClient();
 
         if(mGoogleApiClient!= null){
             mGoogleApiClient.connect();
@@ -71,15 +72,6 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
     }
 
 
-    private void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-    }
-
-
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -93,8 +85,48 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
         mMap = googleMap;
         mMap.setMyLocationEnabled(true);
 
+        Log.e("Google Maps", "Map is now ready for use");
+
+
+        SharedPreferences mapReferences = getSharedPreferences("DropPins", MODE_PRIVATE);
+
+        //String extractedText = mapReferences.getString("lat0", "No Lat Recorded");
+        String lat = mapReferences.getString("lat0", "No Lat Recorded");
+        String lng = mapReferences.getString("lng0", "No Long Recorded");
+        int locationCount = mapReferences.getInt("locationCount", 1);
+
+        Log.e("Google Maps", "Found Logged Location! " + lat +" "+ lng);
+        Log.e("Google Maps", "Found Logged Counter! " + locationCount);
+
+        dropPin(Double.parseDouble(lat),Double.parseDouble(lng));
+
+        /*
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+        if (mLastLocation != null) {
+            dropPin(mLastLocation);
+        }
+*/
+
+
+
     }
 
+
+    public void dropPin(double lat, double lng) {
+
+        LatLng loc = new LatLng(lat, lng);
+        Log.e("Google Maps", "Found Logged Location! " + loc);
+        Marker mMarker = mMap.addMarker(new MarkerOptions().position(loc).title("My Location"));
+        if (mMap != null) {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+        }
+
+    }
+
+
+/*
     public static void dropPin(Location mLastLocation) {
         double latitude = mLastLocation.getLatitude();
         double longitude = mLastLocation.getLongitude();
@@ -106,6 +138,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
             mMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
         }
     }
+*/
 
     @Override
     public void onStart() {
@@ -125,6 +158,9 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
                 Uri.parse("android-app://bvgiants.diary3/http/host/path")
         );
         AppIndex.AppIndexApi.start(client, viewAction);
+        Log.e("Google Maps", "Map has started");
+
+
     }
 
     @Override
@@ -149,12 +185,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-
-        if (mLastLocation != null) {
-            dropPin(mLastLocation);
-        }
-
+        Log.e("Google Maps", "Map has connected!");
     }
 
     @Override
@@ -164,6 +195,6 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        Log.e("Google Maps", "Connection Failed!");
     }
 }
