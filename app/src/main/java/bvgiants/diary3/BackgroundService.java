@@ -5,7 +5,9 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -18,6 +20,8 @@ import android.os.IBinder;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -33,6 +37,12 @@ import com.google.android.gms.fitness.request.OnDataPointListener;
 import com.google.android.gms.fitness.request.SensorRequest;
 import com.google.android.gms.fitness.result.DataSourcesResult;
 import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.concurrent.TimeUnit;
 
@@ -56,6 +66,12 @@ public class BackgroundService extends Service implements
 
     Handler handler;
 
+    GoogleApiClient mGoogleApiClient;
+    Location mLastLocation;
+    GoogleApiClient client;
+    static GoogleMap mMap;
+
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -71,14 +87,43 @@ public class BackgroundService extends Service implements
         handler = new Handler();
 
         // Init Google Fit API Client
-        mApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Fitness.SENSORS_API)
-                .addScope(Fitness.SCOPE_ACTIVITY_READ_WRITE)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
 
-        mApiClient.connect();
+        if (mApiClient == null) {
+            mApiClient = new GoogleApiClient.Builder(this)
+                    .addApi(Fitness.SENSORS_API)
+                    .addScope(Fitness.SCOPE_ACTIVITY_READ_WRITE)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .build();
+            mApiClient.connect();
+        }
+
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+            Log.e("Google Maps", "Google Maps Connected");
+            mGoogleApiClient.connect();
+        }
+
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+
+        client.connect();
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Maps Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://bvgiants.diary3/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction);
+
 
         return START_STICKY;
 
@@ -94,6 +139,76 @@ public class BackgroundService extends Service implements
     public void onRebind(Intent intent){
         Toast.makeText(this, "Service Rebound", Toast.LENGTH_LONG).show();
     }
+
+
+    //
+    // GOOGLE MAPS API  ----------------------------------------------------------------------------------------------------------------------------
+    //
+
+
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        mMap.setMyLocationEnabled(true);
+
+    }
+
+    public static void dropPin(Location mLastLocation) {
+        double latitude = mLastLocation.getLatitude();
+        double longitude = mLastLocation.getLongitude();
+
+        LatLng loc = new LatLng(latitude, longitude);
+        Marker mMarker = mMap.addMarker(new MarkerOptions().position(loc).title("My Location"));
+        if (mMap != null) {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+        }
+    }
+
+
+    public void callLocation(){
+
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+
+        if (mLastLocation != null) {
+
+
+            String myLat = Double.toString(mLastLocation.getLatitude());
+            String myLong = Double.toString(mLastLocation.getLongitude());
+
+            Log.e("GoogleMaps", "Found Location! " + "Lat: " + myLat + " " + "Long: " + myLong);
+            //Toast.makeText(getApplicationContext(), myLoc, Toast.LENGTH_SHORT).show();
+            //Intent intent = new Intent(this, MapsActivity.class);
+            //MapsActivity.dropPin(mLastLocation);
+            //startActivity(intent);
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //
+    // END GOOGLE MAPS API ----------------------------------------------------------------------------------------------------------------------------
+    //
+
+    //
+    // START GOOGLE FIT API ----------------------------------------------------------------------------------------------------------------------------
+    //
 
     @Override
     public void onConnected(Bundle bundle) {
@@ -174,12 +289,15 @@ public class BackgroundService extends Service implements
 
             // DEBUGGING CODE - Displays log of steps
             Log.e("GoogleFit", "Found Data! - " + globalSteps + " steps");
+            callLocation();
+
 
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     // DEBUGGING CODE - Toasts the Number of steps
-                    //Toast.makeText(getApplicationContext(), "Number of Steps: " + totalSteps, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Number of Steps: " + totalSteps, Toast.LENGTH_SHORT).show();
+
                 }
             });
             
