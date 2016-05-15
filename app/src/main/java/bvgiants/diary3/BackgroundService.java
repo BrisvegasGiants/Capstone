@@ -110,7 +110,6 @@ public class BackgroundService extends Service implements
 
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
-
         client.connect();
         Action viewAction = Action.newAction(
                 Action.TYPE_VIEW, // TODO: choose an action type.
@@ -124,11 +123,9 @@ public class BackgroundService extends Service implements
         );
         AppIndex.AppIndexApi.start(client, viewAction);
 
-
         return START_STICKY;
 
     }
-
 
     @Override
     public void onDestroy() {
@@ -145,11 +142,9 @@ public class BackgroundService extends Service implements
     // GOOGLE MAPS API  ----------------------------------------------------------------------------------------------------------------------------
     //
 
-
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMyLocationEnabled(true);
-
     }
 
     public static void dropPin(Location mLastLocation) {
@@ -164,41 +159,16 @@ public class BackgroundService extends Service implements
         }
     }
 
-
     public void callLocation(){
-
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
-
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (mLastLocation != null) {
-
-
             String myLat = Double.toString(mLastLocation.getLatitude());
             String myLong = Double.toString(mLastLocation.getLongitude());
-
             Log.e("GoogleMaps", "Found Location! " + "Lat: " + myLat + " " + "Long: " + myLong);
             //Toast.makeText(getApplicationContext(), myLoc, Toast.LENGTH_SHORT).show();
-            //Intent intent = new Intent(this, MapsActivity.class);
             //MapsActivity.dropPin(mLastLocation);
-            //startActivity(intent);
         }
-
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -283,14 +253,16 @@ public class BackgroundService extends Service implements
             final Value globalSteps = totalSteps;
             //Calc Distance (No. Steps * Step Length).
             int amtSteps = value.asInt();
+            runActivity.totalSteps = amtSteps;
             final float distanceValue = (float) (amtSteps * 0.75);
+            runActivity.distanceValue = distanceValue;
             // Calculate Percentage to goal
             final float percentageValue = ((float)amtSteps / 10000) * 100;
+            runActivity.percentageValue = percentageValue;
 
             // DEBUGGING CODE - Displays log of steps
             Log.e("GoogleFit", "Found Data! - " + globalSteps + " steps");
             callLocation();
-
 
             runOnUiThread(new Runnable() {
                 @Override
@@ -298,12 +270,14 @@ public class BackgroundService extends Service implements
                     // DEBUGGING CODE - Toasts the Number of steps
                     Toast.makeText(getApplicationContext(), "Number of Steps: " + totalSteps, Toast.LENGTH_SHORT).show();
 
+
                 }
             });
             
         }
 
     } // End onDataPoint
+
 
     private void runOnUiThread(Runnable runnable) {
         handler.post(runnable);
