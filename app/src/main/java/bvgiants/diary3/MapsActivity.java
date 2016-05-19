@@ -88,17 +88,74 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
         Log.e("Google Maps", "Map is now ready for use");
 
 
+        // Loop Through Pins
+
         SharedPreferences mapReferences = getSharedPreferences("DropPins", MODE_PRIVATE);
 
         //String extractedText = mapReferences.getString("lat0", "No Lat Recorded");
+        /*
         String lat = mapReferences.getString("lat0", "No Lat Recorded");
         String lng = mapReferences.getString("lng0", "No Long Recorded");
+         */
         int locationCount = mapReferences.getInt("locationCount", 1);
+        Log.e("Google Maps", "Found Total Count! " + locationCount);
 
-        Log.e("Google Maps", "Found Logged Location! " + lat +" "+ lng);
-        Log.e("Google Maps", "Found Logged Counter! " + locationCount);
 
-        dropPin(Double.parseDouble(lat),Double.parseDouble(lng));
+        for (int i=0; i<locationCount; i++){
+            String lat = mapReferences.getString("lat"+i, "No Lat Recorded");
+            String lng = mapReferences.getString("lng"+i, "No Long Recorded");
+            LatLng loc = new LatLng(Double.parseDouble(lat)+i, Double.parseDouble(lng));
+
+            // *** Start Edit
+
+            //double distanceDif = distance(Double.parseDouble(lat)+i,Double.parseDouble(lng), -27.460584, 152.975657);
+
+            // On first Pin, ensure it drops
+            if (i == 0) {
+                Log.e("Google Maps", "Count 0 - Found Logged Location! | Looped | " + lat +" "+ lng);
+                Log.e("Google Maps", "Count 0 - Loop Counter: " + i);
+                Log.e("Google Maps", "Count 0 - Dropped Pin at " + loc);
+                Marker mMarker = mMap.addMarker(new MarkerOptions().position(loc).title("Pin "+i));
+                //Log.e("Google Maps", "Distance between 2 point is  " + distanceDif);
+            }
+
+            // After first pin, check distance is over 200m from previous pin and drop it.
+            if (i > 0) {
+                //LatLng oldLoc = loc;
+                String oldlatitude = mapReferences.getString("lat"+(i-1), "No Lat Recorded");
+                String oldlongitude = mapReferences.getString("lng"+(i-1), "No Long Recorded");
+                Double oldlat = Double.parseDouble(oldlatitude);
+                Double oldlng = Double.parseDouble(oldlongitude);
+
+                Double distanceDif = distance(Double.parseDouble(lat)+i, Double.parseDouble(lng), oldlat, oldlng);
+
+                if (distanceDif < .30){
+                    // Do nothing
+                    Log.e("Google Maps", "Cannot Place Pin - Under Distance!" + " Lat Figure is: " + loc + " and the difference is " + distanceDif);
+
+                } else {
+                    // Place pin
+                    Log.e("Google Maps", "Placing Pin on "+i+" loop - Distance Difference is " + distanceDif );
+                    Marker mMarker = mMap.addMarker(new MarkerOptions().position(loc).title("Pin "+i));
+                }
+
+            }
+
+            // Compare Distance
+
+            // *** End Edit
+            /*
+            Log.e("Google Maps", "Loop Counter: " + i);
+            Log.e("Google Maps", "Found Logged Location! | Looped | " + lat +" "+ lng);
+            Log.e("Google Maps", "Dropped Pin at " + loc);
+
+            */
+            // Drop Pin doesn't work for some reason -- that or it only displays the first pin because I'm at home (not moving).
+            //dropPin(Double.parseDouble(lat),Double.parseDouble(lng), "Pin No." + i);
+
+            //Marker mMarker = mMap.addMarker(new MarkerOptions().position(loc).title("Pin "+i));
+
+        }
 
         /*
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -106,22 +163,45 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
         if (mLastLocation != null) {
             dropPin(mLastLocation);
         }
-*/
+        */
 
 
 
     }
 
+    //double distanceDif = distance(mLastLocation.getLatitude(), mLastLocation.getLongitude(), -27.460584, 152.975657);
 
-    public void dropPin(double lat, double lng) {
+    private double distance(double lat1, double lon1, double lat2, double lon2) {
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515;
+        Log.e("Google Maps", "Distance Calculation is: " + dist + " With the following figures:" + lat1 +" "+lat2);
+        return (dist);
+    }
 
+    private double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+    private double rad2deg(double rad) {
+        return (rad * 180.0 / Math.PI);
+    }
+
+
+
+    public void dropPin(double lat, double lng, String label) {
+
+        /*
         LatLng loc = new LatLng(lat, lng);
-        Log.e("Google Maps", "Found Logged Location! " + loc);
-        Marker mMarker = mMap.addMarker(new MarkerOptions().position(loc).title("My Location"));
+        Log.e("Google Maps", "Dropped Pin at " + loc);
+        Marker mMarker = mMap.addMarker(new MarkerOptions().position(loc).title(label));
+        /*
         if (mMap != null) {
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
             mMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
         }
+        */
 
     }
 
