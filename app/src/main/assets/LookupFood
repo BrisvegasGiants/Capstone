@@ -1,3 +1,7 @@
 1 BigMac 707 11 42 2650 1350 31 app/src/main/res/drawable/Bigmac.jpg
 2 CheeseBurger 282 5 12 1180 672 15 app/src/main/res/drawable/CheeseBurger.jpg
 3 QuarterPounder 546 7 30 546 2280 1050 34 app/src/res/drawable/QuarterPounder.jpg
+4 Coca Cola Can 161 40 0 161 674 38 0 app/src/res/drawable/coke.jpg
+5 Small Lamb Kebab 155 3 6 650 233 8 app/src/res/drawable/kebab.jpg
+6 6 Inch Pizza Sub 407 6 18 1700 19 app/src/res/drawable/kebab.jpg
+7 All Berry Bang Boost Juice 349 66 5 1460 142 8 app/src/res/drawable/boost.jpg
