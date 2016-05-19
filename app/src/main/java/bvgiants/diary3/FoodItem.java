@@ -46,8 +46,8 @@ public class FoodItem {
     }
 
     public String toString(){
-        return "Food: " +this.name + "Calories: " +this.calories + " This is just an example return. " +
-                "Look at LookupFoodDBController -> FoodItem.toString()";
+        return "CALORIES: " +this.calories + " ENERGY: " + this.energy + " FAT: " + this.fat + "\n" +
+                "SUGAR: " + this.sugar + " SODIUM: " + this.sodium + " PROTEIN: " + this.protein;
     }
 
     public String dbWriteFoodConsumed(){

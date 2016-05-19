@@ -428,17 +428,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 userID + " AND ORDERTYPECODE= " + LOOKUPORDERTYPE_FOODENTRY;
         Cursor res = db.rawQuery(query, null);
         if(res.moveToFirst()) {
-            OrderRow entry = new OrderRow(res.getInt(0), res.getInt(1),res.getString(2),
-                    res.getInt(3));
-            allResults.add(entry);
-            res.close();
-            db.close();
+            do {
+                OrderRow entry = new OrderRow(res.getInt(0), res.getInt(1), res.getString(2),
+                        res.getInt(3));
+                allResults.add(entry);
+            }while(res.moveToNext());
+
         }
         else {
             System.out.print("ORDERHEADER GET USERORDERS WASNT FOUND");
             res.close();
             db.close();
         }
+        res.close();
+        db.close();
         return allResults;
     }
 
@@ -469,17 +472,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String query = "SELECT * FROM " + TABLE_ORDERHEADER;
         Cursor res = db.rawQuery(query, null);
         if(res.moveToFirst()) {
-            OrderRow entry = new OrderRow(res.getInt(0), res.getInt(1),res.getString(2),
-                    res.getInt(3));
-            allRows.add(entry);
-            res.close();
-            db.close();
+            do {
+                OrderRow entry = new OrderRow(res.getInt(0), res.getInt(1), res.getString(2),
+                        res.getInt(3));
+                allRows.add(entry);
+            }while(res.moveToNext());
         }
         else {
             System.out.print("ORDERHEADER GET ALL ORDERS WASNT FOUND");
             res.close();
             db.close();
         }
+        res.close();
+        db.close();
         return allRows;
     }
 
@@ -579,7 +584,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             recordedFoodEaten.get(i).setOrderID(orderID);
             recordedFoodEaten.get(i).setLocation("FAKE LOCATION");
             Log.v(recordedFoodEaten.get(i).dbWriteFoodConsumed(), "WRITE TO DB");
-            Log.v("IVE WRITTEN TO FILE OK!", "");
             insertFoodConsumed(recordedFoodEaten.get(i));
 
         }
@@ -605,23 +609,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public Cursor todaysFood() throws SQLiteException{
+    public ArrayList<OrderRow> showTodaysFood() throws SQLiteException{
         SQLiteDatabase db = this.getReadableDatabase();
         //Select * from OrderHeader
         //left outer join FoodConsumed on OrderHeader.OrderID = FoodConsumed.ID
         //where OrderHeader.Date = todays date
+
+        ArrayList<OrderRow> allRows = new ArrayList<OrderRow>();
         String query = "SELECT * FROM " + TABLE_ORDERHEADER + " LEFT OUTER JOIN "
                 + TABLE_FOODCONSUMED + " ON " + TABLE_ORDERHEADER + ".OrderID = " + TABLE_FOODCONSUMED
                 +".ID WHERE "+ TABLE_ORDERHEADER + ".OrderDate >= date('now','-1 day');";
         String pracQuery = "SELECT * FROM " + TABLE_ORDERHEADER;
-        Cursor res = db.rawQuery(pracQuery,null);
+        Cursor res = db.rawQuery(query,null);
 
-        if(res != null){
-            res.moveToFirst();
+        if(res.moveToFirst()) {
+            do {
+                OrderRow entry = new OrderRow(res.getInt(0), res.getInt(1), res.getString(2),
+                        res.getInt(3));
+                allRows.add(entry);
+            }while(res.moveToNext());
         }
-        else
-            Log.v("TODAYSFOOD QUERY FAIL", "QUERY FAIL");
-        return res;
+        else {
+            System.out.print("ORDERHEADER GET ALL ORDERS WASNT FOUND");
+            res.close();
+            db.close();
+        }
+        res.close();
+        db.close();
+        return allRows;
     }
 
     /*

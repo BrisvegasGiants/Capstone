@@ -62,6 +62,7 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
         SearchView.OnCloseListener {
 
     ListView list;
+    public CustomListAdapter adapter;
     public static Context context;
     public SQLiteDatabase db;
     public DatabaseHelper databaseHelper;
@@ -74,12 +75,10 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
 
     private ListView myList;
     private SearchView searchView;
-    private MyCustomAdapter defaultAdapter;
     private ArrayList<FoodItem> allFood = new ArrayList<FoodItem>();
 
     public SparseArray<FoodItem> foodsToSave = new SparseArray<FoodItem>();
     private ArrayList<FoodItem> usersFoods = new ArrayList<FoodItem>();
-    Fragment fragment;
 
     private Button addToDiary;
 
@@ -97,6 +96,11 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
         databaseHelper = new DatabaseHelper(context);
         db = databaseHelper.getWritableDatabase();
 
+        //Will need another way to get images eventually
+        imageId.add(R.drawable.bigmac);
+        imageId.add(R.drawable.cheeseburger);
+        imageId.add(R.drawable.quarterpounder);
+
         allFood = databaseHelper.allFood();
         for (int i = 0; i < allFood.size(); i++) {
             foodNames.add(allFood.get(i).name);
@@ -107,13 +111,20 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
 
         myList = (ListView) findViewById(R.id.list);
 
+        adapter = new CustomListAdapter(this, foodNames, imageId);
+        list = (ListView) findViewById(R.id.list);
+        list.setAdapter(adapter);
+        list.setVisibility(View.GONE);
+
+
         searchView = (SearchView) findViewById(R.id.search);
         searchView.setIconifiedByDefault(false);
         searchView.setOnQueryTextListener(this);
         searchView.setOnCloseListener(this);
         addToDiary();
-    }
 
+
+    }
 
 
     @Override
@@ -164,23 +175,30 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
         });
     }
     public boolean onClose() {
-        myList.setAdapter(defaultAdapter);
+        list.setVisibility(View.GONE);
+        searchView.refreshDrawableState();
+        createUsersSelectedFoods();
         return false;
     }
 
     public boolean onQueryTextSubmit(String query) {
-       // doSearch(query + "*");
+        doSearch(query + "*");
+
+        list.setVisibility(View.GONE);
+        searchView.refreshDrawableState();
+        createUsersSelectedFoods();
         return false;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
+        list.setVisibility(View.VISIBLE);
         if (!newText.isEmpty()) {
             doSearch(newText + "*");
         } else {
-            myList.setAdapter(defaultAdapter);
+            list.setAdapter(adapter);
         }
-
+        //createUsersSelectedFoods();
         return false;
     }
 
@@ -188,9 +206,16 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
     public SparseArray<FoodItem> foodsToPass(){
         return foodsToSave;
     }
+
+    public ArrayList<Integer> getImageId(){return imageId;}
+    public ArrayList<String> getFoodNames(){return foodNames;}
     public void createUsersSelectedFoods(){
 
-       fragment = new ExpandableListFragment();
+        for (int i = 0; i < usersFoods.size(); i++) {
+            usersFoods.get(i).children.add(usersFoods.get(i).toString());
+        }
+
+        Fragment fragment = new ExpandableListFragment();
         FragmentManager fm = getFragmentManager();
         FragmentTransaction fragmentTransaction = fm.beginTransaction();
         fragmentTransaction.replace(R.id.fragment,fragment);
@@ -202,16 +227,6 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
     }
     public void doSearch(String query) {
 
-        //Will need another way to get images eventually
-        imageId.add(R.drawable.bigmac);
-        imageId.add(R.drawable.cheeseburger);
-        imageId.add(R.drawable.quarterpounder);
-
-        //Use custom adapter to help display the list and images correctly
-
-        CustomListAdapter adapter = new CustomListAdapter(this, foodNames, imageId);
-        list = (ListView) findViewById(R.id.list);
-        list.setAdapter(adapter);
         list.setOnItemClickListener(new OnItemClickListener() {
 
             @Override
@@ -227,31 +242,15 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
                 // Otherwise, add the item to the list and make background Blue
                 if (usersFoods.contains(selecteditem)) {
                     parent.getChildAt(position).setBackgroundColor(Color.WHITE);
-                    usersFoods.remove(usersFoods.indexOf(selecteditem));
+                    usersFoods.remove(selecteditem);
+                    foodsToSave.remove(usersFoods.size()-1);
                 } else {
                     Toast.makeText(getApplicationContext(), selecteditem.getName(), Toast.LENGTH_SHORT).show();
                     usersFoods.add(selecteditem);
+                    Log.v("userFoods size = ", String.valueOf(usersFoods.size()));
+                    foodsToSave.append(usersFoods.size()-1,selecteditem);
                     parent.getChildAt(position).setBackgroundColor(Color.BLUE);
                 }
-
-
-                //chosenFoods.add(foodNames.get(position));
-
-
-
-               /* for (int i = 0; i < usersFoods.size(); i++){
-                   // for(int j = 0; j < usersFoods.size(); j++){
-                       // usersFoods.get(j).children.add(usersFoods.get(j).toString());
-                   // }
-                    foodsToSave.append(i,usersFoods.get(i));
-                   // imageIdToAdd.add(R.drawable.bigmac);
-                    createUsersSelectedFoods();
-                    Log.v(foodsToSave.get(i).toString(), " FOODS TO SAVE HOLDS THIS");
-                }
-
-               for(int i = 0; i < usersFoods.size();i++){
-                   Log.v(usersFoods.get(i).toString(), " ZZZZZZZZZZ");
-               }*/
 
             }
         });

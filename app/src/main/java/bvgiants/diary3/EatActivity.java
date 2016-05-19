@@ -52,6 +52,8 @@ public class EatActivity extends AppCompatActivity {
     public DatabaseHelper databaseHelper;
 
     public ArrayList<FoodItem> allFood = new ArrayList<FoodItem>();
+    public ArrayList<OrderRow> orders = new ArrayList<OrderRow>();
+    public ArrayList<OrderRow> consumedToday = new ArrayList<OrderRow>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +71,12 @@ public class EatActivity extends AppCompatActivity {
         context = getApplicationContext();
         databaseHelper = new DatabaseHelper(context);
         db = databaseHelper.getWritableDatabase();
+        orders = databaseHelper.getAllUsersFoodConsumed(1);
+        consumedToday = databaseHelper.showTodaysFood();
+        for(int i = 0; i < orders.size(); i ++){
+            Log.v(orders.get(i).dbWriteOrdersToFile(), "ORDERS HAS THIS");
+        }
+        //addRowsToTable(consumedToday);
 
         showTodaysFood();
         //showFoodConsumed();
@@ -118,6 +126,8 @@ public class EatActivity extends AppCompatActivity {
     public void addRowsToTable(ArrayList<OrderRow> orders) {
         TableLayout table = (TableLayout) findViewById(R.id.tableLayout);
         table.removeAllViews();
+
+
 
         TableRow row = new TableRow(this);
         View headerLine = new View(this);
@@ -170,23 +180,25 @@ public class EatActivity extends AppCompatActivity {
 
     public void showTodaysFood() {
 
-        final ArrayList<OrderRow> orders = databaseHelper.getAllUsersFoodConsumed(1);
+        for(int i = 0; i < consumedToday.size(); i ++){
+            Log.v(consumedToday.get(i).dbWriteOrdersToFile(), "ORDERS HAS THIS");
+        }
         today = (Button) findViewById(R.id.buttonToday);
         today.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                addRowsToTable(orders);
+                addRowsToTable(consumedToday);
             }
 
 
         });
-        addRowsToTable(orders);
+        //addRowsToTable();
     }
 
     /*
         BELOW METHODS ARE SIMPLY TO PRINT OUT WHATS IN EACH TABLE!
-     */
+
     public void showFoodConsumed() {
         final ArrayList<OrderRow> orders = databaseHelper.getAllUsersFoodConsumed(1);
         today = (Button) findViewById(R.id.buttonMonth);
@@ -198,7 +210,7 @@ public class EatActivity extends AppCompatActivity {
             }
         });
     }
-
+*/
     public void addRowsToMonths(ArrayList<OrderRow> orders) {
         TableLayout table = (TableLayout) findViewById(R.id.tableLayout);
         for (int i = 0; i < orders.size(); i++) {

@@ -17,6 +17,14 @@
         android:layout_height="wrap_content" android:id="@+id/search"/>
 
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Food Consumed"
+        android:id="@+id/textView3"
+        android:layout_gravity="center_horizontal" />
+
     <ListView android:id="@+id/list"
     android:layout_width="fill_parent"
     android:layout_height="500px"
@@ -26,7 +34,7 @@
 
     <fragment
         android:layout_width="match_parent"
-        android:layout_height="199dp"
+        android:layout_height="400dp"
         android:id="@+id/fragment"
         android:name="bvgiants.diary3.ExpandableListFragment"
         tools:layout="@layout/expandable_list" />

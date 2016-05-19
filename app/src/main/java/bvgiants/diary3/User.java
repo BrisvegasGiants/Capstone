@@ -9,6 +9,7 @@ public class User {
 
     public String email;
     public String alias;
+    public String password;
 
     public int id;
     public String firstName;
@@ -18,8 +19,9 @@ public class User {
     public int age;
     public String gender;
     
-    public User (String email, String alias){
+    public User (String email, String password,String alias){
         this.email = email;
+        this.password = password;
         this.alias = alias;
     }
 

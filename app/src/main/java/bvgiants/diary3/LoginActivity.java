@@ -273,14 +273,19 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         CharSequence notFound = "Invalid Username or Password!";
         int duration = Toast.LENGTH_LONG;
 
-        if (databaseHelper.getUser(email,pw) == true) {
-            //Toast toast = Toast.makeText(context, found, duration);
-            //toast.show();
-            return true;
-        }
-        else{
-           // Toast toast = Toast.makeText(context,notFound,duration);
-            //toast.show();
+        try {
+            if (databaseHelper.getUser(email, pw) == true) {
+                //Toast toast = Toast.makeText(context, found, duration);
+                //toast.show();
+                return true;
+            } else {
+                // Toast toast = Toast.makeText(context,notFound,duration);
+                //toast.show();
+                return false;
+            }
+        }catch (Exception e){
+             Toast toast = Toast.makeText(context,"DATABASE NOT FOUND OR THERE WAS AN ERROR", duration);
+            toast.show();
             return false;
         }
     }

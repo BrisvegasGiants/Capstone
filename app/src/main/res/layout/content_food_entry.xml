@@ -9,9 +9,6 @@
     tools:context="bvgiants.diary3.FoodEntryActivity"
     tools:showIn="@layout/activity_food_entry">
 
-
-
-
     <ListView
         android:id="@+id/list_foods"
         android:layout_width="fill_parent"
