@@ -100,6 +100,10 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
         imageId.add(R.drawable.bigmac);
         imageId.add(R.drawable.cheeseburger);
         imageId.add(R.drawable.quarterpounder);
+        imageId.add(R.drawable.boost);
+        imageId.add(R.drawable.coke);
+        imageId.add(R.drawable.kebab);
+        imageId.add(R.drawable.subway);
 
         allFood = databaseHelper.allFood();
         for (int i = 0; i < allFood.size(); i++) {
@@ -241,7 +245,7 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
                 // If the item is in the list, take it off the list, and change the background back to white
                 // Otherwise, add the item to the list and make background Blue
                 if (usersFoods.contains(selecteditem)) {
-                    parent.getChildAt(position).setBackgroundColor(Color.WHITE);
+                    //parent.getChildAt(position).setBackgroundColor(Color.WHITE);
                     usersFoods.remove(selecteditem);
                     foodsToSave.remove(usersFoods.size()-1);
                 } else {
@@ -249,7 +253,7 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
                     usersFoods.add(selecteditem);
                     Log.v("userFoods size = ", String.valueOf(usersFoods.size()));
                     foodsToSave.append(usersFoods.size()-1,selecteditem);
-                    parent.getChildAt(position).setBackgroundColor(Color.BLUE);
+                    //parent.getChildAt(position).setBackgroundColor(Color.BLUE);
                 }
 
             }
