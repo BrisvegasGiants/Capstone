@@ -91,22 +91,12 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/percentage_progress"
-        android:id="@+id/percentSuffix"
-        android:layout_marginTop="15dp"
-        android:textSize="32sp"
-        android:layout_below="@+id/goalSummaryPre"
-        android:layout_alignStart="@+id/distanceSuffix" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:text="@string/percentage_suffix"
         android:id="@+id/goalSummaryPost"
         android:textSize="25sp"
-        android:layout_below="@+id/percentSuffix"
-        android:layout_marginTop="15dp"
-        android:layout_centerHorizontal="true" />
+        android:layout_below="@+id/percentageCounterView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -123,7 +113,10 @@
         android:text="@string/default_value"
         android:id="@+id/percentageCounterView"
         android:textSize="32sp"
-        android:layout_alignTop="@+id/percentSuffix"
-        android:layout_alignStart="@+id/distanceCounterView" />
+        android:minHeight="80dp"
+        android:minWidth="80dp"
+        android:layout_below="@+id/goalSummaryPre"
+        android:layout_alignStart="@+id/distanceCounterView"
+        android:layout_marginTop="10dp" />
 
 </RelativeLayout>
