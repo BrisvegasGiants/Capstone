@@ -61,7 +61,7 @@ public class BackgroundService extends Service implements
     public GoogleApiClient mGoogleFitClient; // NAME UPDATED: Was Previously called mApiClient;
     GoogleApiClient mGoogleMapsClient; // NAME UPDATED: Was Previously called mGoogleApiClient;
 
-    public int globalSteps;
+    //public int globalSteps;
 
     IBinder mBinder;
     int mStartMode;
@@ -180,8 +180,8 @@ public class BackgroundService extends Service implements
         locationCount++;
         SharedPreferences mapReferences = this.getSharedPreferences("DropPins", MODE_PRIVATE);
         SharedPreferences.Editor editor = mapReferences.edit();
-        editor.putString("lat"+ Integer.toString((locationCount-1)), Double.toString(mLastLocation.getLatitude()));
-        editor.putString("lng"+ Integer.toString((locationCount-1)), Double.toString(mLastLocation.getLongitude()));
+        editor.putString("lat" + Integer.toString((locationCount-1)), Double.toString(mLastLocation.getLatitude()));
+        editor.putString("lng" + Integer.toString((locationCount-1)), Double.toString(mLastLocation.getLongitude()));
         editor.putInt("locationCount", locationCount);
         editor.apply();
 
@@ -310,6 +310,7 @@ public class BackgroundService extends Service implements
             // Manipulate it's value to match
             final Value totalSteps = value;
             final Value globalSteps = totalSteps;
+
             //Calc Distance (No. Steps * Step Length).
             int amtSteps = value.asInt();
             runActivity.totalSteps = amtSteps;
@@ -318,6 +319,7 @@ public class BackgroundService extends Service implements
             // Calculate Percentage to goal
             final float percentageValue = ((float)amtSteps / 10000) * 100;
             runActivity.percentageValue = percentageValue;
+            MainActivity.percentageValue = percentageValue;
 
             // DEBUGGING CODE - Displays log of steps
             Log.e("Google Fit", "Found Data! - " + globalSteps + " steps");

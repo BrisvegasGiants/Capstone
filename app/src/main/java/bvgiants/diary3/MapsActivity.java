@@ -115,11 +115,11 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
                 Log.e("Google Maps", "Count 0 - Found Logged Location! | Looped | " + lat +" "+ lng);
                 Log.e("Google Maps", "Count 0 - Loop Counter: " + i);
                 Log.e("Google Maps", "Count 0 - Dropped Pin at " + loc);
-                Marker mMarker = mMap.addMarker(new MarkerOptions().position(loc).title("Pin "+i));
+                Marker mMarker = mMap.addMarker(new MarkerOptions().position(loc).title("Pin Number: " + i));
                 //Log.e("Google Maps", "Distance between 2 point is  " + distanceDif);
             }
 
-            // After first pin, check distance is over 200m from previous pin and drop it.
+            // Always place one pin, then check the rest
             if (i > 0) {
                 //LatLng oldLoc = loc;
                 String oldlatitude = mapReferences.getString("lat"+(i-1), "No Lat Recorded");
@@ -129,6 +129,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
 
                 Double distanceDif = distance(Double.parseDouble(lat), Double.parseDouble(lng), oldlat, oldlng);
 
+                // If the distance has not changed by more than 100m...
                 if (distanceDif < .10){
                     // Do nothing
                     Log.e("Google Maps", "Loop No: " + i);
@@ -136,11 +137,12 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
                     Log.e("Google Maps", "Distance is " + distanceDif + " at this location: " + loc );
 
                 } else {
-                    // Place pin
+                    // Place a Pin
                     Log.e("Google Maps", "Loop No: " + i);
                     Log.e("Google Maps", "Placing Pin on "+i+" loop - Distance Difference is " + distanceDif );
                     Log.e("Google Maps", "Count " + i + " - Dropped Pin at " + loc);
-                    Marker mMarker = mMap.addMarker(new MarkerOptions().position(loc).title("Pin "+i));
+                    Marker mMarker = mMap.addMarker(new MarkerOptions().position(loc).title("Pin Number: " + i));
+
                 }
 
             }
