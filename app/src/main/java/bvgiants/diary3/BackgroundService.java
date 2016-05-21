@@ -61,6 +61,7 @@ public class BackgroundService extends Service implements
     public GoogleApiClient mGoogleFitClient; // NAME UPDATED: Was Previously called mApiClient;
     GoogleApiClient mGoogleMapsClient; // NAME UPDATED: Was Previously called mGoogleApiClient;
 
+
     //public int globalSteps;
 
     IBinder mBinder;
@@ -98,7 +99,7 @@ public class BackgroundService extends Service implements
                     .addOnConnectionFailedListener(this)
                     .build();
             mGoogleFitClient.connect();
-            Log.e("Google Fit", "Google Fit Connected");
+            Log.e("Google Fit", "Google Fit Connection Started");
         }
 
         if (mGoogleMapsClient == null) {
@@ -108,7 +109,7 @@ public class BackgroundService extends Service implements
                     .addApi(LocationServices.API)
                     .build();
             mGoogleMapsClient.connect();
-            Log.e("Google Maps", "Google Maps Connected");
+            Log.e("Google Maps", "Google Maps Connection Started");
         }
 
         /*
@@ -245,6 +246,7 @@ public class BackgroundService extends Service implements
                 .setDataTypes(DataType.TYPE_STEP_COUNT_CUMULATIVE )
                 .setDataSourceTypes( DataSource.TYPE_RAW)
                 .build();
+        Log.e("Google Fit", "Building Data Sources Requests");
 
         ResultCallback<DataSourcesResult> dataSourcesResultCallback = new ResultCallback<DataSourcesResult>() {
             @Override
@@ -263,7 +265,7 @@ public class BackgroundService extends Service implements
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        Log.e("Google Fit", "Connection Suspended");
     }
 
     private void registerFitnessDataListener(DataSource dataSource, DataType dataType){
@@ -273,19 +275,20 @@ public class BackgroundService extends Service implements
                 .setSamplingRate(1, TimeUnit.SECONDS )
                 .build();
 
-        Fitness.SensorsApi.add(mGoogleFitClient, request, this)
-                .setResultCallback(new ResultCallback<Status>(){
+        Fitness.SensorsApi.add(mGoogleFitClient, request, this).setResultCallback(new ResultCallback<Status>(){
                     @Override
                     public void onResult(Status status) {
                         if (status.isSuccess()){
-                            Log.e("Google Fit", "SensorApi Successfully Registered");
+                            Log.e("Google Fit", "SensorApi Attempting to Connect... Success!");
+                        } else {
+                            Log.e("Google Fit", "SensorApi Attempting to Connect... Failed");
                         }
                     }
                 });
     } // End regsterFitnessDataListener
 
+
 /*
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_OAUTH) {
             authInProgress = false;
@@ -344,19 +347,23 @@ public class BackgroundService extends Service implements
         handler.post(runnable);
     }
 
+
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        /*
+        Log.e("Google Fit", "Connection Failed - " + connectionResult);
+/*
         if (!authInProgress) {
             try {
+
                 authInProgress = true;
-                connectionResult.startResolutionForResult(getBaseContext().this, REQUEST_OAUTH);
+                //connectionResult.startResolutionForResult(getBaseContext().this, REQUEST_OAUTH);
+                connectionResult.startResolutionForResult(getApplicationContext()., REQUEST_OAUTH);
             } catch (IntentSender.SendIntentException e) {
                 //Err...
             }
         } else {
             Log.e("GoogleFit", "authInProgress");
         }
-        */
+*/
     }
 }

@@ -1,8 +1,10 @@
 package bvgiants.diary3;
 
 import android.content.Context;
+import android.content.IntentSender;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +15,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.content.Intent;
 import android.widget.ProgressBar;
+
+import com.google.android.gms.common.ConnectionResult;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,8 +44,8 @@ public class MainActivity extends AppCompatActivity {
         startBackgroundProcess(this.findViewById(android.R.id.content), mContext);
 
         // Not loading in because google fit isn't connecting yet
-        ((ProgressBar)findViewById(R.id.progressBarStepsGoal)).setProgress((int)percentageValue);
-        Log.e("Progress Bar", "Progress Bar is: " + percentageValue);
+        //((ProgressBar)findViewById(R.id.progressBarStepsGoal)).setProgress((int)percentageValue);
+        //Log.e("Progress Bar", "Progress Bar is: " + percentageValue);
 
     }
 
@@ -99,8 +103,5 @@ public class MainActivity extends AppCompatActivity {
     public void startBackgroundProcess(View view, Context c){
         startService(new Intent(getBaseContext(), BackgroundService.class));
     }
-
-
-
 
 }
