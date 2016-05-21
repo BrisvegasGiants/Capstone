@@ -1,7 +1,7 @@
-1 BigMac 707 11 42 2650 1350 31 app/src/main/res/drawable/Bigmac.jpg
-2 CheeseBurger 282 5 12 1180 672 15 app/src/main/res/drawable/CheeseBurger.jpg
-3 QuarterPounder 546 7 30 546 2280 1050 34 app/src/res/drawable/QuarterPounder.jpg
-4 CocaColaCan 161 40 0 161 674 38 0 app/src/res/drawable/coke.jpg
-5 SmallLambKebab 155 3 6 650 233 8 0 app/src/res/drawable/kebab.jpg
-6 6InchPizzaSub 407 6 18 1700 19 0 0 app/src/res/drawable/kebab.jpg
-7 AllBerryBangBoostJuice 349 66 5 1460 142 8 0 app/src/res/drawable/boost.jpg
+1 BigMac 707 11 42 2650 1350 31 R.drawable.bigmac
+2 CheeseBurger 282 5 12 1180 672 15 R.drawable.cheeseburger
+3 QuarterPounder 546 7 30 546 2280 1050 34 R.drawable.quarterpounder
+4 CocaColaCan 161 40 0 161 674 38 0 R.drawable.coke
+5 SmallLambKebab 155 3 6 650 233 8 0 R.drawable.kebab
+6 6InchPizzaSub 407 6 18 1700 19 0 0 R.drawable.subway
+7 AllBerryBangBoostJuice 349 66 5 1460 142 8 0 R.drawable.boost

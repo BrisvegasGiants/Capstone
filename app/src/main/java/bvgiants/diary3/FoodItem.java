@@ -133,4 +133,12 @@ public class FoodItem {
     public void setProtein(int protein) {
         this.protein = protein;
     }
+
+    public String getImagelocal() {
+        return imagelocal;
+    }
+
+    public void setImagelocal(String imagelocal) {
+        this.imagelocal = imagelocal;
+    }
 }

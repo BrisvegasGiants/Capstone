@@ -23,7 +23,7 @@ import java.util.ArrayList;
  */
 public class ExpandableListFragment extends Fragment {
 
-    private SparseArray<FoodItem> foodsToSave = new SparseArray<FoodItem>();
+    private ArrayList<FoodItem> foodsToSave = new ArrayList<>();
     public ArrayList<Integer> imgid = new ArrayList<Integer>();
     public ArrayList<String> itemname = new ArrayList<String>();
     private FoodEntryActivity activity;

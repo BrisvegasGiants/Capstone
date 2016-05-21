@@ -396,15 +396,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // GET USER SEARCHED ITEMS
     public ArrayList<FoodItem> foodSearch(String searchResult) {
-        String select = "SELECT * FROM " + TABLE_LOOKUPFOOD + " WHERE Name LIKE " + searchResult + "%;";
-        ArrayList<FoodItem> foodsFound = new ArrayList<FoodItem>();
-        System.out.printf("%s", select);
-        return foodsFound;
+        String select = "SELECT * FROM " + TABLE_LOOKUPFOOD + " WHERE Name LIKE " + searchResult + "%";
+
+        ArrayList<FoodItem> results = new ArrayList<FoodItem>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_LOOKUPFOOD + " WHERE Name LIKE ?",
+                new String[]{searchResult + "%"});
+        if(res.moveToFirst()){
+            do {
+                FoodItem food = new FoodItem(res.getString(1),res.getInt(2),res.getInt(3),res.getInt(4),
+                        res.getInt(5),res.getInt(6),res.getInt(7),res.getString(8));
+                results.add(food);
+                Log.v("FOOD SEARCH FOUND: ", food.getName());
+            }while(res.moveToNext());
+            if(res != null && !res.isClosed())
+                res.close();
+        }
+        res.close();
+        return results;
     }
 
         // GET USER SEARCHED ITEMS
     public ArrayList<FoodItem> userSearch(String searchResult) {
-        String select = "SELECT * FROM " + TABLE_LOOKUPFOOD + "WHERE Name LIKE" + "'%" + searchResult + "%'";
+        String select = "SELECT * FROM " + TABLE_LOOKUPFOOD + "WHERE Name LIKE "  + searchResult + "%";
 
         ArrayList<FoodItem> results = new ArrayList<FoodItem>();
         SQLiteDatabase db = this.getReadableDatabase();

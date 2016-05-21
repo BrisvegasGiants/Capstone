@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.*;
 import android.util.Log;
 import android.util.SparseArray;
@@ -77,8 +78,11 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
     private SearchView searchView;
     private ArrayList<FoodItem> allFood = new ArrayList<FoodItem>();
 
-    public SparseArray<FoodItem> foodsToSave = new SparseArray<FoodItem>();
     private ArrayList<FoodItem> usersFoods = new ArrayList<FoodItem>();
+    ArrayList<FoodItem> delimitedFoods = new ArrayList<FoodItem>();
+
+    ArrayList<Integer> delimitedImages = new ArrayList<Integer>();
+    ArrayList<String> delimitedNames = new ArrayList<String>();
 
     private Button addToDiary;
 
@@ -100,14 +104,15 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
         imageId.add(R.drawable.bigmac);
         imageId.add(R.drawable.cheeseburger);
         imageId.add(R.drawable.quarterpounder);
-        imageId.add(R.drawable.boost);
         imageId.add(R.drawable.coke);
         imageId.add(R.drawable.kebab);
         imageId.add(R.drawable.subway);
+        imageId.add(R.drawable.boost);
 
         allFood = databaseHelper.allFood();
         for (int i = 0; i < allFood.size(); i++) {
             foodNames.add(allFood.get(i).name);
+            //imageId.add(Integer.parseInt(allFood.get(i).getImagelocal()));
         }
         for(int i = 0; i < allFood.size(); i++){
             foodDesc.add(allFood.get(i).toString());
@@ -181,12 +186,12 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
     public boolean onClose() {
         list.setVisibility(View.GONE);
         searchView.refreshDrawableState();
-        createUsersSelectedFoods();
+        //createUsersSelectedFoods();
         return false;
     }
 
     public boolean onQueryTextSubmit(String query) {
-        doSearch(query + "*");
+        doSearch();
 
         list.setVisibility(View.GONE);
         searchView.refreshDrawableState();
@@ -196,23 +201,55 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
 
     @Override
     public boolean onQueryTextChange(String newText) {
+
+
+        delimitedImages = new ArrayList<Integer>();
+        delimitedNames = new ArrayList<String>();
+
+        delimitedFoods = databaseHelper.foodSearch(newText);
+
+        for (int i = 0; i < delimitedFoods.size(); i++){
+            Log.v("DELIMITED FOODS", delimitedFoods.get(i).getName());
+            for(int k = 0; k < allFood.size(); k++){
+                if (allFood.get(k).getName().equalsIgnoreCase(delimitedFoods.get(i).getName())){
+                    delimitedImages.add(imageId.get(k));
+                    delimitedNames.add(foodNames.get(k));
+                }
+            }
+
+        }
+
+        adapter = new CustomListAdapter(this, delimitedNames, delimitedImages);
+        list = (ListView) findViewById(R.id.list);
+        list.setAdapter(adapter);
         list.setVisibility(View.VISIBLE);
+
         if (!newText.isEmpty()) {
-            doSearch(newText + "*");
+            doSearch();
         } else {
             list.setAdapter(adapter);
         }
-        //createUsersSelectedFoods();
         return false;
     }
 
 
-    public SparseArray<FoodItem> foodsToPass(){
-        return foodsToSave;
+    public ArrayList<FoodItem> foodsToPass(){
+        return usersFoods;
     }
 
-    public ArrayList<Integer> getImageId(){return imageId;}
-    public ArrayList<String> getFoodNames(){return foodNames;}
+    public ArrayList<Integer> getImageId(){
+        if(delimitedImages.isEmpty())
+            return imageId;
+        else
+            return delimitedImages;
+    }
+    public ArrayList<String> getFoodNames(){
+        if(delimitedNames.isEmpty())
+            return foodNames;
+        else
+            return delimitedNames;
+    }
+
     public void createUsersSelectedFoods(){
 
         for (int i = 0; i < usersFoods.size(); i++) {
@@ -225,11 +262,8 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
         fragmentTransaction.replace(R.id.fragment,fragment);
         fragmentTransaction.commit();
 
-        /*CustomListAdapter userAdapter = new CustomListAdapter(this, chosenFoods, imageIdToAdd);
-        list = (ListView) findViewById(R.id.listTwo);
-        list.setAdapter(userAdapter); */
     }
-    public void doSearch(String query) {
+    public void doSearch() {
 
         list.setOnItemClickListener(new OnItemClickListener() {
 
@@ -237,9 +271,12 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
 
-
+                FoodItem selecteditem;
                 // selectedItem holds a FoodItem object of the item selected from the list
-                FoodItem selecteditem = allFood.get(position);
+                if(delimitedFoods.isEmpty())
+                    selecteditem = allFood.get(position);
+                else
+                    selecteditem = delimitedFoods.get(position);
 
                 // Check if the selected item is in the list of selected foods.
                 // If the item is in the list, take it off the list, and change the background back to white
@@ -247,12 +284,10 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
                 if (usersFoods.contains(selecteditem)) {
                     //parent.getChildAt(position).setBackgroundColor(Color.WHITE);
                     usersFoods.remove(selecteditem);
-                    foodsToSave.remove(usersFoods.size()-1);
                 } else {
                     Toast.makeText(getApplicationContext(), selecteditem.getName(), Toast.LENGTH_SHORT).show();
                     usersFoods.add(selecteditem);
                     Log.v("userFoods size = ", String.valueOf(usersFoods.size()));
-                    foodsToSave.append(usersFoods.size()-1,selecteditem);
                     //parent.getChildAt(position).setBackgroundColor(Color.BLUE);
                 }
 
