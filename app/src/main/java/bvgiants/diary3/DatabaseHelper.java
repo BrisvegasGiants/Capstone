@@ -183,14 +183,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     //Inserts a User into USERS TABLE
     //TODO Add feature to enable user to create account
-    public boolean insertUser( int id, String email, String password, String alias, String team) {
+    public boolean insertUser( User user) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("ID", id);
-        contentValues.put("EmailAdd", email);
-        contentValues.put("Password", password);
-        contentValues.put("Alias", alias);
-        contentValues.put("Team", team);
+        contentValues.put("ID", user.getId());
+        contentValues.put("EmailAdd", user.getEmail());
+        contentValues.put("Password", user.getPassword());
+        contentValues.put("Alias", user.getAlias());
+        contentValues.put("Team", "ATeam");//Set as default for now as we don't have team registration
         db.insert(TABLE_USERS, null, contentValues);
         return true;
     }
@@ -532,7 +532,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             userLine = userString.get(i);
             input = userLine.split(" ");
             System.out.printf("%s\n%s\n%s\n%s\n",input[0],input[1],input[2],input[3]);
-            insertUser(Integer.parseInt(input[0]),input[1],input[2],input[3],input[4]);
+            User newUser = new User(Integer.parseInt(input[0]),input[1],input[2],input[3],input[4]);
+            insertUser(newUser);
         }
 
     }

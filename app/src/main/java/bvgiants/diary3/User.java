@@ -10,6 +10,7 @@ public class User {
     public String email;
     public String alias;
     public String password;
+    public String team;
 
     public int id;
     public String firstName;
@@ -19,10 +20,12 @@ public class User {
     public int age;
     public String gender;
     
-    public User (String email, String password,String alias){
+    public User (int id, String email, String password,String alias, String team){
+        this.id = id;
         this.email = email;
         this.password = password;
         this.alias = alias;
+        this.team = team;
     }
 
     //Polymorphic user object to help deal with creating user variables
@@ -36,7 +39,9 @@ public class User {
         this.age = age;
         this.gender = gender;
     }
-    
+
+
+
     public String toString(){
         return email + " " + alias;
     }
@@ -45,5 +50,93 @@ public class User {
     public String dbWriteUserTraits(){
         return id + " " + firstName + " " + lastName + " " + height + " " + weight + " " + age
                 + " " + gender + "\n";
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getTeam() {
+        return team;
+    }
+
+    public void setTeam(String team) {
+        this.team = team;
     }
 }

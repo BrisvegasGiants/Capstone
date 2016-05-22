@@ -49,6 +49,9 @@ public class SignupActivity extends AppCompatActivity {
         context = getApplicationContext();
         mEmailView = (EditText) findViewById(R.id.emailText);
 
+        context = getApplicationContext();
+        databaseHelper = new DatabaseHelper(context);
+        db = databaseHelper.getWritableDatabase();
 
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,16 +94,12 @@ public class SignupActivity extends AppCompatActivity {
 
     public void createAccount() {
 
-        progress = new ProgressDialog(this);
-        progress.setMessage("Creating Account...");
-        progress.setIndeterminate(true);
-        progress.show();
-
         String name = mNameView.getText().toString();
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
-        databaseHelper.insertUser(10, email, password, name, "YO");
+        User newUser = new User (createUserID(),email,password,name," ");
+        databaseHelper.insertUser(newUser);
         onSignupSuccess();
 
        /* new android.os.Handler().postDelayed(
@@ -110,6 +109,11 @@ public class SignupActivity extends AppCompatActivity {
                         progress.dismiss();
                     }
                 }, 3000); */
+    }
+
+    public int createUserID(){
+        int userID = (int) (Math.random() * 9999 + 1);
+        return userID;
     }
 
     public boolean validate() {
