@@ -589,17 +589,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             throws IOException {
 
         //Create a new orderID
-       int orderID = createOrderID();
 
         //Create Order @// TODO: 9/05/2016 CURRENT JUST ADDS KEN USER
-        saveDataToOrderHeader(orderID,LOOKUPORDERTYPE_FOODENTRY,getDateTime(),1);
+        int orderID = 0;
 
         for(int i = 0; i < recordedFoodEaten.size();i++){
+            orderID = createOrderID();
+            saveDataToOrderHeader(orderID,LOOKUPORDERTYPE_FOODENTRY,getDateTime(),1);
             recordedFoodEaten.get(i).setOrderID(orderID);
             recordedFoodEaten.get(i).setLocation("FAKE LOCATION");
             Log.v(recordedFoodEaten.get(i).dbWriteFoodConsumed(), "WRITE TO DB");
             insertFoodConsumed(recordedFoodEaten.get(i));
-
         }
 
     }

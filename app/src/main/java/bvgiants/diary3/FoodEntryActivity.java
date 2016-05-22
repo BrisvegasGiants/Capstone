@@ -68,7 +68,6 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
     public SQLiteDatabase db;
     public DatabaseHelper databaseHelper;
     public ArrayList<String> foodNames = new ArrayList<String>();
-    public ArrayList<String> foodDesc = new ArrayList<String>();
     public ArrayList<String> chosenFoods = new ArrayList<String>();
 
     public ArrayList<Integer> imageId = new ArrayList<Integer>();
@@ -83,6 +82,9 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
 
     ArrayList<Integer> delimitedImages = new ArrayList<Integer>();
     ArrayList<String> delimitedNames = new ArrayList<String>();
+
+    ArrayList<Integer> userFoodImages = new ArrayList<Integer>();
+    ArrayList<String> userFoodNames = new ArrayList<String>();
 
     private Button addToDiary;
 
@@ -114,17 +116,45 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
             foodNames.add(allFood.get(i).name);
             //imageId.add(Integer.parseInt(allFood.get(i).getImagelocal()));
         }
-        for(int i = 0; i < allFood.size(); i++){
-            foodDesc.add(allFood.get(i).toString());
-        }
 
-        myList = (ListView) findViewById(R.id.list);
+        //myList = (ListView) findViewById(R.id.list);
 
         adapter = new CustomListAdapter(this, foodNames, imageId);
         list = (ListView) findViewById(R.id.list);
         list.setAdapter(adapter);
         list.setVisibility(View.GONE);
+        list.setOnItemClickListener(new OnItemClickListener() {
 
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+
+                FoodItem selecteditem;
+                // selectedItem holds a FoodItem object of the item selected from the list
+                if(delimitedFoods.isEmpty())
+                    selecteditem = allFood.get(position);
+                else
+                    selecteditem = delimitedFoods.get(position);
+
+                // Check if the selected item is in the list of selected foods.
+                // If the item is in the list, take it off the list, and change the background back to white
+                // Otherwise, add the item to the list and make background Blue
+                if (usersFoods.contains(selecteditem)) {
+                    //parent.getChildAt(position).setBackgroundColor(Color.WHITE);
+                    usersFoods.remove(selecteditem);
+                    list.setVisibility(View.GONE);
+                    searchView.refreshDrawableState();
+                } else {
+                    Toast.makeText(getApplicationContext(), selecteditem.getName(), Toast.LENGTH_SHORT).show();
+                    usersFoods.add(selecteditem);
+                    Log.v("userFoods size = ", String.valueOf(usersFoods.size()));
+                    list.setVisibility(View.GONE);
+                    searchView.refreshDrawableState();
+                    //parent.getChildAt(position).setBackgroundColor(Color.BLUE);
+                }
+
+            }
+        });
 
         searchView = (SearchView) findViewById(R.id.search);
         searchView.setIconifiedByDefault(false);
@@ -184,24 +214,21 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
         });
     }
     public boolean onClose() {
-        list.setVisibility(View.GONE);
         searchView.refreshDrawableState();
+        list.setVisibility(View.GONE);
         //createUsersSelectedFoods();
         return false;
     }
 
     public boolean onQueryTextSubmit(String query) {
-        doSearch();
-
-        list.setVisibility(View.GONE);
         searchView.refreshDrawableState();
+        list.setVisibility(View.GONE);
         createUsersSelectedFoods();
         return false;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
-
 
         delimitedImages = new ArrayList<Integer>();
         delimitedNames = new ArrayList<String>();
@@ -224,11 +251,6 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
         list.setAdapter(adapter);
         list.setVisibility(View.VISIBLE);
 
-        if (!newText.isEmpty()) {
-            doSearch();
-        } else {
-            list.setAdapter(adapter);
-        }
         return false;
     }
 
@@ -237,22 +259,29 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
         return usersFoods;
     }
 
-    public ArrayList<Integer> getImageId(){
-        if(delimitedImages.isEmpty())
+    public ArrayList<Integer> getUserFoodImages(){
+        if(userFoodImages.isEmpty())
             return imageId;
         else
-            return delimitedImages;
+            return userFoodImages;
     }
-    public ArrayList<String> getFoodNames(){
-        if(delimitedNames.isEmpty())
+    public ArrayList<String> getUserFoodNames(){
+        if(userFoodNames.isEmpty())
             return foodNames;
         else
-            return delimitedNames;
+            return userFoodNames;
     }
 
     public void createUsersSelectedFoods(){
 
-        for (int i = 0; i < usersFoods.size(); i++) {
+        for (int i = 0; i < usersFoods.size(); i++){
+            Log.v("USER FOODS", usersFoods.get(i).getName());
+            for(int k = 0; k < allFood.size(); k++){
+                if (allFood.get(k).getName().equalsIgnoreCase(usersFoods.get(i).getName())){
+                    userFoodImages.add(imageId.get(k));
+                    userFoodNames.add(foodNames.get(k));
+                }
+            }
             usersFoods.get(i).children.add(usersFoods.get(i).toString());
         }
 
@@ -263,37 +292,7 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
         fragmentTransaction.commit();
 
     }
-    public void doSearch() {
 
-        list.setOnItemClickListener(new OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-
-                FoodItem selecteditem;
-                // selectedItem holds a FoodItem object of the item selected from the list
-                if(delimitedFoods.isEmpty())
-                    selecteditem = allFood.get(position);
-                else
-                    selecteditem = delimitedFoods.get(position);
-
-                // Check if the selected item is in the list of selected foods.
-                // If the item is in the list, take it off the list, and change the background back to white
-                // Otherwise, add the item to the list and make background Blue
-                if (usersFoods.contains(selecteditem)) {
-                    //parent.getChildAt(position).setBackgroundColor(Color.WHITE);
-                    usersFoods.remove(selecteditem);
-                } else {
-                    Toast.makeText(getApplicationContext(), selecteditem.getName(), Toast.LENGTH_SHORT).show();
-                    usersFoods.add(selecteditem);
-                    Log.v("userFoods size = ", String.valueOf(usersFoods.size()));
-                    //parent.getChildAt(position).setBackgroundColor(Color.BLUE);
-                }
-
-            }
-        });
-    }
 }
 
 
