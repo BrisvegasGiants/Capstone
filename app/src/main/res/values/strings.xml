@@ -24,7 +24,7 @@
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
-    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in">Sign In</string>
 
     <!--DBButton Remove when no longer needed -->
     <string name="load_local_data">Load DB From File</string>
@@ -61,6 +61,7 @@
     <string name="glance">At a Glance</string>
     <string name="textCalorie">Progress towards calorie goal</string>
     <string name="textSteps">Progress towards step goal</string>
+    <string name="title_activity_signup">SignupActivity</string>
 
 
 </resources>

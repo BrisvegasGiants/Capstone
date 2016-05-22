@@ -197,7 +197,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //Inserts a Food into LOOKUPFOOD
     //@// TODO: 8/05/2016 MAKE THIS CONSTRUCTER TAKE A FOOD ITEM!
-    public boolean insertFood(int id,String name, int calories, int sugar, int fat, int energy, int sodium,
+    public boolean insertFood(int id, String name, int calories, int sugar, int fat, int energy, int sodium,
                               int protein, String imageLocal) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();

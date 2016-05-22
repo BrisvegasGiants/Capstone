@@ -23,8 +23,11 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
@@ -78,6 +81,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(toolbar);
+
         context = getApplicationContext();
                 // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
@@ -109,8 +115,20 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         databaseHelper = new DatabaseHelper(context);
         db = databaseHelper.getWritableDatabase();
+        Button userRegister = (Button) findViewById(R.id.registerButton);
 
-        //Button which acts to load SQLiteDB data
+
+        assert userRegister != null;
+        userRegister.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(),SignupActivity.class);
+                startActivity(i);
+            }
+        });
+
+      /*  //Button which acts to load SQLiteDB data
         Button loadData = (Button) findViewById(R.id.loadData);
         loadData.setOnClickListener(new OnClickListener() {
 
@@ -147,7 +165,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
 
             }
-        });
+        }); */
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
@@ -155,6 +173,54 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         //startBackgroundProcess(this.findViewById(android.R.id.content));
 
     }// End onCreate
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.eat_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.action_dbload) {
+            //Load DB
+                try{
+                    databaseHelper.saveDataToUserTable(context, "Users");
+                    databaseHelper.saveDataToLookupFoodTable(context, "LookupFood");
+                    CharSequence text = "You've successfully loaded SQL Tables";
+                    int duration = Toast.LENGTH_LONG;
+                    Toast toast = Toast.makeText(context,text,duration);
+                    toast.show();
+                }
+                catch (IOException e){
+                    e.printStackTrace();
+                }
+            return true;
+        }
+
+        if (id == R.id.action_dbdelete) {
+        // Delete DB
+            try {
+                String result;
+                result = databaseHelper.delete(db);
+                int duration = Toast.LENGTH_LONG;
+                Toast toast = Toast.makeText(context,result,duration);
+                toast.show();
+            } catch (SQLiteException e){
+                e.printStackTrace();
+            }
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     /*
     public void startBackgroundProcess(View view){

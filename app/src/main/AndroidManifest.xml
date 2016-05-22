@@ -92,7 +92,11 @@
 
         <service android:name=".BackgroundService" />
 
-        <activity android:name=".SearchFood"></activity>
+        <activity android:name=".SearchFood" />
+        <activity
+            android:name=".SignupActivity"
+            android:label="@string/title_activity_signup"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

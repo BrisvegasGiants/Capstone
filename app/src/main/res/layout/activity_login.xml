@@ -2,6 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="bvgiants.diary3.LoginActivity">
+    <include layout="@layout/app_bar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
@@ -9,6 +16,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="bvgiants.diary3.LoginActivity">
+
 
     <!-- Login progress -->
     <ProgressBar
@@ -18,6 +26,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:visibility="gone" />
+
+
 
     <ScrollView
         android:id="@+id/login_form"
@@ -72,22 +82,13 @@
                 android:text="@string/action_sign_in"
                 android:textStyle="bold" />
 
-
             <Button
-                android:id="@+id/loadData"
+                android:id="@+id/registerButton"
                 style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/load_local_data"
-                android:textStyle="bold" />
-            <Button
-                android:id="@+id/deleteDBData"
-                style="?android:textAppearanceSmall"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/delete_local_data"
+                android:text="Register"
                 android:textStyle="bold" />
         </LinearLayout>
     </ScrollView>
@@ -97,4 +98,5 @@
         android:layout_height="wrap_content"
         android:id="@+id/imageView"
         android:layout_gravity="right" />
+    </LinearLayout>
 </LinearLayout>

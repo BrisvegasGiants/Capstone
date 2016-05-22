@@ -7,7 +7,7 @@
     <!-- Settings, should always be in the overflow -->
     <item android:id="@+id/action_home"
         android:title="Home"
-        android:icon="@drawable/home2"
+        android:icon="@drawable/homebutton"
         android:orderInCategory="100"
         app:showAsAction="always"/>
 
@@ -16,6 +16,14 @@
     android:icon="@drawable/settings"
     android:orderInCategory="100"
     app:showAsAction="never"/>
+
+    <item android:id="@+id/action_dbload"
+        android:title="Load DB"
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/action_dbdelete"
+        android:title="Delete DB"
+        app:showAsAction="never"/>
 
 
 </menu>
