@@ -275,6 +275,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public User loggedInUser(String email, String pw){
+        SQLiteDatabase db = this.getReadableDatabase();
+        User user;
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_USERS + " WHERE EmailAdd=? AND Password=?",
+                new String[]{email,pw});
+        if(res.moveToFirst()) {
+            user = new User (res.getInt(0),res.getString(1), res.getString(2),
+                    res.getString(3), res.getString(4));
+            res.close();
+            db.close();
+            return user;
+        }
+        else {
+            System.out.print("USER ISN'T FOUND");
+            res.close();
+            db.close();
+            return null;
+        }
+
+    }
+
     public boolean getFood(String name) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_LOOKUPFOOD + " WHERE Name=?",
@@ -436,10 +457,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public ArrayList<OrderRow> getAllUsersFoodConsumed(int userID) {
+        Log.v("USER ID = ", String.valueOf(userID));
         ArrayList<OrderRow> allResults = new ArrayList<OrderRow>();
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM " + TABLE_ORDERHEADER + " WHERE UserID= " +
-                userID + " AND ORDERTYPECODE= " + LOOKUPORDERTYPE_FOODENTRY;
+               userID + " AND ORDERTYPECODE= " + LOOKUPORDERTYPE_FOODENTRY;
         Cursor res = db.rawQuery(query, null);
         if(res.moveToFirst()) {
             do {
@@ -586,7 +608,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public void saveDataToFoodConsumedTable(ArrayList<FoodItem> recordedFoodEaten)
+    public void saveDataToFoodConsumedTable(ArrayList<FoodItem> recordedFoodEaten, int userID)
             throws IOException {
 
         //Create a new orderID
@@ -596,7 +618,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         for(int i = 0; i < recordedFoodEaten.size();i++){
             orderID = createOrderID();
-            saveDataToOrderHeader(orderID,LOOKUPORDERTYPE_FOODENTRY,getDateTime(),1);
+            saveDataToOrderHeader(orderID,LOOKUPORDERTYPE_FOODENTRY,getDateTime(),userID);
             recordedFoodEaten.get(i).setOrderID(orderID);
             recordedFoodEaten.get(i).setLocation("FAKE LOCATION");
             Log.v(recordedFoodEaten.get(i).dbWriteFoodConsumed(), "WRITE TO DB");

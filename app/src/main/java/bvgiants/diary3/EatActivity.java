@@ -43,6 +43,7 @@ public class EatActivity extends AppCompatActivity {
 
 
     Context mContext;
+    private int USERID;
 
     private ListView listView;
     private Button today;
@@ -63,6 +64,7 @@ public class EatActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
 
+        USERID = getIntent().getIntExtra("UserID", 0);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
@@ -71,7 +73,7 @@ public class EatActivity extends AppCompatActivity {
         context = getApplicationContext();
         databaseHelper = new DatabaseHelper(context);
         db = databaseHelper.getWritableDatabase();
-        orders = databaseHelper.getAllUsersFoodConsumed(1);
+        orders = databaseHelper.getAllUsersFoodConsumed(USERID);
         consumedToday = databaseHelper.showTodaysFood();
         for(int i = 0; i < orders.size(); i ++){
             Log.v(orders.get(i).dbWriteOrdersToFile(), "ORDERS HAS THIS");
@@ -119,6 +121,9 @@ public class EatActivity extends AppCompatActivity {
 
     public void newEntry(View v) {
         Intent intent = new Intent(this, FoodEntryActivity.class);
+        Bundle userCreds = new Bundle();
+        userCreds.putInt("UserID", USERID);
+        intent.putExtras(userCreds);
         startActivity(intent);
     }
 
@@ -126,8 +131,6 @@ public class EatActivity extends AppCompatActivity {
     public void addRowsToTable(ArrayList<OrderRow> orders) {
         TableLayout table = (TableLayout) findViewById(R.id.tableLayout);
         table.removeAllViews();
-
-
 
         TableRow row = new TableRow(this);
         View headerLine = new View(this);
@@ -180,15 +183,15 @@ public class EatActivity extends AppCompatActivity {
 
     public void showTodaysFood() {
 
-        for(int i = 0; i < consumedToday.size(); i ++){
-            Log.v(consumedToday.get(i).dbWriteOrdersToFile(), "ORDERS HAS THIS");
+        for(int i = 0; i < orders.size(); i ++){
+            Log.v(orders.get(i).dbWriteOrdersToFile(), "ORDERS HAS THIS");
         }
         today = (Button) findViewById(R.id.buttonToday);
         today.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                addRowsToTable(consumedToday);
+                addRowsToTable(orders);
             }
 
 

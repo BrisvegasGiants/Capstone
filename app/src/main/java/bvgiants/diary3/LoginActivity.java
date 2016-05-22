@@ -62,6 +62,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private static final int REQUEST_READ_CONTACTS = 0;
 
+    private int USERID = 0;
+    private User userToLogin;
+
     /**
      * A dummy authentication store containing known user names and passwords.
      * TODO: remove after connecting to a real authentication system.
@@ -464,6 +467,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             if (databaseHelper.getUser(email, pw) == true) {
                 //Toast toast = Toast.makeText(context, found, duration);
                 //toast.show();
+                userToLogin = databaseHelper.loggedInUser(email,pw);
+                USERID = userToLogin.getId();
                 return true;
             } else {
                 // Toast toast = Toast.makeText(context,notFound,duration);
@@ -618,9 +623,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             showProgress(false);
-
+            Bundle userCreds = new Bundle();
+            userCreds.putInt("UserID", userToLogin.getId());
             if (success) {
-                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                Intent login = new Intent(LoginActivity.this, MainActivity.class);
+                login.putExtras(userCreds);
+                startActivity(login);
 
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));

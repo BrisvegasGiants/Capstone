@@ -62,6 +62,8 @@ import java.util.ArrayList;
 public class FoodEntryActivity extends AppCompatActivity implements SearchView.OnQueryTextListener,
         SearchView.OnCloseListener {
 
+    private int USERID;
+
     ListView list;
     public CustomListAdapter adapter;
     public static Context context;
@@ -86,6 +88,7 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
     ArrayList<Integer> userFoodImages = new ArrayList<Integer>();
     ArrayList<String> userFoodNames = new ArrayList<String>();
 
+
     private Button addToDiary;
 
     @Override
@@ -101,6 +104,8 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
         context = getApplicationContext();
         databaseHelper = new DatabaseHelper(context);
         db = databaseHelper.getWritableDatabase();
+
+        USERID = getIntent().getIntExtra("UserID", 0);
 
         //Will need another way to get images eventually
         imageId.add(R.drawable.bigmac);
@@ -203,7 +208,10 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
             public void onClick(View v) {
                 //Log.v("ADD TO DIARY! ", " I'VE REGISTERED A CLICK!");
                 try{
-                    databaseHelper.saveDataToFoodConsumedTable(usersFoods);
+                    databaseHelper.saveDataToFoodConsumedTable(usersFoods, USERID);
+                    Bundle userCreds = new Bundle();
+                    userCreds.putInt("UserID", USERID);
+                    loadEat.putExtras(userCreds);
                     startActivity(loadEat);
                 } catch (IOException e){
                     Log.v(e.toString(), " THERE WAS AN ERROR!");

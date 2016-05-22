@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
     Context mContext;
     static float percentageValue;
+    private int USERID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
         startBackgroundProcess(this.findViewById(android.R.id.content), mContext);
 
+        USERID = getIntent().getIntExtra("UserID", 0);
         // Not loading in because google fit isn't connecting yet
         //((ProgressBar)findViewById(R.id.progressBarStepsGoal)).setProgress((int)percentageValue);
         //Log.e("Progress Bar", "Progress Bar is: " + percentageValue);
@@ -84,6 +86,9 @@ public class MainActivity extends AppCompatActivity {
 
             case (R.id.buttonEat):
                 Intent startEat = new Intent(this, EatActivity.class);
+                Bundle userCreds = new Bundle();
+                userCreds.putInt("UserID", USERID);
+                startEat.putExtras(userCreds);
                 startActivity(startEat);
                 break;
 
