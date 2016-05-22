@@ -104,7 +104,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
         for (int i=0; i<locationCount; i++){
             String lat = mapReferences.getString("lat"+i, "No Lat Recorded");
             String lng = mapReferences.getString("lng"+i, "No Long Recorded");
-            LatLng loc = new LatLng(Double.parseDouble(lat)+i, Double.parseDouble(lng));
+            LatLng loc = new LatLng(Double.parseDouble(lat), Double.parseDouble(lng));
 
             // *** Start Edit
 
@@ -115,11 +115,11 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
                 Log.e("Google Maps", "Count 0 - Found Logged Location! | Looped | " + lat +" "+ lng);
                 Log.e("Google Maps", "Count 0 - Loop Counter: " + i);
                 Log.e("Google Maps", "Count 0 - Dropped Pin at " + loc);
-                Marker mMarker = mMap.addMarker(new MarkerOptions().position(loc).title("Pin "+i));
+                Marker mMarker = mMap.addMarker(new MarkerOptions().position(loc).title("Pin Number: " + i));
                 //Log.e("Google Maps", "Distance between 2 point is  " + distanceDif);
             }
 
-            // After first pin, check distance is over 200m from previous pin and drop it.
+            // Always place one pin, then check the rest
             if (i > 0) {
                 //LatLng oldLoc = loc;
                 String oldlatitude = mapReferences.getString("lat"+(i-1), "No Lat Recorded");
@@ -127,20 +127,25 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
                 Double oldlat = Double.parseDouble(oldlatitude);
                 Double oldlng = Double.parseDouble(oldlongitude);
 
-                Double distanceDif = distance(Double.parseDouble(lat)+i, Double.parseDouble(lng), oldlat, oldlng);
+                Double distanceDif = distance(Double.parseDouble(lat), Double.parseDouble(lng), oldlat, oldlng);
 
-                if (distanceDif < .30){
+                // If the distance has not changed by more than 100m...
+                if (distanceDif < .10){
                     // Do nothing
-                    Log.e("Google Maps", "Cannot Place Pin - Under Distance!" + " Lat Figure is: " + loc + " and the difference is " + distanceDif);
+                    Log.e("Google Maps", "Loop No: " + i);
+                    Log.e("Google Maps", "Cannot Place Pin - Under Distance!" );
+                    Log.e("Google Maps", "Distance is " + distanceDif + " at this location: " + loc );
 
                 } else {
-                    // Place pin
+                    // Place a Pin
+                    Log.e("Google Maps", "Loop No: " + i);
                     Log.e("Google Maps", "Placing Pin on "+i+" loop - Distance Difference is " + distanceDif );
-                    Marker mMarker = mMap.addMarker(new MarkerOptions().position(loc).title("Pin "+i));
+                    Log.e("Google Maps", "Count " + i + " - Dropped Pin at " + loc);
+                    Marker mMarker = mMap.addMarker(new MarkerOptions().position(loc).title("Pin Number: " + i));
+
                 }
 
             }
-
             // Compare Distance
 
             // *** End Edit
@@ -177,7 +182,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
         dist = Math.acos(dist);
         dist = rad2deg(dist);
         dist = dist * 60 * 1.1515;
-        Log.e("Google Maps", "Distance Calculation is: " + dist + " With the following figures:" + lat1 +" "+lat2);
+        //Log.e("Google Maps", "Distance Calculation is: " + dist + " With the following figures:" + lat1 +" "+lat2);
         return (dist);
     }
 

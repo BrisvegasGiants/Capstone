@@ -6,6 +6,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -25,6 +26,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,6 +40,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.fitness.Fitness;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +53,9 @@ import static android.Manifest.permission.READ_CONTACTS;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor>,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -75,6 +83,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     public static Context context;
     public DatabaseHelper databaseHelper;
     public SQLiteDatabase db;
+
+    private static final int REQUEST_OAUTH = 1;
+    private static final String AUTH_PENDING = "auth_state_pending";
+    private boolean authInProgress = false;
+    private GoogleApiClient mGoogleFitClient;
+
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -172,6 +186,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         //startBackgroundProcess(this.findViewById(android.R.id.content));
 
+        if (savedInstanceState != null) {
+            authInProgress = savedInstanceState.getBoolean(AUTH_PENDING);
+        }
+
+        mGoogleFitClient = new GoogleApiClient.Builder(this)
+                .addApi(Fitness.SENSORS_API)
+                .addScope(Fitness.SCOPE_ACTIVITY_READ_WRITE)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+
+
     }// End onCreate
 
 
@@ -227,6 +253,101 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         startService(new Intent(getBaseContext(), BackgroundService.class));
     }
 */
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+        if (!authInProgress) {
+            try {
+                authInProgress = true;
+                connectionResult.startResolutionForResult(LoginActivity.this, REQUEST_OAUTH);
+            } catch (IntentSender.SendIntentException e) {
+                //Err...
+
+            }
+        } else {
+            Log.e("GoogleFit", "authInProgress");
+        }
+
+        // Error while connecting. Try to resolve using the pending intent returned.
+        /*
+        if (result.getErrorCode() == FitnessStatusCodes.NEEDS_OAUTH_PERMISSIONS) {
+            try {
+                result.startResolutionForResult(this, REQUEST_OAUTH);
+            } catch (SendIntentException e) {
+            }
+        }*/
+    } // End onConnectionFailed
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_OAUTH) {
+            authInProgress = false;
+            if (resultCode == RESULT_OK){
+                if (!mGoogleFitClient.isConnecting() && !mGoogleFitClient.isConnected()) {
+                    mGoogleFitClient.connect();
+                }
+            } else if (resultCode == RESULT_CANCELED) {
+                Log.e("GoogleFit", "RESULT_CANCELED");
+            }
+        } else {
+            Log.e("GoogleFit", "requestCode NOT request_oauth");
+        }
+    } // End onActivityResult
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(AUTH_PENDING, authInProgress);
+    } // End onSaveInstanceState
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mGoogleFitClient.connect();
+    } // End onStart
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        Log.e("Google Fit", "Google Fit has connected");
+        /*
+        DataSourcesRequest dataSourceRequest = new DataSourcesRequest.Builder()
+                .setDataTypes(DataType.TYPE_STEP_COUNT_CUMULATIVE )
+                .setDataSourceTypes( DataSource.TYPE_RAW)
+                .build();
+
+        ResultCallback<DataSourcesResult> dataSourcesResultCallback = new ResultCallback<DataSourcesResult>() {
+            @Override
+            public void onResult(DataSourcesResult dataSourcesResult) {
+                for ( DataSource dataSource : dataSourcesResult.getDataSources()){
+                    if (DataType.TYPE_STEP_COUNT_CUMULATIVE.equals( dataSource.getDataType())){
+                        registerFitnessDataListener(dataSource, DataType.TYPE_STEP_COUNT_CUMULATIVE);
+                    }
+                }
+            } //End onResult
+        }; //End ResultCallback
+
+        Fitness.SensorsApi.findDataSources(mApiClient, dataSourceRequest).setResultCallback(dataSourcesResultCallback);
+
+        /*
+        // Connected to Google Fit Client.
+        Fitness.SensorsApi.add(
+                mGoogleApiClient,
+                new SensorRequest.Builder()
+                        .setDataType(DataType.TYPE_STEP_COUNT_CUMULATIVE)
+                        .build(),
+                this);
+        */
+    } // end onConnected
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        // The connection has been interrupted. Wait until onConnected() is called.
+        // Do something...
+
+    } // End onConnectionSuspended
+
 
 
     private void populateAutoComplete() {
