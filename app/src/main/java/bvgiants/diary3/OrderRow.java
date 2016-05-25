@@ -8,7 +8,10 @@ public class OrderRow {
     public int orderID;
     public int orderTypeCode;
     public String date;
+    public String time;
     public int userID;
+    public int foodId;
+    public String location;
 
     public OrderRow (int orderID, int orderTypeCode, String date, int userID){
         this.orderID = orderID;
@@ -17,8 +20,19 @@ public class OrderRow {
         this.userID = userID;
     }
 
+    public OrderRow (String date, String time, int foodId, String location){
+        this.date = date;
+        this.time = time;
+        this.foodId = foodId;
+        this.location = location;
+    }
+
     public String dbWriteOrdersToFile (){
         return orderID + " " + orderTypeCode + " " + date + " " + userID + "\n";
+    }
+
+    public String todaysFoodCheck(){
+        return date + " " + time + " " + foodId + " " + location;
     }
 
     public int getOrderID() {
@@ -51,5 +65,29 @@ public class OrderRow {
 
     public void setUserID(int userID) {
         this.userID = userID;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public int getFoodId() {
+        return foodId;
+    }
+
+    public void setFoodId(int foodId) {
+        this.foodId = foodId;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 }

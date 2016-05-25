@@ -13,7 +13,7 @@
 
      <item android:id="@+id/action_settings"
     android:title="@string/action_settings"
-    android:icon="@drawable/settings"
+    android:icon="@drawable/settingz"
     android:orderInCategory="100"
     app:showAsAction="never"/>
 

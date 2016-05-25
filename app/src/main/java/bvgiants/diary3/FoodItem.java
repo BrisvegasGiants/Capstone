@@ -27,8 +27,9 @@ public class FoodItem {
     public final List<String> children = new ArrayList<String>();
     public String string;
 
-    public FoodItem(String name, int calories, int sugar, int fat, int energy, int sodium,
+    public FoodItem( int foodId, String name, int calories, int sugar, int fat, int energy, int sodium,
                     int protein, String imageLocal) {
+        this.foodId = foodId;
         this.name = name;
         this.calories = calories;
         this.sugar = sugar;

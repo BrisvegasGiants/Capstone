@@ -73,6 +73,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String ORDERHEADER_COLUMN_ORDERID = "OrderID";
     public static final String ORDERHEADER_COLUMN_ORDERTYPECODE = "OrderTypeCode";
     public static final String ORDERHEADER_COLUMN_ORDERDATE = "OrderDate";
+    public static final String ORDERHEADER_COLUMN_ORDERTIME = "OrderTime";
     public static final String ORDERHEADER_COLUMN_USERID = "UserID";
 
     //Table Create Statements
@@ -97,7 +98,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String CREATE_TABLE_ORDERHEADER = "CREATE TABLE " + TABLE_ORDERHEADER + "(" +
             ORDERHEADER_COLUMN_ORDERID + " INTEGER PRIMARY KEY, " + ORDERHEADER_COLUMN_ORDERTYPECODE
             + " INTEGER, " + ORDERHEADER_COLUMN_ORDERDATE + " DATETIME DEFAULT CURRENT_TIMESTAMP, " +
-            ORDERHEADER_COLUMN_USERID + " INTEGER);";
+            ORDERHEADER_COLUMN_ORDERTIME + " DATETIME DEFAULT CURRENT_TIMESTAMP, "
+            + ORDERHEADER_COLUMN_USERID + " INTEGER);";
 
     //To save creating table LOOKUPORDERTYPE, the below variables take the place of the table.
     //add more as required.
@@ -242,12 +244,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public boolean insertOrderHeader(int orderID,int orderTypeCode, String orderDate, int userID) {
+    public boolean insertOrderHeader(int orderID,int orderTypeCode, String orderDate,
+                                     String orderTime,int userID) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("OrderID", orderID);
         contentValues.put("OrderTypeCode", orderTypeCode);
         contentValues.put("OrderDate", orderDate);
+        contentValues.put("OrderTime", orderTime);
         contentValues.put("UserID", userID);
         db.insert(TABLE_ORDERHEADER, null, contentValues);
         return true;
@@ -405,7 +409,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor res = db.rawQuery(select,null);
         if(res.moveToFirst()){
             do {
-                FoodItem food = new FoodItem(res.getString(1),res.getInt(2),res.getInt(3),res.getInt(4),
+                FoodItem food = new FoodItem(res.getInt(0),res.getString(1),res.getInt(2),res.getInt(3),res.getInt(4),
                         res.getInt(5),res.getInt(6),res.getInt(7),res.getString(8));
                 results.add(food);
             }while(res.moveToNext());
@@ -425,7 +429,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[]{searchResult + "%"});
         if(res.moveToFirst()){
             do {
-                FoodItem food = new FoodItem(res.getString(1),res.getInt(2),res.getInt(3),res.getInt(4),
+                FoodItem food = new FoodItem(res.getInt(0),res.getString(1),res.getInt(2),res.getInt(3),res.getInt(4),
                         res.getInt(5),res.getInt(6),res.getInt(7),res.getString(8));
                 results.add(food);
                 Log.v("FOOD SEARCH FOUND: ", food.getName());
@@ -446,7 +450,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor res = db.rawQuery(select,null);
         if(res.moveToFirst()){
             do {
-                FoodItem food = new FoodItem(res.getString(1),res.getInt(2),res.getInt(3),res.getInt(4),
+                FoodItem food = new FoodItem(res.getInt(0),res.getString(1),res.getInt(2),res.getInt(3),res.getInt(4),
                         res.getInt(5),res.getInt(6),res.getInt(7),res.getString(8));
                 results.add(food);
             }while(res.moveToNext());
@@ -582,8 +586,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String[] input;
             foodLine = foodString.get(i);
             input = foodLine.split(" ");
-            System.out.printf("%s\n%s\n%s\n%s\n",input[0],input[1],input[2],input[3],input[5],
-                    input[6],input[7]);
             insertFood(Integer.parseInt(input[0]),input[1],Integer.parseInt(input[2]),Integer.parseInt(input[3])
                     ,Integer.parseInt(input[4]),Integer.parseInt(input[5]),Integer.parseInt(input[6]),
                     Integer.parseInt(input[7]),input[8]);
@@ -618,7 +620,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         for(int i = 0; i < recordedFoodEaten.size();i++){
             orderID = createOrderID();
-            saveDataToOrderHeader(orderID,LOOKUPORDERTYPE_FOODENTRY,getDateTime(),userID);
+            saveDataToOrderHeader(orderID,LOOKUPORDERTYPE_FOODENTRY,justGetDate(), justGetTime(),userID);
             recordedFoodEaten.get(i).setOrderID(orderID);
             recordedFoodEaten.get(i).setLocation("FAKE LOCATION");
             Log.v(recordedFoodEaten.get(i).dbWriteFoodConsumed(), "WRITE TO DB");
@@ -627,10 +629,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public void saveDataToOrderHeader(int orderID, int orderTypeCode, String date,
+    public void saveDataToOrderHeader(int orderID, int orderTypeCode, String date, String time,
                                       int userID) throws IOException {
 
-            insertOrderHeader(orderID,orderTypeCode,date,userID);
+            insertOrderHeader(orderID,orderTypeCode,date,time,userID);
 
     }
 
@@ -651,19 +653,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //Select * from OrderHeader
         //left outer join FoodConsumed on OrderHeader.OrderID = FoodConsumed.ID
         //where OrderHeader.Date = todays date
-
+        String date = justGetDate();
         ArrayList<OrderRow> allRows = new ArrayList<OrderRow>();
-        String query = "SELECT * FROM " + TABLE_ORDERHEADER + " LEFT OUTER JOIN "
-                + TABLE_FOODCONSUMED + " ON " + TABLE_ORDERHEADER + ".OrderID = " + TABLE_FOODCONSUMED
-                +".ID WHERE "+ TABLE_ORDERHEADER + ".OrderDate >= date('now','-1 day');";
-        String pracQuery = "SELECT * FROM " + TABLE_ORDERHEADER;
-        Cursor res = db.rawQuery(query,null);
+        String query = "SELECT oh.OrderDate, oh.OrderTime, fc.FoodID, fc.Location" +
+                " FROM " + TABLE_ORDERHEADER + " oh" +
+                " LEFT OUTER JOIN "+ TABLE_FOODCONSUMED + " fc" +
+                " ON oh.OrderID = fc.ID" +
+                " WHERE oh.OrderDate=?";
+        //= date('now','-1 day');";
+
+        Cursor res = db.rawQuery(query, new String[]{date});
 
         if(res.moveToFirst()) {
             do {
-                OrderRow entry = new OrderRow(res.getInt(0), res.getInt(1), res.getString(2),
-                        res.getInt(3));
+                OrderRow entry = new OrderRow(res.getString(0), res.getString(1), res.getInt(2),
+                        res.getString(3));
+                //Log.v("RES 0 " , res.getString(0));
+                //Log.v("RES 1 ", res.getString(1));
+                //Log.v("RES 2 ", res.getString(2));
+                //Log.v("RES 3 ", res.getString(3));
                 allRows.add(entry);
+
             }while(res.moveToNext());
         }
         else {
@@ -679,11 +689,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     /*
     HELPER METHODS
      */
-    private String getDateTime() {
+    public String getDateTime() {
         SimpleDateFormat dateFormat = new SimpleDateFormat(
-                "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                "yyyy-MM-dd hh:mm", Locale.getDefault());
         Date date = new Date();
         return dateFormat.format(date);
+    }
+
+    public String justGetDate(){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        Date date = new Date();
+        return  dateFormat.format(date);
+    }
+
+    public String justGetTime(){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm", Locale.getDefault());
+        Date date = new Date();
+        return  dateFormat.format(date);
     }
 
     public int createOrderID(){

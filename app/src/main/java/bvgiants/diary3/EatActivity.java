@@ -1,42 +1,31 @@
 package bvgiants.diary3;
 
 
-import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
-import android.media.audiofx.BassBoost;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
+import java.util.Locale;
 
 
 public class EatActivity extends AppCompatActivity {
@@ -54,7 +43,7 @@ public class EatActivity extends AppCompatActivity {
 
     public ArrayList<FoodItem> allFood = new ArrayList<FoodItem>();
     public ArrayList<OrderRow> orders = new ArrayList<OrderRow>();
-    public ArrayList<OrderRow> consumedToday = new ArrayList<OrderRow>();
+    public ArrayList<OrderRow> todaysOrders = new ArrayList<OrderRow>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,12 +62,14 @@ public class EatActivity extends AppCompatActivity {
         context = getApplicationContext();
         databaseHelper = new DatabaseHelper(context);
         db = databaseHelper.getWritableDatabase();
-        orders = databaseHelper.getAllUsersFoodConsumed(USERID);
-        consumedToday = databaseHelper.showTodaysFood();
-        for(int i = 0; i < orders.size(); i ++){
-            Log.v(orders.get(i).dbWriteOrdersToFile(), "ORDERS HAS THIS");
+        //orders = databaseHelper.getAllUsersFoodConsumed(USERID);
+        todaysOrders = databaseHelper.showTodaysFood();
+        allFood = databaseHelper.allFood();
+
+        for(int i = 0; i < todaysOrders.size(); i ++){
+            Log.v(todaysOrders.get(i).todaysFoodCheck(), "TODAYS FOOD CHECK");
         }
-        //addRowsToTable(consumedToday);
+        //addRowsToTable(todaysOrders);
 
         showTodaysFood();
         //showFoodConsumed();
@@ -129,8 +120,8 @@ public class EatActivity extends AppCompatActivity {
 
 
     public void addRowsToTable(ArrayList<OrderRow> orders) {
-        TableLayout table = (TableLayout) findViewById(R.id.tableLayout);
-        table.removeAllViews();
+        //TableLayout table = (TableLayout) findViewById(R.id.tableLayout);
+        //table.removeAllViews();
 
         TableRow row = new TableRow(this);
         View headerLine = new View(this);
@@ -150,7 +141,7 @@ public class EatActivity extends AppCompatActivity {
         row.addView(orderTime);
         row.addView(foodName);
         row.addView(calories);
-        table.addView(row);
+        //table.addView(row);
 
        for (int i = 0; i < orders.size(); i++) {
             row = new TableRow(this);
@@ -159,9 +150,9 @@ public class EatActivity extends AppCompatActivity {
             calories = new TextView(this);
 
             //orderTime.setText("OrderDate: " + orders.get(i).getDate());
-            orderTime.setText("OrderTypeCode: " + String.valueOf(orders.get(i).getOrderTypeCode()));
-            foodName.setText("OrderID: " + String.valueOf(orders.get(i).getOrderID()));
-            calories.setText("UserID: " + String.valueOf(orders.get(i).getUserID()));
+            orderTime.setText(String.valueOf(orders.get(i).getUserID()));
+            foodName.setText(String.valueOf(orders.get(i).getOrderID()));
+            calories.setText(String.valueOf(orders.get(i).getOrderTypeCode()));
 
             orderTime.setGravity(Gravity.CENTER);
             foodName.setGravity(Gravity.CENTER);
@@ -170,28 +161,23 @@ public class EatActivity extends AppCompatActivity {
             row.addView(orderTime);
             row.addView(foodName);
             row.addView(calories);
-            table.addView(row);
+           // table.addView(row);
         }
-
-
-        /*THE BELOW CODE WAS MY PREVIOUS ATTEMPT TO GET IMAGES TO DISPLAY ON THE SEARCH FIELD
-        PROBS LEAVE THIS HERE UNTIL WE CONFIRM EVERYTHING IS FUNCTIONING!!!
-         */
-
 
     }
 
     public void showTodaysFood() {
 
-        for(int i = 0; i < orders.size(); i ++){
-            Log.v(orders.get(i).dbWriteOrdersToFile(), "ORDERS HAS THIS");
+        for(int i = 0; i < todaysOrders.size(); i ++){
+            Log.v(todaysOrders.get(i).dbWriteOrdersToFile(), "CONSUMED TODAY HAS THIS");
         }
         today = (Button) findViewById(R.id.buttonToday);
         today.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                addRowsToTable(orders);
+                //addRowsToTable(todaysOrders);
+                createFoodFragment();
             }
 
 
@@ -215,7 +201,7 @@ public class EatActivity extends AppCompatActivity {
     }
 */
     public void addRowsToMonths(ArrayList<OrderRow> orders) {
-        TableLayout table = (TableLayout) findViewById(R.id.tableLayout);
+        //TableLayout table = (TableLayout) findViewById(R.id.tableLayout);
         for (int i = 0; i < orders.size(); i++) {
             TableRow row = new TableRow(this);
             TextView orderTime = new TextView(this);
@@ -230,9 +216,31 @@ public class EatActivity extends AppCompatActivity {
             row.addView(orderTime);
             row.addView(foodName);
             row.addView(calories);
-            table.addView(row);
+           // table.addView(row);
         }
 
     }
 
+    public void createFoodFragment(){
+
+        Fragment fragment = new ExpandableListFragmentEAT();
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        fragmentTransaction.replace(R.id.fragmentEat,fragment);
+        fragmentTransaction.commit();
+
+    }
+
+    public String justGetDate(){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        Date date = new Date();
+        return  dateFormat.format(date);
+    }
+
+    public ArrayList<OrderRow> getTodaysOrders(){
+        return todaysOrders;
+    }
+    public ArrayList<FoodItem> getAllFood(){
+        return allFood;
+    }
 }

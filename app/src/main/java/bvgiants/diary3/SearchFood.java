@@ -75,9 +75,9 @@ public class SearchFood extends AppCompatActivity implements SearchView.OnQueryT
                                 foodItem.child("imageLocal").getValue().toString())); */
 
                         // I am just adding static values to the Food Items. But the name is actually comign from the DB
-                        foodItems.add(new FoodItem(
-                                foodItem.getKey().toString(),
-                                100, 100, 100, 100, 100, 100, "test"));
+                        //foodItems.add(new FoodItem(
+                          //      foodItem.getKey().toString(),
+                            //    100, 100, 100, 100, 100, 100, "test"));
 
                         // I am also adding the name to a list for displaying in the List View
                         foodNames.add(foodItem.getKey().toString());

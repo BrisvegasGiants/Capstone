@@ -41,29 +41,18 @@
             android:id="@+id/buttonYear"
             android:text="Year" />
 
+
     </LinearLayout>
-
-
 
     <!--\\\\\\\\\\ Eat menu buttons /////////-->
 
     <!--\\\\\ New Entry Button /////-->
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/buttonAddEntry"
-        android:textColor="#2f4f4f"
-        android:text="@string/add_entry_food"
-        android:background="@drawable/buttonchanges"
-        android:onClick="newEntry"
-        android:layout_marginTop="84dp"
-        android:layout_below="@+id/tableLayout"
-        android:layout_alignParentEnd="true" />
+
 
 
     <!--\\\\\\\\\\ Static calorie table //////////////-->
 
-    <TableLayout
+    <!--<TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -71,7 +60,7 @@
         android:stretchColumns="1"
         android:id="@+id/tableLayout">
 
-       <!--  <TableRow>
+         <TableRow>
             <TextView
                 android:layout_column="1"
                 android:text="@string/table_time"
@@ -84,9 +73,9 @@
                 android:text="@string/table_calories"
                 android:gravity="center"
                 android:padding="3dip" />
-        </TableRow> -->
+        </TableRow>
 
-    </TableLayout>
+    </TableLayout>-->
 
 
 

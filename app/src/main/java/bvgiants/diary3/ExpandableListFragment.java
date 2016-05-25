@@ -109,7 +109,7 @@ public class ExpandableListFragment extends Fragment {
         public View getChildView(int i, int i1, boolean b, View view, ViewGroup viewGroup) {
             TextView textView = new TextView(ExpandableListFragment.this.getActivity());
             textView.setText(getChild(i, i1).toString());
-            textView.setBackgroundColor(Color.parseColor("#CDDC39"));
+            textView.setBackgroundColor(Color.parseColor("#BBDEFB"));
             return textView;
         }
 
