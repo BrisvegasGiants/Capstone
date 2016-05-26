@@ -15,108 +15,87 @@
     android:clickable="false"
     android:contextClickable="false">
 
+    <ImageView
+        android:layout_width="165dp"
+        android:layout_height="165dp"
+        android:id="@+id/imageView"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/healthdiarylogo"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="46dp" />
+
     <!--\\\\\\ Heading ///////-->
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/title_name"
-        android:id="@+id/titleName"
-        android:textColor="@android:color/holo_blue_light"
-        android:textSize="40sp"
-        android:layout_marginTop="43dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
-
     <!--\\\\\\\\\\Buttons ////////-->
-    <Button
-        style="@style/menuButtons"
-        android:id="@+id/buttonRun"
-        android:background="@drawable/buttonchanges"
-        android:text="@string/run_button"
-        android:layout_marginTop="40dp"
-        android:layout_below="@+id/titleName"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:clickable="true" />
 
     <Button
         style="@style/menuButtons"
         android:id="@+id/buttonEat"
         android:background="@drawable/buttonchanges"
         android:text="@string/eat_button"
+        android:layout_gravity="center_vertical"
         android:layout_below="@+id/buttonRun"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp" />
+        android:layout_marginTop="10dp"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        style="@style/menuButtons"
+        android:id="@+id/buttonRun"
+        android:background="@drawable/buttonchanges"
+        android:text="@string/run_button"
+        android:clickable="true"
+        android:layout_below="@+id/imageView"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentEnd="true"/>
 
     <Button
         style="@style/menuButtons"
         android:id="@+id/buttonData"
         android:background="@drawable/buttonchanges"
         android:text="@string/data_button"
+        android:onClick="menuSelect"
         android:layout_below="@+id/buttonEat"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginRight="10dp"
-        android:onClick="menuSelect"/>
-
-    <Button
-        style="@style/menuButtons"
-        android:id="@+id/buttonSettings"
-        android:background="@drawable/buttonchanges"
-        android:text="@string/settings_button"
-        android:layout_below="@+id/buttonData"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginRight="10dp" />
+        android:layout_marginTop="10dp"
+        android:layout_alignParentEnd="true" />
 
     <ProgressBar
         android:id="@+id/progressBarStepsGoal"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="270dp"
         android:layout_height="30dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="380dp"
         android:progress="0"
         android:secondaryProgress="0"
         android:indeterminate="false"
-        android:layout_alignParentEnd="false"
-        android:layout_alignParentStart="false"
         android:focusable="false"
-        android:contextClickable="true" />
+        android:contextClickable="true"
+        android:layout_above="@+id/calorieGoal"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_marginTop="15dp"
         android:text="@string/glance"
         android:id="@+id/atAGlanceTitle"
         android:textColor="@android:color/holo_blue_light"
         android:textSize="20sp"
-        android:layout_below="@+id/buttonSettings"
-        android:layout_alignStart="@+id/buttonSettings" />
+        android:layout_above="@+id/progressBarStepsGoal"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="23dp" />
 
     <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"
         android:id="@+id/progressBarCalories"
         android:layout_width="270dp"
         android:layout_height="30dp"
-        android:layout_marginTop="77dp"
         android:progress="0"
         android:secondaryProgress="0"
         android:indeterminate="false"
         android:focusable="false"
         android:contextClickable="true"
-        android:layout_below="@+id/progressBarStepsGoal"
-        android:layout_alignStart="@+id/progressBarStepsGoal" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/calorieGoal" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -124,8 +103,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/textSteps"
         android:id="@+id/stepGoal"
-        android:layout_marginTop="22dp"
-        android:layout_below="@+id/atAGlanceTitle"
+        android:layout_above="@+id/progressBarStepsGoal"
         android:layout_alignStart="@+id/progressBarStepsGoal" />
 
     <TextView
@@ -134,8 +112,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/textCalorie"
         android:id="@+id/calorieGoal"
-        android:layout_marginBottom="32dp"
-        android:layout_alignBottom="@+id/progressBarCalories"
-        android:layout_alignStart="@+id/progressBarCalories" />
+        android:layout_above="@+id/progressBarCalories"
+        android:layout_alignStart="@+id/progressBarStepsGoal" />
 
 </RelativeLayout>

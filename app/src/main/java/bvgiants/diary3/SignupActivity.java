@@ -22,7 +22,7 @@ public class SignupActivity extends AppCompatActivity {
 
     Button signUpButton;
     TextView alreadyMember;
-    ProgressDialog progress;
+
 
     private EditText mEmailView;
     private EditText mPasswordView;

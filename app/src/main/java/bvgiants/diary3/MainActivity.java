@@ -34,13 +34,13 @@ public class MainActivity extends AppCompatActivity {
          setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+       /*( fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-        });
+        }); */
 
         startBackgroundProcess(this.findViewById(android.R.id.content), mContext);
 
@@ -95,11 +95,6 @@ public class MainActivity extends AppCompatActivity {
             case (R.id.buttonData):
                 Intent startData = new Intent(this, DataActivity.class);
                 startActivity(startData);
-                break;
-
-            case (R.id.buttonSettings):
-                Intent startSettings = new Intent(this, SettingsActivity.class);
-                startActivity(startSettings);
                 break;
 
         }

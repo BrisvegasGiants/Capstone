@@ -12,4 +12,8 @@
     tools:context="bvgiants.diary3.LoginActivity"
     tools:showIn="@layout/activity_login">
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView3" />
 </RelativeLayout>
