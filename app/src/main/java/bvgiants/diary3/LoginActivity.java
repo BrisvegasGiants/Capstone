@@ -199,7 +199,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
-
+        mGoogleFitClient.connect();
 
     }// End onCreate
 
@@ -305,11 +305,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         outState.putBoolean(AUTH_PENDING, authInProgress);
     } // End onSaveInstanceState
 
+    /*
     @Override
     public void onStart() {
         super.onStart();
         mGoogleFitClient.connect();
     } // End onStart
+*/
 
     @Override
     public void onConnected(Bundle bundle) {
