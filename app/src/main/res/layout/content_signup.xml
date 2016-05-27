@@ -11,7 +11,7 @@
         android:layout_height="165dp"
         android:id="@+id/imageView"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:src="@drawable/healthdiarylogo"/>
 
     <LinearLayout
@@ -98,7 +98,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingTop="50dp"
+                    android:layout_marginTop="20dp"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="Already a member? Login"
                     android:id="@+id/alreadymember"
