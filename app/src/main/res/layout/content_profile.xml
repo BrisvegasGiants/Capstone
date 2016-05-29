@@ -78,9 +78,8 @@ tools:context="bvgiants.diary3.ProfileActivity">
         android:layout_height="180dp"
         android:id="@+id/imageView3"
         android:src="@drawable/profile1"
-        android:layout_above="@+id/editText"
-        android:layout_marginBottom="24dp"
-        android:layout_toEndOf="@+id/textView2">
+        android:layout_marginTop="50dp"
+        android:layout_centerHorizontal="true">
 
     </ImageView>
 </RelativeLayout>
