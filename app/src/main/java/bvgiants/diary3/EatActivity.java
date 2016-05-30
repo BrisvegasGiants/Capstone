@@ -72,6 +72,7 @@ public class EatActivity extends AppCompatActivity {
         //addRowsToTable(todaysOrders);
 
         showTodaysFood();
+        createFoodFragment();
         //showFoodConsumed();
     } //End onCreate
 
