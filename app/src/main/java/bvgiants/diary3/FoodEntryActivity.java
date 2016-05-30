@@ -13,6 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.*;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -147,17 +148,18 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
                 if (usersFoods.contains(selecteditem)) {
                     //parent.getChildAt(position).setBackgroundColor(Color.WHITE);
                     usersFoods.remove(selecteditem);
-                    list.setVisibility(View.GONE);
+                    //list.setVisibility(View.GONE);
                     searchView.refreshDrawableState();
                 } else {
                     Toast.makeText(getApplicationContext(), selecteditem.getName(), Toast.LENGTH_SHORT).show();
                     usersFoods.add(selecteditem);
                     Log.v("userFoods size = ", String.valueOf(usersFoods.size()));
-                    list.setVisibility(View.GONE);
+                    //list.setVisibility(View.GONE);
                     searchView.refreshDrawableState();
+                    //searchView.clearFocus();
+
                     //parent.getChildAt(position).setBackgroundColor(Color.BLUE);
                 }
-
             }
         });
 
@@ -170,6 +172,29 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
 
     }
 
+    /*public void onBackPressed(){
+
+        if(searchView.hasFocus()){
+            list.setVisibility(View.GONE);
+            searchView.clearFocus();
+            createUsersSelectedFoods();
+
+        }
+        else if (searchView.isActivated()){
+            list.setVisibility(View.GONE);
+            searchView.clearFocus();
+            createUsersSelectedFoods();
+            super.onBackPressed();
+        }
+        else {
+            /*Intent loadEat = new Intent(this, EatActivity.class);
+            Bundle userCreds = new Bundle();
+            userCreds.putInt("UserID", USERID);
+            loadEat.putExtras(userCreds);
+            startActivity(loadEat);
+            super.onBackPressed();
+        }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -222,21 +247,25 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
         });
     }
     public boolean onClose() {
-        searchView.refreshDrawableState();
+        //searchView.refreshDrawableState();
         list.setVisibility(View.GONE);
+        searchView.clearFocus();
         //createUsersSelectedFoods();
         return false;
     }
 
     public boolean onQueryTextSubmit(String query) {
+
         searchView.refreshDrawableState();
         list.setVisibility(View.GONE);
+        searchView.clearFocus();
         createUsersSelectedFoods();
         return false;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
+
 
         delimitedImages = new ArrayList<Integer>();
         delimitedNames = new ArrayList<String>();
@@ -253,7 +282,6 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
             }
 
         }
-
         adapter = new CustomListAdapter(this, delimitedNames, delimitedImages);
         list = (ListView) findViewById(R.id.list);
         list.setAdapter(adapter);
@@ -283,7 +311,6 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
     public void createUsersSelectedFoods(){
 
         for (int i = 0; i < usersFoods.size(); i++){
-            Log.v("USER FOODS", usersFoods.get(i).getName());
             for(int k = 0; k < allFood.size(); k++){
                 if (allFood.get(k).getName().equalsIgnoreCase(usersFoods.get(i).getName())){
                     userFoodImages.add(imageId.get(k));
@@ -299,6 +326,9 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
         fragmentTransaction.replace(R.id.fragment,fragment);
         fragmentTransaction.commit();
 
+        searchView.clearFocus();
+        searchView.refreshDrawableState();
+        list.setVisibility(View.GONE);
     }
 
 }

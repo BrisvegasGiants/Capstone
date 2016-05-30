@@ -87,9 +87,6 @@ public class ExpandableListFragment extends Fragment {
 
         @Override
         public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
-            //TextView textView = new TextView(ExpandableListFragment.this.getActivity());
-            //textView.setText(getGroup(i).name);
-
 
                 View rowView = inflater.inflate(R.layout.consumed_foods, null, true);
                 TextView txtTitle = (TextView) rowView.findViewById(R.id.consumed_txt);
