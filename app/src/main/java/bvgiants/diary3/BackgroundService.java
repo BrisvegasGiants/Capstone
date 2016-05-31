@@ -99,7 +99,7 @@ public class BackgroundService extends Service implements
                     .addOnConnectionFailedListener(this)
                     .build();
             mGoogleFitClient.connect();
-            Log.e("Google Fit", "Google Fit Connection Started");
+            Log.e("Google Fit", "Background Service : Google Fit Connection Started");
         }
 
         if (mGoogleMapsClient == null) {
@@ -109,7 +109,7 @@ public class BackgroundService extends Service implements
                     .addApi(LocationServices.API)
                     .build();
             mGoogleMapsClient.connect();
-            Log.e("Google Maps", "Google Maps Connection Started");
+            Log.e("Google Maps", "Background Service : Google Maps Connection Started");
         }
 
         /*
@@ -246,7 +246,7 @@ public class BackgroundService extends Service implements
                 .setDataTypes(DataType.TYPE_STEP_COUNT_CUMULATIVE )
                 .setDataSourceTypes( DataSource.TYPE_RAW)
                 .build();
-        Log.e("Google Fit", "Building Data Sources Requests");
+        Log.e("Google Fit", "Background Service : Building Data Sources Requests");
 
         ResultCallback<DataSourcesResult> dataSourcesResultCallback = new ResultCallback<DataSourcesResult>() {
             @Override
@@ -254,6 +254,7 @@ public class BackgroundService extends Service implements
                 for ( DataSource dataSource : dataSourcesResult.getDataSources()){
                     if (DataType.TYPE_STEP_COUNT_CUMULATIVE.equals( dataSource.getDataType())){
                         registerFitnessDataListener(dataSource, DataType.TYPE_STEP_COUNT_CUMULATIVE);
+
                     }
                 }
             } //End onResult
@@ -265,7 +266,7 @@ public class BackgroundService extends Service implements
 
     @Override
     public void onConnectionSuspended(int i) {
-        Log.e("Google Fit", "Connection Suspended");
+        Log.e("Google Fit", "Background Service : Connection Suspended");
     }
 
     private void registerFitnessDataListener(DataSource dataSource, DataType dataType){
@@ -279,9 +280,11 @@ public class BackgroundService extends Service implements
                     @Override
                     public void onResult(Status status) {
                         if (status.isSuccess()){
-                            Log.e("Google Fit", "SensorApi Attempting to Connect... Success!");
+                            Log.e("Google Fit", "Background Service : SensorApi Attempting to Connect... Success!");
+                            Toast.makeText(getApplicationContext(), "Found steps", Toast.LENGTH_SHORT).show();
                         } else {
-                            Log.e("Google Fit", "SensorApi Attempting to Connect... Failed");
+                            Log.e("Google Fit", "Background Service : SensorApi Attempting to Connect... Failed");
+                            Toast.makeText(getApplicationContext(), "Could not find steps", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -333,8 +336,6 @@ public class BackgroundService extends Service implements
                 public void run() {
                     // DEBUGGING CODE - Toasts the Number of steps
                     //Toast.makeText(getApplicationContext(), "Number of Steps: " + totalSteps, Toast.LENGTH_SHORT).show();
-
-
                 }
             });
 
@@ -350,7 +351,7 @@ public class BackgroundService extends Service implements
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.e("Google Fit", "Connection Failed - " + connectionResult);
+        Log.e("Google Fit", "Background Service : Connection Failed - " + connectionResult);
 /*
         if (!authInProgress) {
             try {

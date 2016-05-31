@@ -268,7 +268,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 connectionResult.startResolutionForResult(LoginActivity.this, REQUEST_OAUTH);
             } catch (IntentSender.SendIntentException e) {
                 //Err...
-
+                Log.e("GoogleFit", "Authentication has failed - error: "+ e);
+                Toast.makeText(LoginActivity.this, "Google Services Connection Failed", Toast.LENGTH_SHORT).show();
             }
         } else {
             Log.e("GoogleFit", "authInProgress");
@@ -292,12 +293,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             if (resultCode == RESULT_OK){
                 if (!mGoogleFitClient.isConnecting() && !mGoogleFitClient.isConnected()) {
                     mGoogleFitClient.connect();
+                    Log.e("Google Fit", "API Connecting");
+                    Toast.makeText(LoginActivity.this, "Google Services Connecting", Toast.LENGTH_SHORT).show();
                 }
             } else if (resultCode == RESULT_CANCELED) {
-                Log.e("GoogleFit", "RESULT_CANCELED");
+                Log.e("Google Fit", "API Connection: RESULT_CANCELED");
             }
         } else {
-            Log.e("GoogleFit", "requestCode NOT request_oauth");
+            Log.e("Google Fit", "requestCode NOT request_oauth");
         }
     } // End onActivityResult
 
@@ -318,6 +321,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     @Override
     public void onConnected(Bundle bundle) {
         Log.e("Google Fit", "Google Fit has connected");
+        Toast.makeText(LoginActivity.this, "Google Services Have Connected", Toast.LENGTH_SHORT).show();
         ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         /*
         DataSourcesRequest dataSourceRequest = new DataSourcesRequest.Builder()
@@ -355,7 +359,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     public void onConnectionSuspended(int i) {
         // The connection has been interrupted. Wait until onConnected() is called.
         // Do something...
-
+        Log.e("Google Fit", "Google Fit API has been suspended");
     } // End onConnectionSuspended
 
 

@@ -464,13 +464,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Log.v("USER ID = ", String.valueOf(userID));
         ArrayList<OrderRow> allResults = new ArrayList<OrderRow>();
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT * FROM " + TABLE_ORDERHEADER + " WHERE UserID= " +
-               userID + " AND ORDERTYPECODE= " + LOOKUPORDERTYPE_FOODENTRY;
+        String query = "SELECT oh.OrderDate, oh.OrderTime, fc.FoodID, fc.Location" +
+                " FROM " + TABLE_ORDERHEADER + " oh" +
+                " LEFT OUTER JOIN "+ TABLE_FOODCONSUMED + " fc" +
+                " ON oh.OrderID = fc.ID";
+        //String query = "SELECT * FROM " + TABLE_ORDERHEADER + " WHERE UserID= " +
+          //     userID + " AND ORDERTYPECODE= " + LOOKUPORDERTYPE_FOODENTRY;
         Cursor res = db.rawQuery(query, null);
         if(res.moveToFirst()) {
             do {
-                OrderRow entry = new OrderRow(res.getInt(0), res.getInt(1), res.getString(2),
-                        res.getInt(3));
+                OrderRow entry = new OrderRow(res.getString(0), res.getString(1), res.getInt(2),
+                        res.getString(3));
                 allResults.add(entry);
             }while(res.moveToNext());
 

@@ -1,29 +1,38 @@
 package bvgiants.diary3;
 
 import android.content.Context;
-import android.content.IntentSender;
-import android.net.Uri;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.content.Intent;
 import android.widget.ProgressBar;
 
-import com.google.android.gms.common.ConnectionResult;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
 
-    Context mContext;
+    private Context context;
     static float percentageValue;
     private int USERID;
+
+    public SQLiteDatabase db;
+    public DatabaseHelper databaseHelper;
+
+    private ProgressBar stepCounterProgressBar;
+    private ProgressBar calorieCounterProgressBar;
+    private ArrayList<OrderRow> allFoodOrders = new ArrayList<>();
+    private ArrayList<FoodItem> allFoodConsumed = new ArrayList<>();
+    private ArrayList<FoodItem> allFoods = new ArrayList<>();
+
+    int userStepGoal = 10000;
+    int userCalorieGoal = 2000;
+    int calorieCounter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,21 +42,40 @@ public class MainActivity extends AppCompatActivity {
          Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
          setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-       /*( fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        }); */
+        context = getApplicationContext();
+        databaseHelper = new DatabaseHelper(context);
+        db = databaseHelper.getWritableDatabase();
 
-        startBackgroundProcess(this.findViewById(android.R.id.content), mContext);
+        allFoodOrders = databaseHelper.getAllUsersFoodConsumed(USERID);
+        allFoods = databaseHelper.allFood();
+
+        for(int i = 0; i < allFoodOrders.size();i++){
+            for (int k = 0; k < allFoods.size(); k++){
+                if (allFoodOrders.get(i).getFoodId() == allFoods.get(k).getFoodId()) {
+                    allFoodConsumed.add(allFoods.get(k));
+                    calorieCounter += allFoods.get(k).getCalories();
+                }
+            }
+        }
+
+
+
+        startBackgroundProcess(this.findViewById(android.R.id.content), context);
 
         USERID = getIntent().getIntExtra("UserID", 0);
         // Not loading in because google fit isn't connecting yet
         //((ProgressBar)findViewById(R.id.progressBarStepsGoal)).setProgress((int)percentageValue);
         //Log.e("Progress Bar", "Progress Bar is: " + percentageValue);
+
+        stepCounterProgressBar = (ProgressBar) findViewById(R.id.progressBarStepsGoal);
+        calorieCounterProgressBar = (ProgressBar) findViewById(R.id.progressBarCalories);
+
+        stepCounterProgressBar.setMax(userStepGoal);
+        calorieCounterProgressBar.setMax(userCalorieGoal);
+
+        stepCounterProgressBar.setProgress(6000);
+        calorieCounterProgressBar.setProgress(calorieCounter);
+
 
     }
 
