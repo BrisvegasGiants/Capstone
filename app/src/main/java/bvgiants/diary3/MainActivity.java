@@ -95,6 +95,9 @@ public class MainActivity extends AppCompatActivity {
 
         if (id == R.id.action_settings) {
             Intent startSettings = new Intent(this, SettingsActivity.class);
+            Bundle userCreds = new Bundle();
+            userCreds.putInt("UserID", USERID);
+            startSettings.putExtras(userCreds);
             startActivity(startSettings);
             return true;
         }

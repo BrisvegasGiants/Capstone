@@ -132,8 +132,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     //Add execSQL statement per db table
-    public String delete(SQLiteDatabase db) {
-
+    public String delete() {
+        SQLiteDatabase db = this.getWritableDatabase();
         try{
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_LOOKUPFOOD);
@@ -149,13 +149,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //This method is nessesary to clear the XXXX TABLE each time a mainly because if we don't we'll
     //get duplicate entries in the UserTraits.txt and the read statement will have issues.
-    public void recreateUserTraits (){
+    public String recreateUserTraits (){
         SQLiteDatabase db = this.getWritableDatabase();
         try{
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERTRAITS);
             db.execSQL(CREATE_TABLE_USERTRAITS);
+            return "DELETING OF USERTRAITS SUCCESS!";
         } catch (SQLiteException e){
             System.out.print(e.toString());
+            return "DELETING OF USERTRAITS FAILED!";
         }
     }
 
@@ -317,21 +319,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean getUserTraits(int userID) {
+    public User getUserTraits(int userID) {
         SQLiteDatabase db = this.getReadableDatabase();
+        User user;
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_USERTRAITS + " WHERE ID=?",
                 new String[]{String.valueOf(userID)});
         if(res.moveToFirst()) {
+            user = new User (res.getInt(0),res.getString(1), res.getString(2),
+                    res.getInt(3), res.getInt(4),res.getInt(5), res.getString(6));
             res.close();
             db.close();
-            return true;
         }
         else {
             System.out.print("USER TRAITS AREN'T FOUND");
+            user = new User (0,"","",0,0,0,"");
             res.close();
             db.close();
-            return false;
         }
+        return user;
     }
 
     public boolean getFoodConsumed(int orderID) {
@@ -388,13 +393,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("ID", userId);
-        contentValues.put("Firstname", user.firstName);
-        contentValues.put("Lastname", user.lastName);
-        contentValues.put("Height", user.height);
-        contentValues.put("Weight", user.weight);
-        contentValues.put("Age", user.age);
-        contentValues.put("Gender", user.gender);
-        db.update(TABLE_USERTRAITS, contentValues, "id = ? ", new String[]{String.valueOf(userId)});
+        contentValues.put("Firstname", user.getFirstName());
+        contentValues.put("Lastname", user.getLastName());
+        contentValues.put("Height", user.getHeight());
+        contentValues.put("Weight", user.getWeight());
+        contentValues.put("Age", user.getAge());
+        contentValues.put("Gender", user.getGender());
+        db.update(TABLE_USERTRAITS, contentValues, " ID=? ", new String[]{String.valueOf(userId)});
         return true;
     }
 

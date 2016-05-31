@@ -9,6 +9,7 @@ package bvgiants.diary3;
         import android.support.design.widget.Snackbar;
         import android.support.v7.app.AppCompatActivity;
         import android.support.v7.widget.Toolbar;
+        import android.util.Log;
         import android.view.View;
         import android.view.Menu;
         import android.view.MenuItem;
@@ -36,7 +37,8 @@ public class ProfileActivity extends AppCompatActivity{
     private EditText gender;
 
     public static Context context;
-
+    private int USERID;
+    private User user;
 
 
     @Override
@@ -48,6 +50,7 @@ public class ProfileActivity extends AppCompatActivity{
         setSupportActionBar(toolbar);
 
 
+        USERID = getIntent().getIntExtra("UserID", 0);
         //Get variables
         context = getApplicationContext();
         saveButton = (Button) findViewById(R.id.save_button);
@@ -61,6 +64,16 @@ public class ProfileActivity extends AppCompatActivity{
 
         databaseHelper = new DatabaseHelper(context);
         db = databaseHelper.getWritableDatabase();
+
+        user = databaseHelper.getUserTraits(USERID);
+        if(user.getId() != 0){
+            firstName.setText(user.getFirstName());
+            lastName.setText(user.getLastName());
+            height.setText(String.valueOf(user.getHeight()));
+            weight.setText(String.valueOf(user.getWeight()));
+            age.setText(String.valueOf(user.getAge()));
+            gender.setText(String.valueOf(user.getGender()));
+        }
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,25 +189,28 @@ public class ProfileActivity extends AppCompatActivity{
 
     public void updateUser() {
 
-        String fName = firstName.getText().toString();
-        String lName = lastName.getText().toString();
-        String userGender = gender.getText().toString();
+        user.setId(USERID);
+        user.setFirstName(firstName.getText().toString());
+        user.setLastName(lastName.getText().toString());
+        user.setGender(gender.getText().toString());
 
-        String heightString = height.getText().toString();
-        int userHeight = Integer.parseInt(heightString);
+        user.setHeight(Integer.parseInt(height.getText().toString()));
 
-        String weightString = weight.getText().toString();
-        int userWeight = Integer.parseInt(weightString);
+        user.setWeight(Integer.parseInt(weight.getText().toString()));
 
-        String ageString = age.getText().toString();
-        int userAge = Integer.parseInt(ageString);
+        user.setAge(Integer.parseInt(age.getText().toString()));
 
-        // KEN
-        //Not sure how to get the current user. Either getUserId or this??
-        User newUser = new User(User.getId(), fName, lName, userHeight, userWeight, userAge, userGender);
-        databaseHelper.insertUserTraits(newUser);
-        onSaveSuccess();
-
+        if(user.getId() == 0) {
+            //User newUser = new User(USERID, fName, lName, userHeight, userWeight, userAge, userGender);
+            databaseHelper.insertUserTraits(user);
+            Log.v("USER 0 =", user.dbWriteUserTraits());
+            onSaveSuccess();
+        }
+        else if(user.getId() > 0){
+            databaseHelper.updateUserTraits(user.getId(), user);
+            Log.v("USER ?=", user.dbWriteUserTraits());
+            onSaveSuccess();
+        }
     }
 
     public void onSaveFailed() {

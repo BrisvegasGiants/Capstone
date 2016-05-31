@@ -18,7 +18,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     Context mContext;
     Button profileButton;
-
+    private int USERID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +29,7 @@ public class SettingsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         startBackgroundProcess(this.findViewById(android.R.id.content), mContext);
-
+        USERID = getIntent().getIntExtra("UserID", 0);
         profileButton = (Button) findViewById(R.id.buttonProfile);
 
         profileButton.setOnClickListener(new View.OnClickListener() {
@@ -43,6 +43,9 @@ public class SettingsActivity extends AppCompatActivity {
 
     public void startProfile() {
         Intent startProfile = new Intent(this, ProfileActivity.class);
+        Bundle userCreds = new Bundle();
+        userCreds.putInt("UserID", USERID);
+        startProfile.putExtras(userCreds);
         startActivity(startProfile);
 
     }
