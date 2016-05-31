@@ -48,18 +48,15 @@ public class SignupActivity extends AppCompatActivity {
         mNameView = (EditText) findViewById(R.id.nameText);
         context = getApplicationContext();
         mEmailView = (EditText) findViewById(R.id.emailText);
-
         context = getApplicationContext();
         databaseHelper = new DatabaseHelper(context);
         db = databaseHelper.getWritableDatabase();
-
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 signup();
             }
         });
-
        alreadyMember.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,6 +88,7 @@ public class SignupActivity extends AppCompatActivity {
         Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
         signUpButton.setEnabled(true);
     }
+
 
     public void createAccount() {
 

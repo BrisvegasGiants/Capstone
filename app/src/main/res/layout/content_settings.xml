@@ -14,46 +14,33 @@
 
     <!--\\\\\\\ Heading ///////-->
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/settings_button"
-        android:id="@+id/titleSettings"
-        android:textColor="@android:color/holo_blue_light"
-        android:textSize="40sp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
-
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="80dp"
         android:text="User Profile"
+        style="?android:textAppearanceSmall"
         android:id="@+id/buttonProfile"
-        android:layout_marginTop="48dp"
-        android:layout_below="@+id/titleSettings"
-        android:layout_centerHorizontal="true"
+        android:background="@drawable/buttonchanges"
         android:clickable="true"
-        android:onClick="openProfile" />
+        android:layout_above="@+id/buttonGoals"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="80dp"
         android:text="Set Goals"
+        style="?android:textAppearanceSmall"
         android:id="@+id/buttonGoals"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:clickable="true" />
-
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Change Theme"
-        android:id="@+id/buttonTheme"
-        android:layout_marginBottom="25dp"
+        android:background="@drawable/buttonchanges"
+        android:clickable="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_alignParentBottom="true"
-        android:layout_toStartOf="@+id/buttonGoals"
-        android:clickable="true" />
+        android:layout_alignParentEnd="true" />
+
+
+
 
 </RelativeLayout>
