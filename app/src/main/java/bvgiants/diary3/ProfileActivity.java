@@ -38,6 +38,7 @@ public class ProfileActivity extends AppCompatActivity{
     public static Context context;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +46,7 @@ public class ProfileActivity extends AppCompatActivity{
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
+
 
         //Get variables
         context = getApplicationContext();
@@ -68,21 +70,34 @@ public class ProfileActivity extends AppCompatActivity{
         });
 
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.eat_menu, menu);
+        return true;
+    }
 
-    // Parsed variables
-    String fName = firstName.getText().toString();
-    String lName = lastName.getText().toString();
-    String userGender = gender.getText().toString();
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
 
-    String heightString = height.getText().toString();
-    int userHeight = Integer.parseInt(heightString);
+        if (id == R.id.action_settings) {
+            Intent startSettings = new Intent(this, SettingsActivity.class);
+            startActivity(startSettings);
+            return true;
+        }
+        if (id == R.id.action_home) {
+            Intent startHome = new Intent(this, MainActivity.class);
+            startActivity(startHome);
+            return true;
+        }
 
-    String weightString = weight.getText().toString();
-    int userWeight = Integer.parseInt(weightString);
 
-    String ageString = age.getText().toString();
-    int userAge = Integer.parseInt(ageString);
-
+        return super.onOptionsItemSelected(item);
+    }
 
     public void saveUser() {
         if (!validate()) {
@@ -104,6 +119,14 @@ public class ProfileActivity extends AppCompatActivity{
 
     // Validate ()
     public boolean validate(){
+
+        String fName = firstName.getText().toString();
+        String lName = lastName.getText().toString();
+        String userGender = gender.getText().toString();
+        String heightString = height.getText().toString();
+        String weightString = weight.getText().toString();
+        String ageString = age.getText().toString();
+
         boolean valid = true;
 
         if (fName.isEmpty() || fName.length() < 2)   {
@@ -141,7 +164,7 @@ public class ProfileActivity extends AppCompatActivity{
             age.setError(null);
         }
 
-        if (userGender.isEmpty() || userGender.equalsIgnoreCase("Male")|| userGender.equalsIgnoreCase("female")) {
+        if (userGender.isEmpty() || !userGender.equalsIgnoreCase("Male") && !userGender.equalsIgnoreCase("female")) {
             gender.setError("Please enter Male or Female");
             valid = false;
         } else {
@@ -153,8 +176,22 @@ public class ProfileActivity extends AppCompatActivity{
 
     public void updateUser() {
 
-        //Not sure how to get the current user. Either getUserId
-        User newUser = new User(User.getId(),fName, lName, userHeight, userWeight, userAge, userGender);
+        String fName = firstName.getText().toString();
+        String lName = lastName.getText().toString();
+        String userGender = gender.getText().toString();
+
+        String heightString = height.getText().toString();
+        int userHeight = Integer.parseInt(heightString);
+
+        String weightString = weight.getText().toString();
+        int userWeight = Integer.parseInt(weightString);
+
+        String ageString = age.getText().toString();
+        int userAge = Integer.parseInt(ageString);
+
+        // KEN
+        //Not sure how to get the current user. Either getUserId or this??
+        User newUser = new User(User.getId(), fName, lName, userHeight, userWeight, userAge, userGender);
         databaseHelper.insertUserTraits(newUser);
         onSaveSuccess();
 

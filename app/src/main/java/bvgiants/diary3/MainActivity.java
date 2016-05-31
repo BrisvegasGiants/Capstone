@@ -102,8 +102,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-
     // Takes user to selected screen(Activity)
     public void menuSelect( View v ) {
         switch (v.getId()) {

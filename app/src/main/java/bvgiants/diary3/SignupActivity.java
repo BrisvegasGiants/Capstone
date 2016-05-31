@@ -51,6 +51,7 @@ public class SignupActivity extends AppCompatActivity {
         context = getApplicationContext();
         databaseHelper = new DatabaseHelper(context);
         db = databaseHelper.getWritableDatabase();
+
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
