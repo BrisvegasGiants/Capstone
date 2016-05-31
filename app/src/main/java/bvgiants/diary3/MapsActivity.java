@@ -54,9 +54,6 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
         if(mGoogleApiClient!= null){
             mGoogleApiClient.connect();
         }
-        else
-            Toast.makeText(this, "Not connected...", Toast.LENGTH_SHORT).show();
-
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
