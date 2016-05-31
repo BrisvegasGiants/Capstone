@@ -657,7 +657,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public ArrayList<OrderRow> showTodaysFood() throws SQLiteException{
+    public ArrayList<OrderRow> showTodaysFood(int userID) throws SQLiteException{
         SQLiteDatabase db = this.getReadableDatabase();
         //Select * from OrderHeader
         //left outer join FoodConsumed on OrderHeader.OrderID = FoodConsumed.ID
@@ -668,10 +668,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 " FROM " + TABLE_ORDERHEADER + " oh" +
                 " LEFT OUTER JOIN "+ TABLE_FOODCONSUMED + " fc" +
                 " ON oh.OrderID = fc.ID" +
-                " WHERE oh.OrderDate=?";
+                " WHERE oh.OrderDate=?" +
+                " AND oh.UserID=?";
         //= date('now','-1 day');";
 
-        Cursor res = db.rawQuery(query, new String[]{date});
+        Cursor res = db.rawQuery(query, new String[]{date,String.valueOf(userID)});
 
         if(res.moveToFirst()) {
             do {

@@ -63,7 +63,7 @@ public class EatActivity extends AppCompatActivity {
         databaseHelper = new DatabaseHelper(context);
         db = databaseHelper.getWritableDatabase();
         //orders = databaseHelper.getAllUsersFoodConsumed(USERID);
-        todaysOrders = databaseHelper.showTodaysFood();
+        todaysOrders = databaseHelper.showTodaysFood(USERID);
         allFood = databaseHelper.allFood();
 
         for(int i = 0; i < todaysOrders.size(); i ++){
@@ -99,6 +99,9 @@ public class EatActivity extends AppCompatActivity {
 
         if (id == R.id.action_home) {
             Intent startHome = new Intent(this, MainActivity.class);
+            Bundle userCreds = new Bundle();
+            userCreds.putInt("UserID", USERID);
+            startHome.putExtras(userCreds);
             startActivity(startHome);
             return true;
         }
