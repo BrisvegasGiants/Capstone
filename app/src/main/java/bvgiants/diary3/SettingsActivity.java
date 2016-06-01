@@ -12,11 +12,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 
 public class SettingsActivity extends AppCompatActivity {
 
     Context mContext;
-
+    Button profileButton;
+    private int USERID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +29,25 @@ public class SettingsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         startBackgroundProcess(this.findViewById(android.R.id.content), mContext);
+        USERID = getIntent().getIntExtra("UserID", 0);
+        profileButton = (Button) findViewById(R.id.buttonProfile);
+
+        profileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startProfile();
+            }
+        });
+    }
+
+
+    public void startProfile() {
+        Intent startProfile = new Intent(this, ProfileActivity.class);
+        Bundle userCreds = new Bundle();
+        userCreds.putInt("UserID", USERID);
+        startProfile.putExtras(userCreds);
+        startActivity(startProfile);
+
     }
 
     @Override
@@ -48,24 +69,9 @@ public class SettingsActivity extends AppCompatActivity {
             startActivity(startSettings);
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
-    public void menuSelect( View v ) {
-        switch (v.getId()) {
-            case (R.id.buttonProfile):
-                Intent startProfile = new Intent(this, ProfileActivity.class);
-                startActivity(startProfile);
-                break;
-
-          /*  case (R.id.buttonGoals):
-                Intent startGoals = new Intent(this, GoalsActivity.class);
-                startActivity(startGoals);
-                break; */
-
-        }
-    }
 
     public void startBackgroundProcess(View view, Context c){
         startService(new Intent(getBaseContext(), BackgroundService.class));

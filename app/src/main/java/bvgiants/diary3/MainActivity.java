@@ -20,12 +20,14 @@ public class MainActivity extends AppCompatActivity {
     private Context context;
     static float percentageValue;
     private int USERID;
+    private User loggedinUser;
 
     public SQLiteDatabase db;
     public DatabaseHelper databaseHelper;
 
     private ProgressBar stepCounterProgressBar;
     private ProgressBar calorieCounterProgressBar;
+    private ProgressBar kJCounterProgressBar;
     private ArrayList<OrderRow> allFoodOrders = new ArrayList<>();
     private ArrayList<FoodItem> allFoodConsumed = new ArrayList<>();
     private ArrayList<FoodItem> allFoods = new ArrayList<>();
@@ -33,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     int userStepGoal = 10000;
     int userCalorieGoal = 2000;
     int calorieCounter;
+    int kJcounter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +49,9 @@ public class MainActivity extends AppCompatActivity {
         databaseHelper = new DatabaseHelper(context);
         db = databaseHelper.getWritableDatabase();
 
-        allFoodOrders = databaseHelper.getAllUsersFoodConsumed(USERID);
+        USERID = getIntent().getIntExtra("UserID", 0);
+        loggedinUser = databaseHelper.getUserTraits(USERID);
+        allFoodOrders = databaseHelper.showTodaysFood(USERID);
         allFoods = databaseHelper.allFood();
 
         for(int i = 0; i < allFoodOrders.size();i++){
@@ -54,27 +59,58 @@ public class MainActivity extends AppCompatActivity {
                 if (allFoodOrders.get(i).getFoodId() == allFoods.get(k).getFoodId()) {
                     allFoodConsumed.add(allFoods.get(k));
                     calorieCounter += allFoods.get(k).getCalories();
+                    kJcounter += allFoods.get(k).getEnergy();
                 }
             }
         }
 
-
-
         startBackgroundProcess(this.findViewById(android.R.id.content), context);
 
-        USERID = getIntent().getIntExtra("UserID", 0);
+
         // Not loading in because google fit isn't connecting yet
         //((ProgressBar)findViewById(R.id.progressBarStepsGoal)).setProgress((int)percentageValue);
         //Log.e("Progress Bar", "Progress Bar is: " + percentageValue);
 
         stepCounterProgressBar = (ProgressBar) findViewById(R.id.progressBarStepsGoal);
         calorieCounterProgressBar = (ProgressBar) findViewById(R.id.progressBarCalories);
+        kJCounterProgressBar = (ProgressBar) findViewById(R.id.progressBarKilojoules);
 
         stepCounterProgressBar.setMax(userStepGoal);
         calorieCounterProgressBar.setMax(userCalorieGoal);
 
+        if(loggedinUser.getId() != 0){
+
+            if(loggedinUser.getGender().matches("Male") == true) {
+                if (loggedinUser.getAge() < 19)
+                    kJCounterProgressBar.setMax(13950);
+                if (loggedinUser.getAge() > 19 && loggedinUser.getAge() < 30)
+                    kJCounterProgressBar.setMax(12950);
+                else if (loggedinUser.getAge() > 30 && loggedinUser.getAge() < 51)
+                    kJCounterProgressBar.setMax(12350);
+                else if (loggedinUser.getAge() > 50 && loggedinUser.getAge() < 71)
+                    kJCounterProgressBar.setMax(11450);
+                else
+                    kJCounterProgressBar.setMax(9900);
+            }
+
+            else if (loggedinUser.getGender().matches("Female") == true){
+                if (loggedinUser.getAge() < 19)
+                    kJCounterProgressBar.setMax(11155);
+                if (loggedinUser.getAge() > 19 && loggedinUser.getAge() < 30)
+                    kJCounterProgressBar.setMax(10455);
+                else if (loggedinUser.getAge() > 30 && loggedinUser.getAge() < 51)
+                    kJCounterProgressBar.setMax(9900);
+                else if (loggedinUser.getAge() > 50 && loggedinUser.getAge() < 71)
+                    kJCounterProgressBar.setMax(9450);
+                else
+                    kJCounterProgressBar.setMax(8550);
+            }
+
+        }
+
         stepCounterProgressBar.setProgress(6000);
         calorieCounterProgressBar.setProgress(calorieCounter);
+        kJCounterProgressBar.setProgress(kJcounter);
 
 
     }
@@ -95,14 +131,15 @@ public class MainActivity extends AppCompatActivity {
 
         if (id == R.id.action_settings) {
             Intent startSettings = new Intent(this, SettingsActivity.class);
+            Bundle userCreds = new Bundle();
+            userCreds.putInt("UserID", USERID);
+            startSettings.putExtras(userCreds);
             startActivity(startSettings);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
-
-
 
     // Takes user to selected screen(Activity)
     public void menuSelect( View v ) {

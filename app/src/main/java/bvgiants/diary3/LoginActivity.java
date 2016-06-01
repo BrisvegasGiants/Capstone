@@ -241,7 +241,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Delete DB
             try {
                 String result;
-                result = databaseHelper.delete(db);
+                //result = databaseHelper.delete();
+                result = databaseHelper.recreateUserTraits();
                 int duration = Toast.LENGTH_LONG;
                 Toast toast = Toast.makeText(context,result,duration);
                 toast.show();
