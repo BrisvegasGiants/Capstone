@@ -157,9 +157,9 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(startEat);
                 break;
 
-            case (R.id.buttonData):
-                Intent startData = new Intent(this, DataActivity.class);
-                startActivity(startData);
+            case (R.id.buttonMaps):
+                Intent startMaps = new Intent(this, MapsActivity.class);
+                startActivity(startMaps);
                 break;
 
         }

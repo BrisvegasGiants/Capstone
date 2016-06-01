@@ -148,9 +148,9 @@
 
     <Button
         style="@style/menuButtons"
-        android:id="@+id/buttonData"
+        android:id="@+id/buttonMaps"
         android:background="@drawable/buttonchanges"
-        android:text="@string/data_button"
+        android:text="@string/maps_button"
         android:onClick="menuSelect"
         android:layout_below="@+id/buttonEat"
         android:layout_marginTop="10dp"

@@ -17,7 +17,7 @@
     <string name="add_entry_food">Add entry</string>
     <string name="run_button">RUN</string>
     <string name="eat_button">EAT</string>
-    <string name="data_button">DATA</string>
+    <string name="maps_button">MAPS</string>
     <string name="settings_button">SETTINGS</string>
     <string name="title_activity_login">Sign in</string>
 
