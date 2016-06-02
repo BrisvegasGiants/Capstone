@@ -27,14 +27,14 @@
             android:layout_width="100dp"
             android:layout_height="fill_parent"
             android:background="@drawable/buttonchanges"
-            android:id="@+id/buttonMonth"
-            android:text="Month" />
+            android:id="@+id/buttonWeek"
+            android:text="Week" />
         <Button
             android:layout_width="100dp"
             android:layout_height="fill_parent"
             android:background="@drawable/buttonchanges"
-            android:id="@+id/buttonYear"
-            android:text="Year" />
+            android:id="@+id/buttonMonth"
+            android:text="Month" />
 
 
     </LinearLayout>

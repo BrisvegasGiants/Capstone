@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.google.android.gms.vision.barcode.Barcode;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -696,6 +698,53 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return allRows;
     }
 
+    public ArrayList<OrderRow> allUserFoodOrders(int userID) throws SQLiteException{
+        SQLiteDatabase db = this.getReadableDatabase();
+        //Select * from OrderHeader
+        //left outer join FoodConsumed on OrderHeader.OrderID = FoodConsumed.ID
+        //where OrderHeader.Date = todays date
+        String date = justGetDate();
+        String pastDate = getLastWeek();
+        Log.v("LastWeek", pastDate);
+        ArrayList<OrderRow> allRows = new ArrayList<OrderRow>();
+        String query = "SELECT oh.OrderDate, oh.OrderTime, fc.FoodID, fc.Location" +
+                " FROM " + TABLE_ORDERHEADER + " oh" +
+                " LEFT OUTER JOIN "+ TABLE_FOODCONSUMED + " fc" +
+                " ON oh.OrderID = fc.ID" +
+                " WHERE oh.UserID=?";
+        String query2 = "SELECT oh.OrderDate, oh.OrderTime, fc.FoodID, fc.Location" +
+                " FROM " + TABLE_ORDERHEADER + " oh" +
+                " LEFT OUTER JOIN "+ TABLE_FOODCONSUMED + " fc" +
+                " ON oh.OrderID = fc.ID" +
+                " WHERE oh.OrderDate BETWEEN " + date + " AND " + pastDate +
+                " AND oh.UserID=" + userID;
+        //= date('now','-1 day');";
+
+        Cursor res = db.rawQuery(query, new String[]{String.valueOf(userID)});
+        //Cursor res = db.rawQuery(query2, null);
+        if(res.moveToFirst()) {
+            do {
+                OrderRow entry = new OrderRow(res.getString(0), res.getString(1), res.getInt(2),
+                        res.getString(3));
+                Log.v("RES 0 " , res.getString(0));
+                Log.v("RES 1 ", res.getString(1));
+                Log.v("RES 2 ", res.getString(2));
+                Log.v("RES 3 ", res.getString(3));
+                allRows.add(entry);
+
+            }while(res.moveToNext());
+        }
+        else {
+            System.out.print("ORDERHEADER GET ALL ORDERS WASNT FOUND");
+            res.close();
+            db.close();
+        }
+        res.close();
+        db.close();
+        return allRows;
+    }
+
+
     /*
     HELPER METHODS
      */
@@ -704,6 +753,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "yyyy-MM-dd hh:mm", Locale.getDefault());
         Date date = new Date();
         return dateFormat.format(date);
+    }
+
+    public String getLastWeek(){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        Date date = new Date();
+        return  dateFormat.format(date.getTime() - 604800000L);
     }
 
     public String justGetDate(){

@@ -3,6 +3,7 @@ package bvgiants.diary3;
 import android.app.Fragment;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,8 @@ import java.util.ArrayList;
 public class ExpandableListFragmentEAT extends Fragment {
 
     private ArrayList<OrderRow> todaysFoodOrders = new ArrayList<>();
+    private ArrayList<OrderRow> weeklyFoodOrders = new ArrayList<>();
+    private ArrayList<OrderRow> monthlyFoodOrders = new ArrayList<>();
     private ArrayList<FoodItem> allFood = new ArrayList<>();
     private ArrayList<FoodItem> foodDisplayed = new ArrayList<>();
     public ArrayList<Integer> foodDisplayedImages = new ArrayList<Integer>();
@@ -25,12 +28,16 @@ public class ExpandableListFragmentEAT extends Fragment {
     public ArrayList<Integer> imageId = new ArrayList<Integer>();
     private EatActivity activity;
     LayoutInflater inflater;
+    private int SELECTION;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         this.inflater = inflater;
         // View v = inflater.inflate(R.layout.expandable_list,container,false);
         activity = (EatActivity) getActivity();
         todaysFoodOrders = activity.getTodaysOrders();
+        weeklyFoodOrders = activity.getWeeklyOrders();
+        monthlyFoodOrders = activity.getMonthlyOrders();
+        SELECTION = activity.getSelection();
         allFood = activity.getAllFood();
         imageId.add(R.drawable.bigmac);
         imageId.add(R.drawable.cheeseburger);
@@ -40,28 +47,8 @@ public class ExpandableListFragmentEAT extends Fragment {
         imageId.add(R.drawable.subway);
         imageId.add(R.drawable.boost);
 
-        for(int i = 0; i < todaysFoodOrders.size();i++){
-            for (int k = 0; k < allFood.size(); k++){
-                if (todaysFoodOrders.get(i).getFoodId() == allFood.get(k).getFoodId()) {
-                    foodDisplayed.add(allFood.get(k));
-                    foodDisplayedImages.add(imageId.get(k));
-                }
-            }
-        }
-        for(int i = 0; i < foodDisplayed.size(); i++){
-            foodDisplayed.get(i).children.add(foodDisplayed.get(i).toString());
-        }
+        return workOutWhichTimePeriod();
 
-        if(todaysFoodOrders.isEmpty() == false) {
-            View v = inflater.inflate(R.layout.expandable_list, null);
-            ExpandableListView listView = (ExpandableListView) v.findViewById(R.id.expandable_list_view);
-            listView.setAdapter(new SavedTabsListAdapter());
-            return v;
-        }
-        else {
-            View vv = inflater.inflate(R.layout.expandable_list, null);
-            return vv;
-        }
     }
 
 
@@ -134,6 +121,86 @@ public class ExpandableListFragmentEAT extends Fragment {
         @Override
         public boolean isChildSelectable(int i, int i1) {
             return true;
+        }
+
+    }
+
+    public View workOutWhichTimePeriod(){
+
+        Log.v("SELECTION =", String.valueOf(SELECTION));
+        if (SELECTION == 0) {
+            for (int i = 0; i < todaysFoodOrders.size(); i++) {
+                for (int k = 0; k < allFood.size(); k++) {
+                    if (todaysFoodOrders.get(i).getFoodId() == allFood.get(k).getFoodId()) {
+                        foodDisplayed.add(allFood.get(k));
+                        foodDisplayedImages.add(imageId.get(k));
+                    }
+                }
+            }
+            for (int i = 0; i < foodDisplayed.size(); i++) {
+                if(foodDisplayed.get(i).children.size() <=0)
+                    foodDisplayed.get(i).children.add(foodDisplayed.get(i).toString());
+            }
+
+            if (todaysFoodOrders.isEmpty() == false) {
+                View v = inflater.inflate(R.layout.expandable_list, null);
+                ExpandableListView listView = (ExpandableListView) v.findViewById(R.id.expandable_list_view);
+                listView.setAdapter(new SavedTabsListAdapter());
+                return v;
+            } else {
+                View vv = inflater.inflate(R.layout.expandable_list, null);
+                return vv;
+            }
+        }
+        else if (SELECTION == 1) {
+            for (int i = 0; i < weeklyFoodOrders.size(); i++) {
+                for (int k = 0; k < allFood.size(); k++) {
+                    if (weeklyFoodOrders.get(i).getFoodId() == allFood.get(k).getFoodId()) {
+                        foodDisplayed.add(allFood.get(k));
+                        foodDisplayedImages.add(imageId.get(k));
+                        Log.v("WEEKLY FOOD ORDERS ", weeklyFoodOrders.get(i).dbWriteOrdersToFile());
+                    }
+                }
+            }
+            for (int i = 0; i < foodDisplayed.size(); i++) {
+                if(foodDisplayed.get(i).children.size() <=0)
+                    foodDisplayed.get(i).children.add(foodDisplayed.get(i).toString());
+            }
+
+            if (weeklyFoodOrders.isEmpty() == false) {
+                View v = inflater.inflate(R.layout.expandable_list, null);
+                ExpandableListView listView = (ExpandableListView) v.findViewById(R.id.expandable_list_view);
+                listView.setAdapter(new SavedTabsListAdapter());
+                return v;
+            } else {
+                View vv = inflater.inflate(R.layout.expandable_list, null);
+                return vv;
+            }
+        }
+        else{
+            for (int i = 0; i < monthlyFoodOrders.size(); i++) {
+                for (int k = 0; k < allFood.size(); k++) {
+                    if (monthlyFoodOrders.get(i).getFoodId() == allFood.get(k).getFoodId()) {
+                        foodDisplayed.add(allFood.get(k));
+                        foodDisplayedImages.add(imageId.get(k));
+                        Log.v("MONTHLY FOOD ORDERS ", monthlyFoodOrders.get(i).dbWriteOrdersToFile());
+                    }
+                }
+            }
+            for (int i = 0; i < foodDisplayed.size(); i++) {
+                if(foodDisplayed.get(i).children.size() <=0)
+                    foodDisplayed.get(i).children.add(foodDisplayed.get(i).toString());
+            }
+
+            if (monthlyFoodOrders.isEmpty() == false) {
+                View v = inflater.inflate(R.layout.expandable_list, null);
+                ExpandableListView listView = (ExpandableListView) v.findViewById(R.id.expandable_list_view);
+                listView.setAdapter(new SavedTabsListAdapter());
+                return v;
+            } else {
+                View vv = inflater.inflate(R.layout.expandable_list, null);
+                return vv;
+            }
         }
 
     }
