@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -59,7 +60,9 @@ public class MainActivity extends AppCompatActivity {
                 if (allFoodOrders.get(i).getFoodId() == allFoods.get(k).getFoodId()) {
                     allFoodConsumed.add(allFoods.get(k));
                     calorieCounter += allFoods.get(k).getCalories();
+                    Log.v("FOOD CALORIES", String.valueOf(allFoods.get(k).getCalories()));
                     kJcounter += allFoods.get(k).getEnergy();
+                    Log.v("FOOD ENERGY", String.valueOf(allFoods.get(k).getEnergy()));
                 }
             }
         }
