@@ -16,7 +16,6 @@
     <SearchView android:layout_width="wrap_content"
         android:layout_height="wrap_content" android:id="@+id/search"/>
 
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -40,11 +39,14 @@
         tools:layout="@layout/expandable_list" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:text="Save to Diary"
         android:id="@+id/save_to_diary"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/buttonchanges"
+        style="?android:textAppearanceSmall"
+        />
 
 
 

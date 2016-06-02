@@ -11,73 +11,117 @@ android:paddingTop="@dimen/activity_vertical_margin"
 app:layout_behavior="@string/appbar_scrolling_view_behavior"
 tools:context="bvgiants.diary3.ProfileActivity">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <!-- Profile -->
 
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="120dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="40dp"
-            android:layout_marginBottom="10dp"
-            android:src="@drawable/profile1"/>
+    <ImageView
+        android:layout_width="160dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="40dp"
+        android:src="@drawable/profile1"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/imageView3" />
 
+
+    <!-- First Name -->
         <EditText
             android:layout_width="fill_parent"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
+            android:textSize="18sp"
             android:id="@+id/first_name"
             android:hint= "First Name"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:layout_marginTop="180dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:ellipsize="start"
+            android:gravity="center_horizontal"/>
+
+
+    <!-- Last Name -->
         <EditText
             android:layout_width="fill_parent"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
+            android:textSize="18sp"
             android:id="@+id/lastName"
             android:hint= "Last Name"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:layout_marginTop="230dp"
+            android:ellipsize="start"
+            android:gravity="center_horizontal"/>
 
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp" />
+
+    <!-- Height -->
         <EditText
-        android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:id="@+id/height"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:textSize="18sp"
+            android:id="@+id/height"
             android:hint="Height (cms)"
             android:inputType="number"
-        android:singleLine="true" />
+            android:singleLine="true"
+            android:layout_marginTop="280dp"
+            android:ellipsize="start"
+            android:gravity="center_horizontal"/>
 
+    <!-- Weight -->
         <EditText
             android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            android:id="@+id/weight"
-            android:hint= "Weight (whole kgs)"
+            android:layout_height="40dp"
+            android:textSize="18sp"
+            android:hint= "Weight (kgs)"
             android:inputType="number"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:layout_marginTop="330dp"
+            android:ellipsize="start"
+            android:gravity="center_horizontal"
+            android:id="@+id/weight"/>
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp" />
 
+    <!-- Age -->
         <EditText
             android:layout_width="fill_parent"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
+            android:textSize="18sp"
             android:id="@+id/age"
             android:hint= "Age"
             android:inputType="number"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:layout_marginTop="380dp"
+            android:ellipsize="start"
+            android:gravity="center_horizontal"/>
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp" />
 
+    <!-- Gender -->
         <EditText
             android:layout_width="fill_parent"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
+            android:textSize="18sp"
             android:id="@+id/gender"
             android:hint= "Gender"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:layout_marginTop="430dp"
+            android:ellipsize="start"
+            android:gravity="center_horizontal"/>
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp" />
 
-
+    <!-- Save Button -->
         <Button
             android:id="@+id/save_button"
             style="?android:textAppearanceSmall"
             android:background="@drawable/buttonchanges"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="490dp"
             android:text="Save"
-            android:textStyle="bold" />
+           />
 
-    </LinearLayout>
 </RelativeLayout>

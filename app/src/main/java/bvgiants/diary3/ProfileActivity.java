@@ -23,12 +23,17 @@ package bvgiants.diary3;
  */
 public class ProfileActivity extends AppCompatActivity{
 
-    Button saveButton;
-
+    //Db
     public SQLiteDatabase db;
     public DatabaseHelper databaseHelper;
-    public User User;
 
+    //User
+    public static Context context;
+    private int USERID;
+    private User user;
+
+
+    // Initialize EditText variables
     private EditText firstName;
     private EditText lastName;
     private EditText height;
@@ -36,25 +41,18 @@ public class ProfileActivity extends AppCompatActivity{
     private EditText age;
     private EditText gender;
 
-    public static Context context;
-    private int USERID;
-    private User user;
+    Button saveButton;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
 
-
-        USERID = getIntent().getIntExtra("UserID", 0);
-        //Get variables
-        context = getApplicationContext();
+        // Assign variables to content
         saveButton = (Button) findViewById(R.id.save_button);
-
         firstName = (EditText) findViewById(R.id.first_name);
         lastName = (EditText) findViewById(R.id.lastName);
         height = (EditText) findViewById(R.id.height);
@@ -62,6 +60,10 @@ public class ProfileActivity extends AppCompatActivity{
         age = (EditText) findViewById(R.id.age);
         gender = (EditText) findViewById(R.id.gender);
 
+
+        //Database
+        USERID = getIntent().getIntExtra("UserID", 0);
+        context = getApplicationContext();
         databaseHelper = new DatabaseHelper(context);
         db = databaseHelper.getWritableDatabase();
 
@@ -108,31 +110,32 @@ public class ProfileActivity extends AppCompatActivity{
             return true;
         }
 
-
         return super.onOptionsItemSelected(item);
-    }
+    } // End optionsSelect()
+
 
     public void saveUser() {
         if (!validate()) {
             onSaveFailed();
             return;
-        }
-        else {
+        } else {
             updateUser();
         }
        saveButton.setEnabled(false);
-    }
+    } // End saveUser()
 
 
     public void onSaveSuccess() {
         saveButton.setEnabled(true);
         setResult(RESULT_OK, null);
         finish();
-    }
+    } //End onSaveSuccess
+
 
     // Validate ()
     public boolean validate(){
 
+        // Get values for validation
         String fName = firstName.getText().toString();
         String lName = lastName.getText().toString();
         String userGender = gender.getText().toString();
@@ -142,6 +145,7 @@ public class ProfileActivity extends AppCompatActivity{
 
         boolean valid = true;
 
+        //FirstName
         if (fName.isEmpty() || fName.length() < 2)   {
             firstName.setError("please enter a valid first name");
             valid = false;
@@ -149,13 +153,14 @@ public class ProfileActivity extends AppCompatActivity{
             firstName.setError(null);
         }
 
+        //LastName
         if (lName.isEmpty() || lName.length() < 3 )  {
             lastName.setError("please enter a valid last name");
             valid = false;
         } else {
             lastName.setError(null);
         }
-
+        // Height
         if (heightString.isEmpty() || heightString.length() < 2 || heightString.length() > 3) {
             height.setError("height must be a realistic number (10cm - 999cm)");
             valid = false;
@@ -163,6 +168,7 @@ public class ProfileActivity extends AppCompatActivity{
             height.setError(null);
         }
 
+        //Weight
         if (weightString.isEmpty() || weightString.length() < 2 || weightString.length() > 3) {
             weight.setError("weight must be a realistic number (10kg - 999kg)");
             valid = false;
@@ -170,6 +176,7 @@ public class ProfileActivity extends AppCompatActivity{
            weight.setError(null);
         }
 
+        //Age
         if (ageString.isEmpty() || ageString.length() > 3) {
             age.setError("age must be a realistic number (1 - 999)");
             valid = false;
@@ -177,27 +184,28 @@ public class ProfileActivity extends AppCompatActivity{
             age.setError(null);
         }
 
-        if (userGender.isEmpty() || !userGender.equalsIgnoreCase("Male") && !userGender.equalsIgnoreCase("female")) {
+        //Gender
+        if (userGender.isEmpty() || !userGender.equalsIgnoreCase("Male") &&
+                !userGender.equalsIgnoreCase("female")) {
             gender.setError("Please enter Male or Female");
             valid = false;
         } else {
             gender.setError(null);
         }
         return valid;
-    }
+    } //End Validate
 
 
     public void updateUser() {
+
+        // Set attributes in database
 
         user.setId(USERID);
         user.setFirstName(firstName.getText().toString());
         user.setLastName(lastName.getText().toString());
         user.setGender(gender.getText().toString());
-
         user.setHeight(Integer.parseInt(height.getText().toString()));
-
         user.setWeight(Integer.parseInt(weight.getText().toString()));
-
         user.setAge(Integer.parseInt(age.getText().toString()));
 
         if(user.getId() == 0) {
@@ -211,11 +219,12 @@ public class ProfileActivity extends AppCompatActivity{
             Log.v("USER ?=", user.dbWriteUserTraits());
             onSaveSuccess();
         }
-    }
+    } //End UpdateUser
 
     public void onSaveFailed() {
         Toast.makeText(getBaseContext(), "Profile update failed!", Toast.LENGTH_LONG).show();
         saveButton.setEnabled(true);
 
-    }
-}
+    } //End UpdateUser
+
+} //End Class

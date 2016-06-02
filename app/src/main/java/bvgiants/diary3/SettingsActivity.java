@@ -16,31 +16,44 @@ import android.widget.Button;
 
 public class SettingsActivity extends AppCompatActivity {
 
+    // Init variables
     Context mContext;
     Button profileButton;
+    Button goalsButton;
     private int USERID;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
 
         startBackgroundProcess(this.findViewById(android.R.id.content), mContext);
         USERID = getIntent().getIntExtra("UserID", 0);
         profileButton = (Button) findViewById(R.id.buttonProfile);
+        goalsButton = (Button) findViewById(R.id.buttonGoals);
+
 
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startProfile();
             }
-        });
-    }
+        }); //End clickListener
+
+        goalsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startGoals();
+            }
+        }); // End clickListener
+
+    } // End OnCreate
 
 
+    // Start profile activity
     public void startProfile() {
         Intent startProfile = new Intent(this, ProfileActivity.class);
         Bundle userCreds = new Bundle();
@@ -48,7 +61,19 @@ public class SettingsActivity extends AppCompatActivity {
         startProfile.putExtras(userCreds);
         startActivity(startProfile);
 
-    }
+    } //End startProfile();
+
+
+    // Start Goals activity
+    public void startGoals() {
+        Intent startGoals = new Intent(this, GoalsActivity.class);
+        Bundle userCreds = new Bundle();
+        userCreds.putInt("UserID", USERID);
+        startGoals.putExtras(userCreds);
+        startActivity(startGoals);
+
+    }//end startsGoals();
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -62,6 +62,7 @@
     <string name="textCalorie">Progress towards calorie goal</string>
     <string name="textSteps">Progress towards step goal</string>
     <string name="title_activity_signup">SignupActivity</string>
+    <string name="title_activity_goals">GoalsActivity</string>
 
 
 </resources>

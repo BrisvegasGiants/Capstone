@@ -27,18 +27,21 @@
             android:layout_height="fill_parent"
             android:id="@+id/buttonToday"
             android:background="@drawable/buttonchanges"
+            style="?android:textAppearanceSmall"
             android:text="Today" />
         <Button
             android:layout_width="100dp"
             android:layout_height="fill_parent"
             android:background="@drawable/buttonchanges"
             android:id="@+id/buttonMonth"
+            style="?android:textAppearanceSmall"
             android:text="Month" />
         <Button
             android:layout_width="100dp"
             android:layout_height="fill_parent"
             android:background="@drawable/buttonchanges"
             android:id="@+id/buttonYear"
+            style="?android:textAppearanceSmall"
             android:text="Year" />
 
 
