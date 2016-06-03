@@ -39,6 +39,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String TABLE_USERTRAITS = "UserTraits";
     public static final String TABLE_FOODCONSUMED = "FoodConsumed";
     public static final String TABLE_ORDERHEADER = "OrderHeader";
+    public static final String TABLE_USERGOALS = "UserGoals";
 
     //Common column names
     private static final String KEY_ID = "ID";
@@ -78,6 +79,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String ORDERHEADER_COLUMN_ORDERTIME = "OrderTime";
     public static final String ORDERHEADER_COLUMN_USERID = "UserID";
 
+    //UserGoals Table Columns
+    public static final String USERGOALS_COLUMN_USERID = "UserID";
+    public static final String USERGOALS_COLUMN_SUGAR = "Sugar";
+    public static final String USERGOALS_COLUMN_STEPS = "Steps";
+    public static final String USERGOALS_COLUMN_KILOJOULES = "Kilojoules";
+    public static final String USERGOALS_COLUMN_CALORIES = "Calories";
+
+
     //Table Create Statements
     private static final String CREATE_TABLE_USERS = "CREATE TABLE " + TABLE_USERS + "(" + KEY_ID +
             " INTEGER PRIMARY KEY, " + USERS_COLUMN_EMAIL + " TEXT," + USERS_COLUMN_PW +
@@ -103,6 +112,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             ORDERHEADER_COLUMN_ORDERTIME + " DATETIME DEFAULT CURRENT_TIMESTAMP, "
             + ORDERHEADER_COLUMN_USERID + " INTEGER);";
 
+    private static final String CREATE_TABLE_USERGOALS = "CREATE TABLE " + TABLE_USERGOALS + " (" +
+            USERGOALS_COLUMN_USERID + " INTEGER PRIMARY KEY, " + USERGOALS_COLUMN_SUGAR + " INTEGER, "
+            + USERGOALS_COLUMN_STEPS + " INTEGER, " + USERGOALS_COLUMN_KILOJOULES + " INTEGER, " +
+            USERGOALS_COLUMN_CALORIES + " INTEGER);";
+
     //To save creating table LOOKUPORDERTYPE, the below variables take the place of the table.
     //add more as required.
 
@@ -121,6 +135,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_USERTRAITS);
         db.execSQL(CREATE_TABLE_FOODCONSUMED);
         db.execSQL(CREATE_TABLE_ORDERHEADER);
+        db.execSQL(CREATE_TABLE_USERGOALS);
     }
 
     //Add drop table per table in db
@@ -130,6 +145,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERTRAITS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_FOODCONSUMED);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDERHEADER);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERGOALS);
         onCreate(db);
     }
 
@@ -142,6 +158,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERTRAITS);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_FOODCONSUMED);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDERHEADER);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERGOALS);
             return "DELETING OF ALL DB TABLES SUCCESSFUL";
         }catch (SQLiteException e){
             System.out.printf("%s\n\n No Table to delete. ERROR! ",e);
@@ -225,14 +242,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public boolean insertUserTraits(User user) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("ID", user.id);
-        contentValues.put("Firstname", user.firstName);
-        contentValues.put("Lastname", user.lastName);
-        contentValues.put("Height", user.height);
-        contentValues.put("Weight", user.weight);
-        contentValues.put("Age", user.age);
-        contentValues.put("Gender", user.gender);
+        contentValues.put("ID", user.getId());
+        contentValues.put("Firstname", user.getFirstName());
+        contentValues.put("Lastname", user.getLastName());
+        contentValues.put("Height", user.getHeight());
+        contentValues.put("Weight", user.getWeight());
+        contentValues.put("Age", user.getAge());
+        contentValues.put("Gender", user.getGender());
         db.insert(TABLE_USERTRAITS, null, contentValues);
+        Log.v("INSERT TRAITS SUCCESS", "HAPPY DAYS");
         return true;
     }
 
@@ -261,10 +279,45 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
+    public boolean insertUserGoals(User user){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("UserID", user.getId());
+        contentValues.put("Sugar", user.getSugarGoal());
+        contentValues.put("Steps", user.getStepGoal());
+        contentValues.put("Kilojoules", user.getKilojoulesGoal());
+        contentValues.put("Calories", user.getCalorieGoal());
+        db.insert(TABLE_USERGOALS, null, contentValues);
+        Log.v("INSERT GOALS SUCCESS", "HAPPY DAYS");
+        return true;
+    }
+
     /* GET STATEMENTS
     GET USER
     GET FOOD
      */
+
+    public User getUserGoals(int userID){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Log.v("GOAL ACTIVITY USERID= ", String.valueOf(userID));
+        User user;
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_USERGOALS + " WHERE UserID=?",
+                new String[]{String.valueOf(userID)});
+        if(res.moveToFirst()) {
+            user = new User (res.getInt(0),res.getInt(1), res.getInt(2),
+                    res.getInt(3), res.getInt(4));
+            Log.v("USER GOALS FOUND", user.userGoals());
+            res.close();
+            db.close();
+        }
+        else {
+            Log.v("USER GOALS AREN'T FOUND", "ERROR");
+            user = new User (0,0,0,0,0);
+            res.close();
+            db.close();
+        }
+        return user;
+    }
 
     public boolean getUser(String email, String pw) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -323,17 +376,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public User getUserTraits(int userID) {
         SQLiteDatabase db = this.getReadableDatabase();
+        Log.v("getUserTraits USERID= ", String.valueOf(userID));
         User user;
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_USERTRAITS + " WHERE ID=?",
                 new String[]{String.valueOf(userID)});
         if(res.moveToFirst()) {
             user = new User (res.getInt(0),res.getString(1), res.getString(2),
                     res.getInt(3), res.getInt(4),res.getInt(5), res.getString(6));
+            Log.v("USER TRAITS FOUND", user.userTraits());
             res.close();
             db.close();
         }
         else {
-            System.out.print("USER TRAITS AREN'T FOUND");
+            Log.v("TRAITS AREN'T FOUND", "ERROR");
             user = new User (0,"","",0,0,0,"");
             res.close();
             db.close();
@@ -402,6 +457,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("Age", user.getAge());
         contentValues.put("Gender", user.getGender());
         db.update(TABLE_USERTRAITS, contentValues, " ID=? ", new String[]{String.valueOf(userId)});
+        return true;
+    }
+
+    public boolean updateUserGoals(Integer userId, User user) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("UserID", userId);
+        contentValues.put("Sugar", user.getSugarGoal());
+        contentValues.put("Steps", user.getStepGoal());
+        contentValues.put("Kilojoules", user.getKilojoulesGoal());
+        contentValues.put("Calories", user.getCalorieGoal());
+        db.update(TABLE_USERGOALS, contentValues, " UserID=? ", new String[]{String.valueOf(userId)});
         return true;
     }
 

@@ -31,6 +31,7 @@ public class ProfileActivity extends AppCompatActivity{
     public static Context context;
     private int USERID;
     private User user;
+    private boolean found;
 
 
     // Initialize EditText variables
@@ -66,8 +67,10 @@ public class ProfileActivity extends AppCompatActivity{
         context = getApplicationContext();
         databaseHelper = new DatabaseHelper(context);
         db = databaseHelper.getWritableDatabase();
-
+        Log.v("PROFILE USERID= ", String.valueOf(USERID));
         user = databaseHelper.getUserTraits(USERID);
+        Log.v("USER TRAITS= ", user.userTraits());
+
         if(user.getId() != 0){
             firstName.setText(user.getFirstName());
             lastName.setText(user.getLastName());
@@ -75,6 +78,12 @@ public class ProfileActivity extends AppCompatActivity{
             weight.setText(String.valueOf(user.getWeight()));
             age.setText(String.valueOf(user.getAge()));
             gender.setText(String.valueOf(user.getGender()));
+            Log.v("USER FOUND!", "FOUND YOU!");
+            found = true;
+        }
+        else {
+            found = false;
+            Log.v("USER NOT FOUND!", "FOUND YOU!");
         }
 
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -128,7 +137,11 @@ public class ProfileActivity extends AppCompatActivity{
     public void onSaveSuccess() {
         saveButton.setEnabled(true);
         setResult(RESULT_OK, null);
-        finish();
+        Intent startHome = new Intent(this, MainActivity.class);
+        Bundle userCreds = new Bundle();
+        userCreds.putInt("UserID", USERID);
+        startHome.putExtras(userCreds);
+        startActivity(startHome);
     } //End onSaveSuccess
 
 
@@ -208,13 +221,13 @@ public class ProfileActivity extends AppCompatActivity{
         user.setWeight(Integer.parseInt(weight.getText().toString()));
         user.setAge(Integer.parseInt(age.getText().toString()));
 
-        if(user.getId() == 0) {
+        if(found == false) {
             //User newUser = new User(USERID, fName, lName, userHeight, userWeight, userAge, userGender);
             databaseHelper.insertUserTraits(user);
             Log.v("USER 0 =", user.dbWriteUserTraits());
             onSaveSuccess();
         }
-        else if(user.getId() > 0){
+        else if(found == true){
             databaseHelper.updateUserTraits(user.getId(), user);
             Log.v("USER ?=", user.dbWriteUserTraits());
             onSaveSuccess();

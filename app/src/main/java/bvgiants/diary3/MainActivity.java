@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.content.Intent;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     static float percentageValue;
     private int USERID;
     private User loggedinUser;
+    private User userGoals;
 
     public SQLiteDatabase db;
     public DatabaseHelper databaseHelper;
@@ -29,14 +31,15 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar stepCounterProgressBar;
     private ProgressBar calorieCounterProgressBar;
     private ProgressBar kJCounterProgressBar;
+    private ProgressBar sugarCounterProgressBar;
     private ArrayList<OrderRow> allFoodOrders = new ArrayList<>();
     private ArrayList<FoodItem> allFoodConsumed = new ArrayList<>();
     private ArrayList<FoodItem> allFoods = new ArrayList<>();
 
     int userStepGoal = 10000;
-    int userCalorieGoal = 2000;
-    int calorieCounter;
-    int kJcounter;
+    private int calorieCounter;
+    private int kJcounter;
+    private int sugarCounter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,9 +55,11 @@ public class MainActivity extends AppCompatActivity {
 
         USERID = getIntent().getIntExtra("UserID", 0);
         loggedinUser = databaseHelper.getUserTraits(USERID);
+        userGoals = databaseHelper.getUserGoals(USERID);
         allFoodOrders = databaseHelper.showTodaysFood(USERID);
         allFoods = databaseHelper.allFood();
 
+        Log.v("MAIN ACTIVITY USERID= ", String.valueOf(USERID));
         for(int i = 0; i < allFoodOrders.size();i++){
             for (int k = 0; k < allFoods.size(); k++){
                 if (allFoodOrders.get(i).getFoodId() == allFoods.get(k).getFoodId()) {
@@ -63,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
                     Log.v("FOOD CALORIES", String.valueOf(allFoods.get(k).getCalories()));
                     kJcounter += allFoods.get(k).getEnergy();
                     Log.v("FOOD ENERGY", String.valueOf(allFoods.get(k).getEnergy()));
+                    sugarCounter += allFoods.get(k).getSugar();
+                    Log.v("FOOD Sugar", String.valueOf(allFoods.get(k).getSugar()));
                 }
             }
         }
@@ -77,44 +84,30 @@ public class MainActivity extends AppCompatActivity {
         stepCounterProgressBar = (ProgressBar) findViewById(R.id.progressBarStepsGoal);
         calorieCounterProgressBar = (ProgressBar) findViewById(R.id.progressBarCalories);
         kJCounterProgressBar = (ProgressBar) findViewById(R.id.progressBarKilojoules);
+        sugarCounterProgressBar = (ProgressBar) findViewById(R.id.progressBarSugar);
 
-        stepCounterProgressBar.setMax(userStepGoal);
-        calorieCounterProgressBar.setMax(userCalorieGoal);
-
-        if(loggedinUser.getId() != 0){
-
-            if(loggedinUser.getGender().matches("Male") == true) {
-                if (loggedinUser.getAge() < 19)
-                    kJCounterProgressBar.setMax(13950);
-                if (loggedinUser.getAge() > 19 && loggedinUser.getAge() < 30)
-                    kJCounterProgressBar.setMax(12950);
-                else if (loggedinUser.getAge() > 30 && loggedinUser.getAge() < 51)
-                    kJCounterProgressBar.setMax(12350);
-                else if (loggedinUser.getAge() > 50 && loggedinUser.getAge() < 71)
-                    kJCounterProgressBar.setMax(11450);
-                else
-                    kJCounterProgressBar.setMax(9900);
-            }
-
-            else if (loggedinUser.getGender().matches("Female") == true){
-                if (loggedinUser.getAge() < 19)
-                    kJCounterProgressBar.setMax(11155);
-                if (loggedinUser.getAge() > 19 && loggedinUser.getAge() < 30)
-                    kJCounterProgressBar.setMax(10455);
-                else if (loggedinUser.getAge() > 30 && loggedinUser.getAge() < 51)
-                    kJCounterProgressBar.setMax(9900);
-                else if (loggedinUser.getAge() > 50 && loggedinUser.getAge() < 71)
-                    kJCounterProgressBar.setMax(9450);
-                else
-                    kJCounterProgressBar.setMax(8550);
-            }
-
+        if(loggedinUser.getId() == 0){
+            Toast.makeText(getBaseContext(), "Hi " + loggedinUser.getAlias() + "!" +
+                    "Please enter your personal details through the settings window!",
+                    Toast.LENGTH_LONG).show();
         }
+        else if(userGoals.getId() == 0){
+            Toast.makeText(getBaseContext(), "Hi " + loggedinUser.getAlias() + "!" +
+                            "Please enter your GOALS details through the settings window!",
+                    Toast.LENGTH_LONG).show();
+        }
+        else if (userGoals.getId() != 0) {
+            stepCounterProgressBar.setMax(userGoals.getStepGoal());
+            calorieCounterProgressBar.setMax(userGoals.getCalorieGoal());
+            kJCounterProgressBar.setMax(userGoals.getKilojoulesGoal());
+            sugarCounterProgressBar.setMax(userGoals.getSugarGoal());
+        }
+
 
         stepCounterProgressBar.setProgress(10000);
         calorieCounterProgressBar.setProgress(calorieCounter);
         kJCounterProgressBar.setProgress(kJcounter);
-
+        sugarCounterProgressBar.setProgress(sugarCounter);
 
     }
 

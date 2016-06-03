@@ -19,6 +19,11 @@ public class User {
     public int weight;
     public int age;
     public String gender;
+
+    public int sugarGoal;
+    public int stepGoal;
+    public int kilojoulesGoal;
+    public int calorieGoal;
     
     public User (int id, String email, String password,String alias, String team){
         this.id = id;
@@ -40,6 +45,14 @@ public class User {
         this.gender = gender;
     }
 
+    public User (int id, int sugarGoal, int stepGoal, int kilojoulesGoal, int calorieGoal){
+        this.id = id;
+        this.sugarGoal = sugarGoal;
+        this.stepGoal = stepGoal;
+        this.kilojoulesGoal = kilojoulesGoal;
+        this.calorieGoal = calorieGoal;
+    }
+
 
 
     public String toString(){
@@ -50,6 +63,14 @@ public class User {
     public String dbWriteUserTraits(){
         return id + " " + firstName + " " + lastName + " " + height + " " + weight + " " + age
                 + " " + gender + "\n";
+    }
+
+    public String userGoals(){
+        return id + " " + sugarGoal + " " + stepGoal + " " + kilojoulesGoal + " " + calorieGoal + "\n";
+    }
+
+    public String userTraits(){
+        return id + " " + firstName + " " + lastName + " " + height + " " + weight + " " + age + " " + gender;
     }
 
     public String getEmail() {
@@ -138,5 +159,37 @@ public class User {
 
     public void setTeam(String team) {
         this.team = team;
+    }
+
+    public int getSugarGoal() {
+        return sugarGoal;
+    }
+
+    public void setSugarGoal(int sugarGoal) {
+        this.sugarGoal = sugarGoal;
+    }
+
+    public int getStepGoal() {
+        return stepGoal;
+    }
+
+    public void setStepGoal(int stepGoal) {
+        this.stepGoal = stepGoal;
+    }
+
+    public int getKilojoulesGoal() {
+        return kilojoulesGoal;
+    }
+
+    public void setKilojoulesGoal(int kilojoulesGoal) {
+        this.kilojoulesGoal = kilojoulesGoal;
+    }
+
+    public int getCalorieGoal() {
+        return calorieGoal;
+    }
+
+    public void setCalorieGoal(int calorieGoal) {
+        this.calorieGoal = calorieGoal;
     }
 }

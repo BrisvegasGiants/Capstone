@@ -9,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,6 +47,8 @@ public class GoalsActivity extends AppCompatActivity {
     public static final int RECOMMENDED_KJS = 1;
     public static final int MINIMUM_CALORIES = 1;
 
+    private boolean found;
+
     // On Create
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,13 +63,24 @@ public class GoalsActivity extends AppCompatActivity {
         stepsInput = (EditText) findViewById(R.id.stepsGoal);
         kjInput = (EditText) findViewById(R.id.kJGoal);
         calInput = (EditText) findViewById(R.id.calGoal);
-
-
+        USERID = getIntent().getIntExtra("UserID", 0);
+        Log.v("GOAL ACTIVITY USERID= ", String.valueOf(USERID));
         //Initialise database
+        context = getApplicationContext();
         databaseHelper = new DatabaseHelper(context);
         db = databaseHelper.getWritableDatabase();
-        user = databaseHelper.getUserTraits(USERID);
+        user = databaseHelper.getUserGoals(USERID);
+        Log.v("GOAL ACTIVITY USER =", user.userGoals());
 
+        if(user.getId() != 0){
+            sugarInput.setText(String.valueOf(user.getSugarGoal()));
+            stepsInput.setText(String.valueOf(user.getStepGoal()));
+            kjInput.setText(String.valueOf(user.getKilojoulesGoal()));
+            calInput.setText(String.valueOf(user.getCalorieGoal()));
+            found = true;
+        }
+        else
+            found = false;
 
         // Set onClick listener for Save button.
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -142,9 +156,11 @@ public class GoalsActivity extends AppCompatActivity {
         if (userSugar.isEmpty() || userSugar.length() > 6) {
             sugarInput.setError("Please enter a valid number (grams)");
             valid = false;
-        } else if (sugar > RECOMMENDED_SUGAR) {
-            warningMessage("daily", "SUGAR", "male", RECOMMENDED_SUGAR);
-        } else {
+        }
+        //else if (sugar > RECOMMENDED_SUGAR) {
+            //warningMessage("daily", "SUGAR", "male", RECOMMENDED_SUGAR);
+       // }
+        else {
             sugarInput.setError(null);
         } //End If Else
 
@@ -154,10 +170,11 @@ public class GoalsActivity extends AppCompatActivity {
         if (userSteps.isEmpty() || userSteps.length() > 10 ) {
             stepsInput.setError("Please enter a valid number of steps");
             valid = false;
-        } else if (steps < RECOMMENDED_STEPS) {
-            Toast.makeText(getBaseContext(), "WARNING: The recommended (daily/weekly) step count " +
-                    "for the average (gender) is " + RECOMMENDED_STEPS, Toast.LENGTH_LONG).show();
-        } else {
+        } //else if (steps < RECOMMENDED_STEPS) {
+           // Toast.makeText(getBaseContext(), "WARNING: The recommended (daily/weekly) step count " +
+             //       "for the average (gender) is " + RECOMMENDED_STEPS, Toast.LENGTH_LONG).show();
+        //}
+        else {
             stepsInput.setError(null);
         } //End If Else
 
@@ -167,9 +184,10 @@ public class GoalsActivity extends AppCompatActivity {
         if (userKjs.isEmpty() || userKjs.length() > 10 ) {
             kjInput.setError("Please enter a valid number");
             valid = false;
-        } else if (kJs < RECOMMENDED_KJS) {
-            warningMessage("daily", "KILOJOULE", "male", RECOMMENDED_KJS);
-        } else {
+        //} else if (kJs < RECOMMENDED_KJS) {
+        //   warningMessage("daily", "KILOJOULE", "male", RECOMMENDED_KJS);
+        }
+        else {
             kjInput.setError(null);
         } //End If Else
 
@@ -179,11 +197,13 @@ public class GoalsActivity extends AppCompatActivity {
         if (userCals.isEmpty() || userCals.length() > 10 ) {
            calInput.setError("Please enter a valid number");
             valid = false;
-        } else if (calories > RECOMMENDED_CALORIES || calories < MINIMUM_CALORIES) {
+        }
+        //else if (calories > RECOMMENDED_CALORIES || calories < MINIMUM_CALORIES) {
 
-            warningMessage("daily", "CALORIE", "male", RECOMMENDED_CALORIES);
+            //warningMessage("daily", "CALORIE", "male", RECOMMENDED_CALORIES);
 
-        } else {
+        //}
+        else {
             stepsInput.setError(null);
         } // End If Else
 
@@ -208,8 +228,63 @@ public class GoalsActivity extends AppCompatActivity {
 
     public void updateGoals() {
 
+        user.setId(USERID);
+        user.setSugarGoal(Integer.parseInt(sugarInput.getText().toString()));
+        user.setStepGoal(Integer.parseInt(stepsInput.getText().toString()));
+        user.setKilojoulesGoal(Integer.parseInt(kjInput.getText().toString()));
+        user.setCalorieGoal(Integer.parseInt(calInput.getText().toString()));
+
+        if(found == true) {
+            databaseHelper.updateUserGoals(user.getId(), user);
+            Log.v("USER FOUND ?=", user.userGoals());
+            onSaveSuccess();
+        }
+        else if (found == false) {
+            databaseHelper.insertUserGoals(user);
+            Log.v("USER NOT FOUND ?= ", user.userGoals());
+            onSaveSuccess();
+        }
 
 
     }
+    public void onSaveSuccess() {
+        saveButton.setEnabled(true);
+        setResult(RESULT_OK, null);
+        Intent startHome = new Intent(this, MainActivity.class);
+        Bundle userCreds = new Bundle();
+        userCreds.putInt("UserID", USERID);
+        startHome.putExtras(userCreds);
+        startActivity(startHome);
+    } //End onSaveSuccess
 
+
+    /*if(loggedinUser.getId() != 0){
+
+        if(loggedinUser.getGender().matches("Male") == true) {
+            if (loggedinUser.getAge() < 19)
+                kJCounterProgressBar.setMax(13950);
+            if (loggedinUser.getAge() > 19 && loggedinUser.getAge() < 30)
+                kJCounterProgressBar.setMax(12950);
+            else if (loggedinUser.getAge() > 30 && loggedinUser.getAge() < 51)
+                kJCounterProgressBar.setMax(12350);
+            else if (loggedinUser.getAge() > 50 && loggedinUser.getAge() < 71)
+                kJCounterProgressBar.setMax(11450);
+            else
+                kJCounterProgressBar.setMax(9900);
+        }
+
+        else if (loggedinUser.getGender().matches("Female") == true){
+            if (loggedinUser.getAge() < 19)
+                kJCounterProgressBar.setMax(11155);
+            if (loggedinUser.getAge() > 19 && loggedinUser.getAge() < 30)
+                kJCounterProgressBar.setMax(10455);
+            else if (loggedinUser.getAge() > 30 && loggedinUser.getAge() < 51)
+                kJCounterProgressBar.setMax(9900);
+            else if (loggedinUser.getAge() > 50 && loggedinUser.getAge() < 71)
+                kJCounterProgressBar.setMax(9450);
+            else
+                kJCounterProgressBar.setMax(8550);
+        }
+
+    }*/
 } // End Class
