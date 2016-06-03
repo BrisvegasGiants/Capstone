@@ -5,7 +5,8 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="bvgiants.diary3.runActivity">
+    tools:context="bvgiants.diary3.runActivity"
+    tools:showIn="@layout/activity_run">
 
 
     <TextView
@@ -13,39 +14,42 @@
         android:layout_height="wrap_content"
         android:text="@string/default_value"
         android:id="@+id/distanceCounterView"
-        android:textSize="32sp" />
+        android:textSize="50sp"
+        android:layout_marginTop="42dp"
+        android:layout_below="@+id/view3"
+        android:layout_alignStart="@+id/stepCounterView" />
 
     <!-- Steps -->
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="200dp"
-        android:elevation="40dp"
-        android:id="@+id/linearLayout3"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true">
-
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="You have walked....."
             android:id="@+id/haveWalked"
-            android:layout_marginTop="-50dp"
-            android:textSize="28sp"
-            android:textColor="#FFFFFF"/>
+            android:layout_marginTop="80dp"
+            android:layout_marginStart="20dp"
+            android:textSize="20sp"
+            android:textColor="#212121"/>
 
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#42a5f5"
+        android:layout_marginTop="130dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp">
 
+    </View>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/default_value"
             android:id="@+id/stepCounterView"
-            android:layout_marginTop="50dp"
-             android:layout_marginStart="-10dp"
-            android:textSize="90sp"
-            />
+            android:textSize="50sp"
+            android:layout_marginTop="170dp"
+            android:layout_marginLeft="30dp"
+             />
 
         <TextView
             android:layout_width="wrap_content"
@@ -53,46 +57,70 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/step_suffix"
             android:id="@+id/stepsSuffix"
-            android:textSize="46sp"
-            android:layout_marginStart="-250dp"
-            android:layout_marginTop="80dp"
-            android:textColor="#FFFFFF"
+            android:textSize="30sp"
+            android:layout_marginStart="100dp"
+            android:layout_marginTop="180dp"
             android:textStyle="italic"/>
 
-        <TextView
-            android:layout_width="58dp"
-            android:layout_height="56dp"
-            android:text="0"
-            android:id="@+id/percentageCounterView"/>
-
-
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:id="@+id/sunShine"
-            android:src="@drawable/sun"
-            android:layout_marginLeft="190dp"
-            android:layout_marginTop= "150dp"
-            />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
+    <View
         android:layout_width="fill_parent"
-        android:layout_height="200dp"
-        android:elevation="44dp"
-        android:id="@+id/linearLayout"
-        android:layout_below="@+id/linearLayout3"
-        android:layout_toEndOf="@+id/distanceCounterView"
-        android:layout_alignParentStart="true">
+        android:layout_height="1dp"
+        android:background="#42a5f5"
+        android:layout_marginTop="270dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:id="@+id/view3">
+
+    </View>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#42a5f5"
+        android:layout_marginTop="420dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:id="@+id/view4">
+
+    </View>
+
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:id="@+id/percentageCounterView"
+            android:textSize="50sp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignStart="@+id/distanceCounterView"
+            android:layout_marginBottom="45dp" />
+
+
+    <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/distance_suffix"
             android:id="@+id/distanceSuffix"
-            android:textSize="32sp" />
-    </LinearLayout>
+            android:textSize="32sp"
+        android:layout_alignBottom="@+id/distanceCounterView"
+        android:layout_alignStart="@+id/stepsSuffix"
+        android:textStyle="italic"/>
+
+    <ImageView
+        android:layout_width="70dp"
+        android:layout_height="80dp"
+        android:src="@drawable/percent"
+        android:layout_alignBottom="@+id/textView2"
+        android:layout_marginStart="110dp"/>
+
+    <TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Of your goal"
+    android:textSize="23sp"
+    android:layout_alignBottom="@+id/percentageCounterView"
+    android:layout_alignEnd="@+id/view4"
+    android:id="@+id/textView2" />
+
 
 
 </RelativeLayout>
