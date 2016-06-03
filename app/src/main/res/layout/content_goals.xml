@@ -13,6 +13,9 @@
     tools:showIn="@layout/activity_goals"
     android:contextClickable="true">
 
+
+
+
     <!--- Trophy -->
 
     <ImageView
@@ -20,28 +23,37 @@
         android:layout_height="170dp"
         android:id="@+id/trophyView"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="52dp"
         android:src="@drawable/goals1"
       />
 
-    <!-- Star -->
-    <RatingBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/ratingBar"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="100dp"
-        android:numStars="1"
-        />
+
+    <!--
+     <RatingBar
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:id="@+id/ratingBar"
+         android:layout_centerHorizontal="true"
+         android:layout_marginTop="100dp"
+         android:numStars="1"
+         /> -->
+
 
     <!-- Sugar -->
 
     <ImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginTop="240dp"
+        android:layout_marginTop="235dp"
         android:layout_marginStart="10dp"
         android:src="@drawable/candy2"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="230dp"
+        android:background="#555a96da" />
 
     <EditText
         android:layout_width="fill_parent"
@@ -53,7 +65,9 @@
         android:hint="Sugar"
         android:ellipsize="start"
         android:gravity="center_horizontal"
-        android:inputType="number"/>
+        android:inputType="number"
+
+        />
 
     <!-- Steps-->
 
@@ -74,7 +88,8 @@
         android:hint="Steps"
         android:ellipsize="start"
         android:gravity="center_horizontal"
-        android:inputType="number"/>
+        android:inputType="number"
+/>
 
     <!-- Kilojoules -->
 
@@ -94,7 +109,8 @@
         android:hint="Kilojoules"
         android:ellipsize="start"
         android:gravity="center_horizontal"
-        android:inputType="number"/>
+        android:inputType="number"
+       />
 
     <!--- Calories -->
 
@@ -116,7 +132,9 @@
         android:ellipsize="start"
         android:gravity="center_horizontal"
         android:inputType="number"
+        android:theme="@style/MyEditTextTheme"
         />
+
 
     <!--- Save Button -->
 

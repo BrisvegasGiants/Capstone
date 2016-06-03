@@ -4,13 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="bvgiants.diary3.runActivity"
     tools:showIn="@layout/activity_run">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="#00bfff"
+        android:layout_marginTop="25dp"
+        android:layout_alignParentBottom="true">
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#2196f3"
+        android:layout_marginTop="200dp"/>
 
     <!-- Steps -->
 
@@ -82,8 +93,9 @@
         android:id="@+id/percentageCounterView"
         android:textSize="32sp"
         android:layout_marginTop="300dp"
-        android:layout_marginEnd="100dp"
-      />
+        android:layout_marginEnd="100dp" />
+
+
 
 
 </RelativeLayout>
