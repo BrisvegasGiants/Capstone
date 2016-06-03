@@ -15,7 +15,6 @@
     </android.support.design.widget.AppBarLayout>
 
     <include layout="@layout/content_run" />
-    <include layout="@layout/app_bar" />
 
 
 </android.support.design.widget.CoordinatorLayout>

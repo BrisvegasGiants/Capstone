@@ -5,13 +5,13 @@
     <!-- Define the background properties like color etc -->
     <item android:id="@android:id/background">
         <shape>
-            <corners android:radius="10dip"/>
+            <corners android:radius="8dip"/>
             <stroke android:width="1dip" android:color="#0e1b242b" />
             <gradient
-                android:startColor="#30054270"
-                android:centerColor="#f195bacf"
-                android:centerY="1.0"
-                android:endColor="#040b0d"
+                android:startColor="#8a629bb6"
+                android:centerColor="#9a6bb5e1"
+                android:centerY=" 1.0"
+                android:endColor="#c2b39b9b"
                 android:angle="45"
                 />
         </shape>

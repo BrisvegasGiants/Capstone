@@ -27,6 +27,7 @@ public class SignupActivity extends AppCompatActivity {
     private EditText mEmailView;
     private EditText mPasswordView;
     private EditText mNameView;
+    private EditText aliasView;
     public static Context context;
     private static final String TAG = SignupActivity.class.getSimpleName();
 
@@ -46,6 +47,7 @@ public class SignupActivity extends AppCompatActivity {
         alreadyMember = (TextView) findViewById(R.id.alreadymember);
         mPasswordView = (EditText) findViewById(R.id.passwordText);
         mNameView = (EditText) findViewById(R.id.nameText);
+        aliasView = (EditText) findViewById(R.id.aliasText);
         context = getApplicationContext();
         mEmailView = (EditText) findViewById(R.id.emailText);
         context = getApplicationContext();
@@ -96,8 +98,9 @@ public class SignupActivity extends AppCompatActivity {
         String name = mNameView.getText().toString();
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
+        String alias = aliasView.getText().toString();
 
-        User newUser = new User (createUserID(),email,password,name," ");
+        User newUser = new User (createUserID(),email,password,alias," ");
         databaseHelper.insertUser(newUser);
         onSignupSuccess();
 
@@ -121,12 +124,20 @@ public class SignupActivity extends AppCompatActivity {
         String name = mNameView.getText().toString();
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
+        String alias = aliasView.getText().toString();
 
         if (name.isEmpty() || name.length() < 3) {
             mNameView.setError("at least 3 characters");
             valid = false;
         } else {
             mNameView.setError(null);
+        }
+
+        if (alias.isEmpty() || alias.length() < 3) {
+            aliasView.setError("at least 3 characters");
+            valid = false;
+        } else {
+            aliasView.setError(null);
         }
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {

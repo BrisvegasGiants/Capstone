@@ -2,102 +2,99 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="bvgiants.diary3.runActivity"
-    tools:showIn="@layout/activity_run">
+    tools:context="bvgiants.diary3.runActivity">
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:background="#00bfff"
-        android:layout_marginTop="25dp"
-        android:layout_alignParentBottom="true">
-    </LinearLayout>
-
-    <!-- Break view -->
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#2196f3"
-        android:layout_marginTop="220dp"/>
-
-    <!-- Steps -->
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/default_value"
-        android:id="@+id/stepCounterView"
-        android:layout_marginTop="80dp"
-        android:layout_marginStart="150dp"
-        android:textSize="32sp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/step_suffix"
-        android:id="@+id/stepsSuffix"
-        android:textSize="32sp"
-        android:layout_marginTop="80dp"
-        android:layout_marginStart="200dp" />
-
-    <TextView
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/step_prefix"
-        android:id="@+id/textSummary"
-        android:textSize="25sp"
-        android:layout_alignTop="@+id/stepCounterView" />
-
-    <!-- Distance -->
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/default_value"
         android:id="@+id/distanceCounterView"
-        android:textSize="32sp"
-        android:layout_marginTop="140dp"
-        android:layout_marginStart="150dp" />
+        android:textSize="32sp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/distance_suffix"
-        android:id="@+id/distanceSuffix"
-        android:textSize="32sp"
-        android:layout_marginTop="140dp"
-        android:layout_marginStart="200dp"/>
-
-
-    <!-- Goal -->
-    <TextView
-        android:layout_width="200dp"
-        android:layout_height="98dp"
-        android:text="@string/percentage_suffix"
-        android:id="@+id/goalSummaryPost"
-        android:textSize="20sp"
-        android:layout_marginTop="300dp"
-        android:layout_marginStart="150dp" />
-
-    <!-- Percent Counter -->
-
-    <TextView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:text="@string/default_value"
-        android:id="@+id/percentageCounterView"
-        android:textSize="32sp"
-        android:layout_marginTop="300dp"
-        android:layout_marginEnd="100dp" />
+    <!-- Steps -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="200dp"
+        android:elevation="40dp"
+        android:id="@+id/linearLayout3"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
 
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="You have walked....."
+            android:id="@+id/haveWalked"
+            android:layout_marginTop="-50dp"
+            android:textSize="28sp"
+            android:textColor="#FFFFFF"/>
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/default_value"
+            android:id="@+id/stepCounterView"
+            android:layout_marginTop="50dp"
+             android:layout_marginStart="-10dp"
+            android:textSize="90sp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/step_suffix"
+            android:id="@+id/stepsSuffix"
+            android:textSize="46sp"
+            android:layout_marginStart="-250dp"
+            android:layout_marginTop="80dp"
+            android:textColor="#FFFFFF"
+            android:textStyle="italic"/>
+
+        <TextView
+            android:layout_width="58dp"
+            android:layout_height="56dp"
+            android:text="0"
+            android:id="@+id/percentageCounterView"/>
+
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:id="@+id/sunShine"
+            android:src="@drawable/sun"
+            android:layout_marginLeft="190dp"
+            android:layout_marginTop= "150dp"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="200dp"
+        android:elevation="44dp"
+        android:id="@+id/linearLayout"
+        android:layout_below="@+id/linearLayout3"
+        android:layout_toEndOf="@+id/distanceCounterView"
+        android:layout_alignParentStart="true">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/distance_suffix"
+            android:id="@+id/distanceSuffix"
+            android:textSize="32sp" />
+    </LinearLayout>
 
 
 </RelativeLayout>
+
+
