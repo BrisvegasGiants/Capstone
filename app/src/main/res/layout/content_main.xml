@@ -16,22 +16,12 @@
     android:contextClickable="false">
 
 
-    <!--\\\\\\ Heading ///////-->
-
-    <!--\\\\\\\\\\Buttons ////////-->
-
-    <ProgressBar
-        android:id="@+id/progressBarStepsGoal"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="270dp"
-        android:layout_height="30dp"
-        android:progress="0"
-        android:secondaryProgress="0"
-        android:indeterminate="false"
-        android:focusable="false"
-        android:contextClickable="true"
-        android:layout_below="@+id/stepGoal"
-        android:layout_alignParentStart="true" />
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:background="#c31d1210"
+        android:layout_marginTop="100dp"
+        android:id="@+id/view2" />
 
     <TextView
         android:layout_width="match_parent"
@@ -40,23 +30,44 @@
         android:text="@string/glance"
         android:id="@+id/atAGlanceTitle"
         android:textColor="@android:color/holo_blue_light"
-        android:textSize="20sp"
-        android:layout_marginTop="49dp"
+        android:textSize="30sp"
+        android:layout_marginTop="0dp"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:gravity="center"
+        />
 
+    <!-- STEP GOAL -->
     <ProgressBar
-        style="?android:attr/progressBarStyleHorizontal"
-        android:id="@+id/progressBarCalories"
-        android:layout_width="270dp"
-        android:layout_height="30dp"
-        android:progress="0"
+        android:id="@+id/progressBarStepsGoal"
+        style="@style/CustomProgressBarHorizontal"
+        android:progress="5000"
         android:secondaryProgress="0"
-        android:indeterminate="false"
-        android:focusable="false"
-        android:contextClickable="true"
-        android:layout_below="@+id/calorieGoal"
-        android:layout_alignParentStart="true" />
+        android:max="10000"
+        android:layout_above="@+id/calorieGoal"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="28dp" />
+
+
+    <TextView
+    android:layout_width="30dp"
+    android:layout_height="wrap_content"
+    android:text="50"
+    android:id="@+id/currentSteps"
+    android:textSize="25sp"
+        android:layout_alignTop="@+id/progressBarStepsGoal"
+        android:layout_alignStart="@+id/buttonEat" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="%"
+        android:id="@+id/currentPerc"
+        android:textSize="25sp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="140dp"
+        />
+
+
 
     <TextView
         android:layout_width="wrap_content"
@@ -64,22 +75,23 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/textSteps"
         android:id="@+id/stepGoal"
-        android:layout_below="@+id/atAGlanceTitle"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="24dp" />
+        android:textColor="#212121"
+        android:textAllCaps="true"
+        android:layout_above="@+id/progressBarStepsGoal"
+        android:layout_alignParentStart="true" />
+
+
+    <!-- Progress Calories -->
 
     <ProgressBar
-        android:id="@+id/progressBarNutrition1"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="270dp"
-        android:layout_height="30dp"
-        android:progress="0"
+        style="@style/CustomProgressBarHorizontal"
+        android:id="@+id/progressBarCalories"
+        android:progress="1500"
         android:secondaryProgress="0"
-        android:indeterminate="false"
-        android:focusable="false"
-        android:contextClickable="true"
-        android:layout_below="@+id/nutrition2Goal"
-        android:layout_alignParentStart="true" />
+        android:max="10000"
+        android:layout_above="@+id/nutrition1Goal"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="20dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -87,24 +99,21 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/textCalorie"
         android:id="@+id/calorieGoal"
-        android:layout_below="@+id/progressBarStepsGoal"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="21dp" />
+        android:textColor="#212121"
+        android:textAllCaps="true"
+        android:layout_above="@+id/progressBarCalories"
+        android:layout_alignParentStart="true" />
 
+
+    <!-- KILOJOULES -->
 
     <ProgressBar
         android:id="@+id/progressBarKilojoules"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="270dp"
-        android:layout_height="30dp"
-        android:progress="0"
+        style="@style/CustomProgressBarHorizontal"
+        android:progress="5"
         android:secondaryProgress="0"
-        android:indeterminate="false"
-        android:focusable="false"
-        android:contextClickable="true"
-        android:layout_below="@+id/nutrition1Goal"
+        android:layout_above="@+id/view"
         android:layout_alignParentStart="true" />
-
 
     <TextView
         android:layout_width="wrap_content"
@@ -112,29 +121,52 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Estimated Kilojoules per Day"
         android:id="@+id/nutrition1Goal"
-        android:layout_below="@+id/progressBarCalories"
+        android:textColor="#212121"
+        android:textAllCaps="true"
+        android:layout_above="@+id/progressBarKilojoules"
+        android:layout_alignParentStart="true" />
+
+
+<!-- Sugars -->
+
+    <ProgressBar
+        android:id="@+id/progressBarSugar"
+        style="@style/CustomProgressBarHorizontal"
+        android:progress="0"
+        android:secondaryProgress="30"
+        android:layout_below="@+id/view"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="34dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Nutrition 2"
-        android:id="@+id/nutrition2Goal"
-        android:layout_below="@+id/progressBarKilojoules"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp"/>
+        android:text="Sugars"
+        android:id="@+id/sugar2Goal"
+        android:textColor="#212121"
+        android:textAllCaps="true"
+        android:layout_marginTop="18dp"
+        android:layout_below="@+id/view"
+        android:layout_alignParentStart="true" />
+
+
+
+    <!-- Buttons -->
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:layout_centerVertical="true"
+        android:id="@+id/view" />
 
     <Button
         style="@style/menuButtons"
         android:id="@+id/buttonEat"
         android:background="@drawable/buttonchanges"
         android:text="@string/eat_button"
-        android:layout_gravity="center_vertical"
-        android:layout_below="@+id/buttonRun"
-        android:layout_marginTop="10dp"
-        android:layout_alignParentEnd="true" />
+        android:layout_above="@+id/buttonRun"
+        android:layout_margin="5dp"
+        android:layout_alignParentStart="true" />
 
     <Button
         style="@style/menuButtons"
@@ -142,9 +174,9 @@
         android:background="@drawable/buttonchanges"
         android:text="@string/run_button"
         android:clickable="true"
-        android:layout_below="@+id/nutrition1Goal"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="103dp" />
+        android:layout_above="@+id/buttonMaps"
+        android:layout_margin="5dp"
+        android:layout_alignParentStart="true" />
 
     <Button
         style="@style/menuButtons"
@@ -152,9 +184,26 @@
         android:background="@drawable/buttonchanges"
         android:text="@string/maps_button"
         android:onClick="menuSelect"
-        android:layout_below="@+id/buttonEat"
-        android:layout_marginTop="10dp"
-        android:layout_alignParentEnd="true" />
+        android:layout_margin="5dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:background="#c31d1210"
+        android:layout_above="@+id/buttonEat"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="31dp" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="30dp"
+        android:text="At a Glance"
+        android:layout_alignBottom="@+id/view2"
+        android:layout_alignEnd="@+id/buttonEat"
+        android:id="@+id/textView" />
 
 
 

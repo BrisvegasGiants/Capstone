@@ -17,11 +17,13 @@
         android:layout_alignParentBottom="true">
     </LinearLayout>
 
+    <!-- Break view -->
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#2196f3"
-        android:layout_marginTop="200dp"/>
+        android:layout_marginTop="220dp"/>
 
     <!-- Steps -->
 

@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        stepCounterProgressBar.setProgress(6000);
+        stepCounterProgressBar.setProgress(10000);
         calorieCounterProgressBar.setProgress(calorieCounter);
         kJCounterProgressBar.setProgress(kJcounter);
 
