@@ -23,6 +23,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -84,9 +85,25 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
 
         Log.e("Google Maps", "Map is now ready for use");
 
+        dropRunPins();
+        dropFoodPins();
 
+
+        /*
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+        if (mLastLocation != null) {
+            dropPin(mLastLocation);
+        }
+        */
+
+
+
+    }
+
+    private void dropRunPins(){
         // Loop Through Pins
-
+        Log.e("Google Maps", "-----------------------------< START RUN PINS >------------------------------");
         SharedPreferences mapReferences = getSharedPreferences("DropPins", MODE_PRIVATE);
 
         //String extractedText = mapReferences.getString("lat0", "No Lat Recorded");
@@ -95,7 +112,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
         String lng = mapReferences.getString("lng0", "No Long Recorded");
          */
         int locationCount = mapReferences.getInt("locationCount", 1);
-        Log.e("Google Maps", "Found Total Count! " + locationCount);
+        Log.e("Google Maps", "Found the Total RUN Count - " + locationCount + " locations");
 
 
         for (int i=0; i<locationCount; i++){
@@ -159,17 +176,51 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
 
         }
 
+        Log.e("Google Maps", "-----------------------------< END RUN PINS >------------------------------");
+
+    } // End dropRunPins
+
+    private void dropFoodPins(){
+        Log.e("Google Maps", "-----------------------------< START FOOD PINS >------------------------------");
+        SharedPreferences mapReferences = getSharedPreferences("FoodPins", MODE_PRIVATE);
+
+        //String extractedText = mapReferences.getString("lat0", "No Lat Recorded");
         /*
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        String lat = mapReferences.getString("lat0", "No Lat Recorded");
+        String lng = mapReferences.getString("lng0", "No Long Recorded");
+         */
+        int foodLocationCount = mapReferences.getInt("foodLocationCount", 1);
+        Log.e("Google Maps", "Found the Total FOOD Count - " + foodLocationCount + " locations");
 
-        if (mLastLocation != null) {
-            dropPin(mLastLocation);
+
+        for (int i=0; i<foodLocationCount; i++){
+
+            String lat = mapReferences.getString("lat"+i, "No Lat Recorded");
+            String lng = mapReferences.getString("lng"+i, "No Long Recorded");
+            LatLng loc = new LatLng(Double.parseDouble(lat)+1, Double.parseDouble(lng));
+
+
+            // On first Pin, ensure it drops
+            if (i == 0) {
+                Log.e("Google Maps", "Count"+i+" - Found Logged Location! | Looped | " + lat +" "+ lng);
+                Log.e("Google Maps", "Count"+i+" - Loop Counter: " + i);
+                Log.e("Google Maps", "Count"+i+" - Dropped Pin at " + loc);
+                Marker mMarker = mMap.addMarker(new MarkerOptions().position(loc).title("This is food pin: " + i).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+            }
+            // Always place one pin, then check the rest
+            if (i > 0) {
+                    Log.e("Google Maps", "Food Pin No: " + i);
+                    Log.e("Google Maps", "Placing Food Pin on "+i+" loop" );
+                    Log.e("Google Maps", "Count " + i + " - Dropped Food Pin at " + loc);
+                    Marker mMarker = mMap.addMarker(new MarkerOptions().position(loc).title("This is food pin: " + i).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+
+                }
+
+            }
+
+        Log.e("Google Maps", "-----------------------------< END FOOD PINS >------------------------------");
+
         }
-        */
-
-
-
-    }
 
     //double distanceDif = distance(mLastLocation.getLatitude(), mLastLocation.getLongitude(), -27.460584, 152.975657);
 

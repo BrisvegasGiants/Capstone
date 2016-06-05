@@ -4,8 +4,10 @@ package bvgiants.diary3;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.app.FragmentManager;
@@ -53,6 +55,10 @@ import android.widget.SearchView;
 import android.widget.Toast;
 
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.GoogleMap;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -89,8 +95,12 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
     ArrayList<Integer> userFoodImages = new ArrayList<Integer>();
     ArrayList<String> userFoodNames = new ArrayList<String>();
 
-
     private Button addToDiary;
+
+    Context mContext;
+    int foodLocationCount;
+    public GoogleApiClient mGoogleMapsClient;
+    Location mLastLocation;
 
     @Override
 
@@ -158,12 +168,22 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
             }
         });
 
+        startBackgroundProcess(this.findViewById(android.R.id.content), mContext);
+
+        if (mGoogleMapsClient == null) {
+            mGoogleMapsClient = new GoogleApiClient.Builder(this)
+                    .addApi(LocationServices.API)
+                    .build();
+            mGoogleMapsClient.connect();
+            Log.e("Google Maps", "Food Pins : Google Maps Connection Started");
+        }
+
         searchView = (SearchView) findViewById(R.id.search);
         searchView.setIconifiedByDefault(false);
         searchView.setOnQueryTextListener(this);
         searchView.setOnCloseListener(this);
-        addToDiary();
 
+        addToDiary();
 
     }
 
@@ -226,6 +246,11 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
         return super.onOptionsItemSelected(item);
     }
 
+    public void startBackgroundProcess(View view, Context c){
+        startService(new Intent(getBaseContext(), BackgroundService.class));
+    }
+
+
     public void addToDiary (){
         final Intent loadEat = new Intent(this, EatActivity.class);
         addToDiary = (Button) findViewById(R.id.save_to_diary);
@@ -237,16 +262,51 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
                     databaseHelper.saveDataToFoodConsumedTable(usersFoods, USERID);
                     Bundle userCreds = new Bundle();
                     userCreds.putInt("UserID", USERID);
+                    //add to DropPin intent somehow
+
+
                     loadEat.putExtras(userCreds);
                     startActivity(loadEat);
+
                 } catch (IOException e){
                     Log.v(e.toString(), " THERE WAS AN ERROR!");
                 }
 
-
+                logFoodPin();
             }
+
         });
+
     }
+
+    public void logFoodPin(){
+
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleMapsClient);
+        if (mLastLocation != null) {
+            String myLat = Double.toString(mLastLocation.getLatitude());
+            String myLong = Double.toString(mLastLocation.getLongitude());
+            Log.e("Google Maps", "Found Location! " + "Lat: " + myLat + " " + "Long: " + myLong);
+        }
+
+        foodLocationCount++;
+        SharedPreferences mapReferences = this.getSharedPreferences("FoodPins", MODE_PRIVATE);
+        SharedPreferences.Editor editor = mapReferences.edit();
+        editor.putString("lat" + Integer.toString((foodLocationCount-1)), Double.toString(mLastLocation.getLatitude()));
+        editor.putString("lng" + Integer.toString((foodLocationCount-1)), Double.toString(mLastLocation.getLongitude()));
+        editor.putInt("foodLocationCount", foodLocationCount);
+        Log.e("Food Pin", "Food Pin Logged - Pin No. "+foodLocationCount+" | Logged at co-ordinates: "+mLastLocation.getLatitude()+ " , "+mLastLocation.getLongitude());
+        editor.apply();
+
+    }
+
+
+
+
+
+
+
+
+
     public boolean onClose() {
         //searchView.refreshDrawableState();
         list.setVisibility(View.GONE);
