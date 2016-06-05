@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,6 +43,10 @@ public class MainActivity extends AppCompatActivity {
     private int calorieCounter;
     private int kJcounter;
     private int sugarCounter;
+    private float currentStepsPercent;
+    private float currentCalPercent;
+    private float currentEnergPercent;
+    private float currentSugPercent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +71,10 @@ public class MainActivity extends AppCompatActivity {
         calorieCounter = 0;
         kJcounter = 0;
         sugarCounter = 0;
+        currentStepsPercent = 0;
+        currentCalPercent = 0;
+        currentEnergPercent = 0;
+        currentSugPercent = 0;
         for(int i = 0; i < allFoodOrders.size();i++){
             for (int k = 0; k < allFoods.size(); k++){
                 if (allFoodOrders.get(i).getFoodId() == allFoods.get(k).getFoodId()) {
@@ -110,6 +119,11 @@ public class MainActivity extends AppCompatActivity {
             calorieCounterProgressBar.setMax(userGoals.getCalorieGoal());
             kJCounterProgressBar.setMax(userGoals.getKilojoulesGoal());
             sugarCounterProgressBar.setMax(userGoals.getSugarGoal());
+            currentStepsPercent = ((float)10000/userGoals.getStepGoal())*100;
+            currentCalPercent = ((float)calorieCounter/userGoals.getCalorieGoal())*100;
+            currentEnergPercent = ((float) kJcounter/userGoals.getKilojoulesGoal())*100;
+            currentSugPercent = ((float) sugarCounter/userGoals.getSugarGoal())*100;
+            Log.e("CurrentSteps% ", String.valueOf(currentStepsPercent));
             Log.e("GOALS Step =", String.valueOf(userGoals.getStepGoal()));
             Log.e("GOALS Cal=", String.valueOf(userGoals.getCalorieGoal()));
             Log.e("GOALS Kil=", String.valueOf(userGoals.getKilojoulesGoal()));
@@ -126,9 +140,10 @@ public class MainActivity extends AppCompatActivity {
 
         // Have to change the percentage in the progress bars
 
-        int currentStepsPercent = (10000/16000)*100;
-        ((TextView)findViewById(R.id.currentSteps)).setText((String.valueOf(currentStepsPercent)+"%"));
-        ((TextView)findViewById(R.id.currentCalorie)).setText(("10 %"));
+        ((TextView)findViewById(R.id.currentSteps)).setText(String.format("%.2f",currentStepsPercent)+"%");
+        ((TextView)findViewById(R.id.currentCalorie)).setText(String.format("%.2f",currentCalPercent)+ "%");
+        ((TextView)findViewById(R.id.currentKJ)).setText(String.format("%.2f",currentEnergPercent)+ "%");
+        ((TextView)findViewById(R.id.currentSugar)).setText(String.format("%.2f",currentSugPercent)+ "%");
 
 
     }
