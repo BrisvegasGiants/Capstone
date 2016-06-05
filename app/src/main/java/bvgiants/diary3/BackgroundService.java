@@ -61,9 +61,6 @@ public class BackgroundService extends Service implements
     public GoogleApiClient mGoogleFitClient; // NAME UPDATED: Was Previously called mApiClient;
     GoogleApiClient mGoogleMapsClient; // NAME UPDATED: Was Previously called mGoogleApiClient;
 
-
-    //public int globalSteps;
-
     IBinder mBinder;
     int mStartMode;
 
@@ -73,9 +70,7 @@ public class BackgroundService extends Service implements
     Location mSecLocation;
 
     static GoogleMap mMap;
-    //SharedPreferences mapReferences;
     int locationCount;
-
 
     @Nullable
     @Override
@@ -84,14 +79,9 @@ public class BackgroundService extends Service implements
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
-        // Let it continue running until it is stopped.
-
-        //DEBUGGING CODE - Toast if the service is properly being started.
-        //Toast.makeText(this, "Service Started", Toast.LENGTH_LONG).show();
-
         handler = new Handler();
 
-        // Init Google Fit API Client
+        // Setup the Google Fit and Maps APIs
         if (mGoogleFitClient == null) {
             mGoogleFitClient = new GoogleApiClient.Builder(this)
                     .addApi(Fitness.SENSORS_API)
@@ -132,7 +122,7 @@ public class BackgroundService extends Service implements
 
         return START_STICKY;
 
-    }
+    } // End OnStartCommand
 
     @Override
     public void onDestroy() {
@@ -144,7 +134,6 @@ public class BackgroundService extends Service implements
         Toast.makeText(this, "Service Rebound", Toast.LENGTH_LONG).show();
     }
 
-
     //
     // GOOGLE MAPS API  ----------------------------------------------------------------------------------------------------------------------------
     //
@@ -154,22 +143,7 @@ public class BackgroundService extends Service implements
         mMap.setMyLocationEnabled(true);
     }
 
-    /*
-    public static void dropPin(Location mLastLocation) {
-        double latitude = mLastLocation.getLatitude();
-        double longitude = mLastLocation.getLongitude();
-
-        LatLng loc = new LatLng(latitude, longitude);
-        Marker mMarker = mMap.addMarker(new MarkerOptions().position(loc).title("My Location"));
-        if (mMap != null) {
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
-        }
-    }
-    */
-
     public void callLocation(){
-
         mSecLocation = mLastLocation;
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleMapsClient);
 
@@ -179,64 +153,14 @@ public class BackgroundService extends Service implements
             Log.e("Google Maps", "Found Location! " + "Lat: " + myLat + " " + "Long: " + myLong);
         }
 
-        locationCount++;
+        //locationCount++;
         SharedPreferences mapReferences = this.getSharedPreferences("DropPins", MODE_PRIVATE);
         SharedPreferences.Editor editor = mapReferences.edit();
-        editor.putString("lat" + Integer.toString((locationCount-1)), Double.toString(mLastLocation.getLatitude()));
-        editor.putString("lng" + Integer.toString((locationCount-1)), Double.toString(mLastLocation.getLongitude()));
-        editor.putInt("locationCount", locationCount);
+            editor.putString("lat" + Integer.toString((locationCount-1)), Double.toString(mLastLocation.getLatitude()));
+            editor.putString("lng" + Integer.toString((locationCount-1)), Double.toString(mLastLocation.getLongitude()));
+            editor.putInt("locationCount", locationCount);
         editor.apply();
-
-        /*
-        String extractedText = mapReferences.getString("lat0", "No Lat Recorded");
-        Log.e("Google Maps", "Found Logged Location! " + extractedText);
-        */
-
-/*
-        if (mLastLocation != null) {
-
-        }
-
-            Location selected_location = new Location("locationA");
-            selected_location.setLatitude(mLastLocation.getLatitude());
-            selected_location.setLongitude(mLastLocation.getLongitude());
-            Location near_locations = new Location("locationA");
-            near_locations.setLatitude(-27.460584);
-            near_locations.setLongitude(152.975657);
-            double distance = selected_location.distanceTo(near_locations);
-
-            Log.e("Google Maps", "Found Distance! " + String.format("%.2f", distance) + "m");
-            //Toast.makeText(getApplicationContext(), myLoc, Toast.LENGTH_SHORT).show();
-            //MapsActivity.dropPin(mLastLocation);
-*/
-    }
-
-    /* // Returns in miles?
-
-    //double distanceDif = distance(mLastLocation.getLatitude(), mLastLocation.getLongitude(), -27.460584, 152.975657);
-
-    private double distance(double lat1, double lon1, double lat2, double lon2) {
-        double theta = lon1 - lon2;
-        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
-        dist = Math.acos(dist);
-        dist = rad2deg(dist);
-        dist = dist * 60 * 1.1515;
-        return (dist);
-    }
-
-    private double deg2rad(double deg) {
-        return (deg * Math.PI / 180.0);
-    }
-    private double rad2deg(double rad) {
-        return (rad * 180.0 / Math.PI);
-    }
-*/
-
-
-
-
-
-
+    } // End callLocation
 
     //
     // END GOOGLE MAPS API ----------------------------------------------------------------------------------------------------------------------------
@@ -268,7 +192,7 @@ public class BackgroundService extends Service implements
 
         Fitness.SensorsApi.findDataSources(mGoogleFitClient, dataSourceRequest).setResultCallback(dataSourcesResultCallback);
 
-    }
+    } // End onConnected
 
     @Override
     public void onConnectionSuspended(int i) {
@@ -322,7 +246,6 @@ public class BackgroundService extends Service implements
             // Manipulate it's value to match
             final Value totalSteps = value;
             final Value globalSteps = totalSteps;
-
             //Calc Distance (No. Steps * Step Length).
             int amtSteps = value.asInt();
             runActivity.totalSteps = amtSteps;
@@ -332,11 +255,16 @@ public class BackgroundService extends Service implements
             final float percentageValue = ((float)amtSteps / 10000) * 100;
             runActivity.percentageValue = percentageValue;
             MainActivity.percentageValue = percentageValue;
-
-            // DEBUGGING CODE - Displays log of steps
+            //
             Log.e("Google Fit", "Found Data! - " + globalSteps + " steps");
+            // Setup the shared preferences here to get the step number
+            locationCount++;
+            SharedPreferences mapReferences = this.getSharedPreferences("DropPins", MODE_PRIVATE);
+            SharedPreferences.Editor editor = mapReferences.edit();
+                editor.putInt("steps"+ Integer.toString((locationCount-1)), amtSteps);
+            editor.apply();
+            // Then call location
             callLocation();
-
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -344,9 +272,7 @@ public class BackgroundService extends Service implements
                     //Toast.makeText(getApplicationContext(), "Number of Steps: " + totalSteps, Toast.LENGTH_SHORT).show();
                 }
             });
-
         }
-
     } // End onDataPoint
 
 

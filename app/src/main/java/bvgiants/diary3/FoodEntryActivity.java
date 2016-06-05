@@ -61,6 +61,10 @@ import com.google.android.gms.maps.GoogleMap;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by kenst on 2/05/2016.
@@ -101,6 +105,8 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
     int foodLocationCount;
     public GoogleApiClient mGoogleMapsClient;
     Location mLastLocation;
+    private static int instanceCounter = 1;
+
 
     @Override
 
@@ -262,50 +268,41 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
                     databaseHelper.saveDataToFoodConsumedTable(usersFoods, USERID);
                     Bundle userCreds = new Bundle();
                     userCreds.putInt("UserID", USERID);
-                    //add to DropPin intent somehow
-
-
                     loadEat.putExtras(userCreds);
                     startActivity(loadEat);
-
                 } catch (IOException e){
                     Log.v(e.toString(), " THERE WAS AN ERROR!");
                 }
-
                 logFoodPin();
             }
 
         });
-
     }
 
     public void logFoodPin(){
-
+        // Set the location
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleMapsClient);
         if (mLastLocation != null) {
             String myLat = Double.toString(mLastLocation.getLatitude());
             String myLong = Double.toString(mLastLocation.getLongitude());
-            Log.e("Google Maps", "Found Location! " + "Lat: " + myLat + " " + "Long: " + myLong);
         }
+        //Create a temp set of the food to bind to the pin
+        Set<String> userFoods = new HashSet<String>(getUserFoodNames());
 
-        foodLocationCount++;
-        SharedPreferences mapReferences = this.getSharedPreferences("FoodPins", MODE_PRIVATE);
+        // Send the food item to the map
+        SharedPreferences mapReferences = getSharedPreferences("FoodPins", MODE_PRIVATE);
         SharedPreferences.Editor editor = mapReferences.edit();
-        editor.putString("lat" + Integer.toString((foodLocationCount-1)), Double.toString(mLastLocation.getLatitude()));
-        editor.putString("lng" + Integer.toString((foodLocationCount-1)), Double.toString(mLastLocation.getLongitude()));
-        editor.putInt("foodLocationCount", foodLocationCount);
-        Log.e("Food Pin", "Food Pin Logged - Pin No. "+foodLocationCount+" | Logged at co-ordinates: "+mLastLocation.getLatitude()+ " , "+mLastLocation.getLongitude());
+            editor.putString("lat" + Integer.toString((instanceCounter-1)), Double.toString(mLastLocation.getLatitude()));
+            editor.putString("lng" + Integer.toString((instanceCounter-1)), Double.toString(mLastLocation.getLongitude()));
+            editor.putStringSet("foods" + Integer.toString((instanceCounter-1)), userFoods );
+            editor.putInt("foodLocationCount", instanceCounter);
+            Log.e("Food Item", "Food Pin Logged | Pin No. " + instanceCounter
+                    + " | Logged at co-ordinates: "+mLastLocation.getLatitude()+ " , " + mLastLocation.getLongitude()
+                    + " | Food Item(s): " + getUserFoodNames());
         editor.apply();
-
-    }
-
-
-
-
-
-
-
-
+        //Increase the counter to keep track of which item is which
+        instanceCounter++;
+    } // End logFoodPin
 
     public boolean onClose() {
         //searchView.refreshDrawableState();
