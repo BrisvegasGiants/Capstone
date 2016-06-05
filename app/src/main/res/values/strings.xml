@@ -63,6 +63,7 @@
     <string name="textSteps">Progress towards step goal</string>
     <string name="title_activity_signup">SignupActivity</string>
     <string name="title_activity_goals">GoalsActivity</string>
+    <string name="title_activity_about_us">about_us</string>
 
 
 </resources>

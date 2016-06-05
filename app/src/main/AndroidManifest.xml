@@ -100,6 +100,10 @@
         <activity
             android:name=".GoalsActivity"
             android:label="@string/title_activity_goals"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".about_us"
+            android:label="@string/title_activity_about_us"
             android:theme="@style/AppTheme"></activity>
     </application>
 
