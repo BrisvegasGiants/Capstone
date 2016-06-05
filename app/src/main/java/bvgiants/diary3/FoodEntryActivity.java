@@ -124,7 +124,6 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
         allFood = databaseHelper.allFood();
         for (int i = 0; i < allFood.size(); i++) {
             foodNames.add(allFood.get(i).name);
-            Log.v("ALLFOOD= ", allFood.get(i).dbWriteFoodConsumed());
             //imageId.add(Integer.parseInt(allFood.get(i).getImagelocal()));
         }
 

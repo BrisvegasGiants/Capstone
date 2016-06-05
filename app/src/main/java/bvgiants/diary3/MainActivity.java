@@ -63,16 +63,19 @@ public class MainActivity extends AppCompatActivity {
         allFoods = databaseHelper.allFood();
 
         Log.v("MAIN ACTIVITY USERID= ", String.valueOf(USERID));
+        calorieCounter = 0;
+        kJcounter = 0;
+        sugarCounter = 0;
         for(int i = 0; i < allFoodOrders.size();i++){
             for (int k = 0; k < allFoods.size(); k++){
                 if (allFoodOrders.get(i).getFoodId() == allFoods.get(k).getFoodId()) {
                     allFoodConsumed.add(allFoods.get(k));
                     calorieCounter += allFoods.get(k).getCalories();
-                    Log.v("FOOD CALORIES", String.valueOf(allFoods.get(k).getCalories()));
+                    Log.v("FOOD CALORIES", String.valueOf(calorieCounter));
                     kJcounter += allFoods.get(k).getEnergy();
-                    Log.v("FOOD ENERGY", String.valueOf(allFoods.get(k).getEnergy()));
+                    Log.v("FOOD ENERGY", String.valueOf(kJcounter));
                     sugarCounter += allFoods.get(k).getSugar();
-                    Log.v("FOOD Sugar", String.valueOf(allFoods.get(k).getSugar()));
+                    Log.e("FOOD ITEM =" ,allFoods.get(k).toString());
                 }
             }
         }
@@ -89,21 +92,28 @@ public class MainActivity extends AppCompatActivity {
         kJCounterProgressBar = (ProgressBar) findViewById(R.id.progressBarKilojoules);
         sugarCounterProgressBar = (ProgressBar) findViewById(R.id.progressBarSugar);
 
-        if(loggedinUser.getId() == 0){
-            Toast.makeText(getBaseContext(), "Hi " + alias + "!" +
-                    "Please enter your personal details through the settings window!",
-                    Toast.LENGTH_LONG).show();
+        Log.e("USERGOALS ID= ", String.valueOf(userGoals.getId()));
+        if (loggedinUser.getId() == 0 || userGoals.getId() == 0){
+            if(loggedinUser.getAge() == 0 || loggedinUser.getWeight() == 0){
+                Toast.makeText(getBaseContext(), "Hi " + alias + "!" + "\n" +
+                                "Please enter your personal details through the settings window!",
+                        Toast.LENGTH_LONG).show();
+            }
+            else if(userGoals.getStepGoal() == 0 || userGoals.getKilojoulesGoal() == 0){
+                Toast.makeText(getBaseContext(), "Hi " + alias + "!" + "\n" +
+                                "Please enter your GOALS details through the settings window!",
+                        Toast.LENGTH_LONG).show();
+            }
         }
-        else if(userGoals.getId() == 0){
-            Toast.makeText(getBaseContext(), "Hi " + alias + "!" +
-                            " Please enter your GOALS details through the settings window!",
-                    Toast.LENGTH_LONG).show();
-        }
-        else if (userGoals.getId() != 0) {
+        if(userGoals.getId() > 0) {
             stepCounterProgressBar.setMax(userGoals.getStepGoal());
             calorieCounterProgressBar.setMax(userGoals.getCalorieGoal());
             kJCounterProgressBar.setMax(userGoals.getKilojoulesGoal());
             sugarCounterProgressBar.setMax(userGoals.getSugarGoal());
+            Log.e("GOALS Step =", String.valueOf(userGoals.getStepGoal()));
+            Log.e("GOALS Cal=", String.valueOf(userGoals.getCalorieGoal()));
+            Log.e("GOALS Kil=", String.valueOf(userGoals.getKilojoulesGoal()));
+            Log.e("GOALS Sugar=", String.valueOf(userGoals.getSugarGoal()));
         }
 
 
@@ -116,8 +126,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Have to change the percentage in the progress bars
 
-        ((TextView)findViewById(R.id.currentSteps)).setText(("0 %"));
-        ((TextView)findViewById(R.id.currentCalorie)).setText(("0 %"));
+        int currentStepsPercent = (10000/16000)*100;
+        ((TextView)findViewById(R.id.currentSteps)).setText((String.valueOf(currentStepsPercent)+"%"));
+        ((TextView)findViewById(R.id.currentCalorie)).setText(("10 %"));
 
 
     }
