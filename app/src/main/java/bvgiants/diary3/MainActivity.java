@@ -90,12 +90,12 @@ public class MainActivity extends AppCompatActivity {
         sugarCounterProgressBar = (ProgressBar) findViewById(R.id.progressBarSugar);
 
         if(loggedinUser.getId() == 0){
-            Toast.makeText(getBaseContext(), "Hi " + alias + "!" +
+            Toast.makeText(getBaseContext(), "Hi " + alias + "! " +
                     "Please enter your personal details through the settings window!",
                     Toast.LENGTH_LONG).show();
         }
         else if(userGoals.getId() == 0){
-            Toast.makeText(getBaseContext(), "Hi " + alias + "!" +
+            Toast.makeText(getBaseContext(), "Hi " + alias + "! " +
                             " Please enter your GOALS details through the settings window!",
                     Toast.LENGTH_LONG).show();
         }

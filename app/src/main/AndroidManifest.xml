@@ -100,7 +100,8 @@
         <activity
             android:name=".GoalsActivity"
             android:label="@string/title_activity_goals"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme"
+            android:largeHeap="true"></activity>
     </application>
 
 </manifest>
