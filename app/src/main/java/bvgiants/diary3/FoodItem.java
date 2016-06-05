@@ -45,8 +45,9 @@ public class FoodItem {
     }
 
     public String toString(){
-        return "CALORIES: " +this.calories + " ENERGY: " + this.energy + " FAT: " + this.fat + "\n" +
-                "SUGAR: " + this.sugar + " SODIUM: " + this.sodium + " PROTEIN: " + this.protein;
+        return "Name " + this.name + "Energy" + this.energy + "Calories " +  this.calories +
+                "Protein " + this.protein + " Fat " + this.fat + " Sugar " +  this.sugar + " Sodium "
+        + this.sodium;
     }
 
     public String dbWriteFoodConsumed(){

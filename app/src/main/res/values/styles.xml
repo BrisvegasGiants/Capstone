@@ -46,10 +46,10 @@
 
     <style name="CustomProgressBarHorizontal" parent="android:Widget.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/customprogressbar</item>
-        <item name = "android:layout_height"> 25dp </item>
-        <item name = "android:layout_width">match_parent</item>
-        <item name = "android:layout_marginTop">1dp</item>
-        <item name = "android:layout_marginRight">25dp</item>
+        <item name="android:layout_height">25dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginTop">1dp</item>
+        <item name="android:layout_marginRight">25dp</item>
 
     </style>
 

@@ -216,18 +216,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //Inserts a Food into LOOKUPFOOD
     //@// TODO: 8/05/2016 MAKE THIS CONSTRUCTER TAKE A FOOD ITEM!
-    public boolean insertFood(int id, String name, int calories, int sugar, int fat, int kj, int sodium,
-                              int protein) {
+    public boolean insertFood(FoodItem food) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("ID", id);
-        contentValues.put("Name", name);
-        contentValues.put("Kj", kj);
-        contentValues.put("Calories", calories);
-        contentValues.put("Protein", protein);
-        contentValues.put("Fat", fat);
-        contentValues.put("Sugar", sugar);
-        contentValues.put("Sodium", sodium);
+        contentValues.put("ID", food.getFoodId());
+        contentValues.put("Name", food.getName());
+        contentValues.put("Kj", food.getEnergy());
+        contentValues.put("Calories", food.getCalories());
+        contentValues.put("Protein", food.getProtein());
+        contentValues.put("Fat", food.getFat());
+        contentValues.put("Sugar", food.getSugar());
+        contentValues.put("Sodium", food.getSodium());
         db.insert(TABLE_LOOKUPFOOD, null, contentValues);
         return true;
     }
@@ -472,7 +471,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     */
     public ArrayList<FoodItem> allFood(){
 
-        String select = "SELECT * FROM " + TABLE_LOOKUPFOOD;
+        String select = "SELECT ID, Name, Kj, Calories, Protein, Fat, Sugar, Sodium  FROM " + TABLE_LOOKUPFOOD;
         ArrayList<FoodItem> results = new ArrayList<FoodItem>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery(select,null);
@@ -481,7 +480,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             do {
                 FoodItem food = new FoodItem(res.getInt(0),res.getString(1),res.getInt(2),res.getInt(3),res.getInt(4),
                         res.getInt(5),res.getInt(6),res.getInt(7));
-                Log.e("FOOD = ", food.dbWriteFoodConsumed());
                 results.add(food);
             }while(res.moveToNext());
             if(res != null && !res.isClosed())
@@ -680,11 +678,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String[] input;
             foodLine = foodString.get(i);
             input = foodLine.split(" ");
-            Log.v("input0 = ", input[0]);Log.v("input0 = ", input[1]);Log.v("input0 = ", input[2]);Log.v("input0 = ", input[3]);
-            Log.v("input0 = ", input[4]);Log.v("input0 = ", input[5]);Log.v("input0 = ", input[6]);Log.v("input0 = ", input[7]);
-            insertFood(Integer.parseInt(input[0]),input[1],Integer.parseInt(input[2]),Integer.parseInt(input[3])
+            FoodItem newFoodEntry = new FoodItem(Integer.parseInt(input[0]),input[1],Integer.parseInt(input[2]),Integer.parseInt(input[3])
                     ,Integer.parseInt(input[4]),Integer.parseInt(input[5]),Integer.parseInt(input[6]),
                     Integer.parseInt(input[7]));
+            Log.v("input0 = ", input[0]);Log.v("input1 = ", input[1]);Log.v("input2 = ", input[2]);Log.v("input3 = ", input[3]);
+            Log.v("input4 = ", input[4]);Log.v("input5 = ", input[5]);Log.v("input6 = ", input[6]);Log.v("input7 = ", input[7]);
+            insertFood(newFoodEntry);
             System.out.printf("DB LOOKUPFOOD Insert Statement executed successfully");
         }
 
