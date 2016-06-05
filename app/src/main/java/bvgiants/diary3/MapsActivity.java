@@ -85,19 +85,23 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
 
         Log.e("Google Maps", "Map is now ready for use");
 
-        dropRunPins();
-        dropFoodPins();
-
-
-        /*
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-
-        if (mLastLocation != null) {
-            dropPin(mLastLocation);
+        // Check if Maps needs to render any pins
+        SharedPreferences mapReferences = getSharedPreferences("DropPins", MODE_PRIVATE);
+        int locationCount = mapReferences.getInt("locationCount", 1);
+        Log.e("Pins", "Found mapreferences RUN pins");
+        if (locationCount > 1) {
+            dropRunPins();
+        } else {
+            Log.e("Pins", "No RUN Pins to drop");
         }
-        */
 
-
+        int foodLocationCount = mapReferences.getInt("foodLocationCount", 1);
+        Log.e("Pins", "Found mapreferences RUN pins");
+        if (foodLocationCount > 1) {
+            dropFoodPins();
+        } else {
+            Log.e("Pins", "No FOOD Pins to drop");
+        }
 
     }
 
@@ -126,9 +130,9 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
 
             // On first Pin, ensure it drops
             if (i == 0) {
-                Log.e("Google Maps", "Count 0 - Found Logged Location! | Looped | " + lat +" "+ lng);
-                Log.e("Google Maps", "Count 0 - Loop Counter: " + i);
-                Log.e("Google Maps", "Count 0 - Dropped Pin at " + loc);
+                Log.e("Google Maps", "Loop 0 - Found Logged Location! | Looped | " + lat +" "+ lng);
+                Log.e("Google Maps", "Loop 0 - Loop Counter: " + i);
+                Log.e("Google Maps", "Loop 0 - Dropped Pin at " + loc);
                 Marker mMarker = mMap.addMarker(new MarkerOptions().position(loc).title("Pin Number: " + i));
                 //Log.e("Google Maps", "Distance between 2 point is  " + distanceDif);
             }
@@ -197,14 +201,13 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
 
             String lat = mapReferences.getString("lat"+i, "No Lat Recorded");
             String lng = mapReferences.getString("lng"+i, "No Long Recorded");
-            LatLng loc = new LatLng(Double.parseDouble(lat)+1, Double.parseDouble(lng));
+            LatLng loc = new LatLng(Double.parseDouble(lat), Double.parseDouble(lng));
 
 
-            // On first Pin, ensure it drops
             if (i == 0) {
-                Log.e("Google Maps", "Count"+i+" - Found Logged Location! | Looped | " + lat +" "+ lng);
-                Log.e("Google Maps", "Count"+i+" - Loop Counter: " + i);
-                Log.e("Google Maps", "Count"+i+" - Dropped Pin at " + loc);
+                Log.e("Google Maps", "Loop "+i+" - Found Logged Location! | Looped | " + lat +" "+ lng);
+                Log.e("Google Maps", "Loop "+i+" - Loop Counter: " + i);
+                Log.e("Google Maps", "Loop "+i+" - Dropped Pin at " + loc);
                 Marker mMarker = mMap.addMarker(new MarkerOptions().position(loc).title("This is food pin: " + i).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
             }
             // Always place one pin, then check the rest
