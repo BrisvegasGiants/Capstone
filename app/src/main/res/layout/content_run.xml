@@ -125,13 +125,6 @@
         android:layout_alignEnd="@+id/textView2"
         android:layout_marginTop="20dp"/>
 
-    <ImageView
-        android:layout_width="70dp"
-        android:layout_height="80dp"
-        android:src="@drawable/percent"
-        android:layout_alignBottom="@+id/percentageCounterView"
-        android:layout_alignStart="@+id/distanceSuffix" />
-
     <TextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"

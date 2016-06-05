@@ -5,8 +5,8 @@
     android:id="@+id/my_toolbar"
     android:layout_width="match_parent"
     android:layout_height="50dp"
-    android:background="?attr/colorPrimary"
-    android:elevation="4dp"
+    android:background="#f0528cae"
+    android:elevation="16dp"
     android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 

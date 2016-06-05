@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.content.Intent;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -108,6 +109,14 @@ public class MainActivity extends AppCompatActivity {
         calorieCounterProgressBar.setProgress(calorieCounter);
         kJCounterProgressBar.setProgress(kJcounter);
         sugarCounterProgressBar.setProgress(sugarCounter);
+
+
+
+        // Have to change the percentage in the progress bars
+
+        ((TextView)findViewById(R.id.currentSteps)).setText(("0 %"));
+        ((TextView)findViewById(R.id.currentCalorie)).setText(("0 %"));
+
 
     }
 

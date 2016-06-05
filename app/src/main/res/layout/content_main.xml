@@ -36,22 +36,11 @@
     <TextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="100"
+    android:text="0"
     android:id="@+id/currentSteps"
     android:textSize="22sp"
         android:layout_alignTop="@+id/progressBarStepsGoal"
         android:layout_alignStart="@+id/buttonEat" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="%"
-        android:id="@+id/currentPerc"
-        android:textSize="21sp"
-        android:layout_marginStart="38dp"
-        android:layout_alignBottom="@+id/currentSteps"
-        android:layout_alignLeft="@+id/currentSteps" />
-
 
 
     <TextView
@@ -66,6 +55,8 @@
         android:layout_alignParentStart="true" />
 
 
+
+
     <!-- Progress Calories -->
 
     <ProgressBar
@@ -75,6 +66,15 @@
         android:layout_alignParentStart="true"
         android:layout_marginBottom="20dp"
         android:indeterminate="false" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:id="@+id/currentCalorie"
+        android:textSize="22sp"
+        android:layout_alignTop="@+id/progressBarCalories"
+        android:layout_alignStart="@+id/currentSteps" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -99,6 +99,15 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="0"
+        android:id="@+id/currentKJ"
+        android:textSize="22sp"
+        android:layout_alignTop="@+id/progressBarKilojoules"
+        android:layout_alignStart="@+id/currentCalorie" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Estimated Kilojoules per Day"
         android:id="@+id/nutrition1Goal"
@@ -116,6 +125,15 @@
         android:layout_below="@+id/view"
         android:layout_alignParentStart="true"
         android:layout_marginTop="34dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:id="@+id/currentSugar"
+        android:textSize="22sp"
+        android:layout_below="@+id/sugar2Goal"
+        android:layout_alignStart="@+id/buttonEat" />
 
     <TextView
         android:layout_width="wrap_content"

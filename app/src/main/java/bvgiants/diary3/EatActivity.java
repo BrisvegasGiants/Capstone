@@ -60,8 +60,6 @@ public class EatActivity extends AppCompatActivity {
 
         USERID = getIntent().getIntExtra("UserID", 0);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-
         startBackgroundProcess(this.findViewById(android.R.id.content), mContext);
 
         context = getApplicationContext();
@@ -76,6 +74,7 @@ public class EatActivity extends AppCompatActivity {
         for(int i = 0; i < todaysOrders.size(); i ++){
             Log.v(todaysOrders.get(i).todaysFoodCheck(), "TODAYS FOOD CHECK");
         }
+
         //addRowsToTable(todaysOrders);
 
         showTodaysFood();
