@@ -71,10 +71,11 @@ public class BackgroundService extends Service implements
 
     Location mLastLocation;
     Location mSecLocation;
-    GoogleApiClient client;
+
     static GoogleMap mMap;
     //SharedPreferences mapReferences;
     int locationCount;
+
 
     @Nullable
     @Override
@@ -230,6 +231,11 @@ public class BackgroundService extends Service implements
         return (rad * 180.0 / Math.PI);
     }
 */
+
+
+
+
+
 
 
     //
