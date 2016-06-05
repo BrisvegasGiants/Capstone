@@ -56,6 +56,7 @@
         <activity
             android:name=".ProfileActivity"
             android:label="@string/title_name"
+            android:largeHeap="true"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".FoodEntryActivity"
@@ -100,16 +101,15 @@
         <activity
             android:name=".GoalsActivity"
             android:label="@string/title_activity_goals"
-<<<<<<< HEAD
             android:theme="@style/AppTheme"
-            android:largeHeap="true"></activity>
-=======
-            android:theme="@style/AppTheme" />
+            android:largeHeap="true"/>
+
+
         <activity
             android:name=".about_us"
             android:label="@string/title_activity_about_us"
-            android:theme="@style/AppTheme"></activity>
->>>>>>> origin/master
+            android:theme="@style/AppTheme"/>
+
     </application>
 
 </manifest>
