@@ -22,13 +22,12 @@ public class FoodItem {
     public int energy;
     public int sodium;
     public int protein;
-    public String imagelocal;
 
     public final List<String> children = new ArrayList<String>();
     public String string;
 
-    public FoodItem( int foodId, String name, int calories, int sugar, int fat, int energy, int sodium,
-                    int protein, String imageLocal) {
+    public FoodItem( int foodId, String name, int energy, int calories, int protein, int fat,
+                     int sugar, int sodium) {
         this.foodId = foodId;
         this.name = name;
         this.calories = calories;
@@ -37,7 +36,6 @@ public class FoodItem {
         this.energy = energy;
         this.sodium = sodium;
         this.protein = protein;
-        this.imagelocal = imageLocal;
     }
 
     public FoodItem(int orderID,int foodID, String location){
@@ -135,11 +133,4 @@ public class FoodItem {
         this.protein = protein;
     }
 
-    public String getImagelocal() {
-        return imagelocal;
-    }
-
-    public void setImagelocal(String imagelocal) {
-        this.imagelocal = imagelocal;
-    }
 }

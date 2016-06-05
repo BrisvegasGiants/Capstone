@@ -100,7 +100,7 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
-
+        addFoodImages();
         //Firstly Load DB
         context = getApplicationContext();
         databaseHelper = new DatabaseHelper(context);
@@ -109,17 +109,12 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
         USERID = getIntent().getIntExtra("UserID", 0);
 
         //Will need another way to get images eventually
-        imageId.add(R.drawable.bigmac);
-        imageId.add(R.drawable.cheeseburger);
-        imageId.add(R.drawable.quarterpounder);
-        imageId.add(R.drawable.coke);
-        imageId.add(R.drawable.kebab);
-        imageId.add(R.drawable.subway);
-        imageId.add(R.drawable.boost);
+
 
         allFood = databaseHelper.allFood();
         for (int i = 0; i < allFood.size(); i++) {
             foodNames.add(allFood.get(i).name);
+            Log.v("ALLFOOD= ", allFood.get(i).dbWriteFoodConsumed());
             //imageId.add(Integer.parseInt(allFood.get(i).getImagelocal()));
         }
 
@@ -212,12 +207,18 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
 
         if (id == R.id.action_settings) {
             Intent startSettings = new Intent(this, SettingsActivity.class);
+            Bundle userCreds = new Bundle();
+            userCreds.putInt("UserID", USERID);
+            startSettings.putExtras(userCreds);
             startActivity(startSettings);
             return true;
         }
 
         if (id ==R.id.action_home) {
             Intent startHome = new Intent(this, MainActivity.class);
+            Bundle userCreds = new Bundle();
+            userCreds.putInt("UserID", USERID);
+            startHome.putExtras(userCreds);
             startActivity(startHome);
             return true;
         }
@@ -329,6 +330,63 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
         searchView.clearFocus();
         searchView.refreshDrawableState();
         list.setVisibility(View.GONE);
+    }
+
+    public void addFoodImages(){
+
+        imageId.add(R.drawable.chickteriyaki);
+        imageId.add(R.drawable.subclub);
+        imageId.add(R.drawable.chicstrip);
+        imageId.add(R.drawable.pizzasub);
+        imageId.add(R.drawable.submeatball);
+        imageId.add(R.drawable.submelt);
+        imageId.add(R.drawable.steakcheese);
+        imageId.add(R.drawable.chickbaconr);
+        imageId.add(R.drawable.coke);
+        imageId.add(R.drawable.cokezero);
+        imageId.add(R.drawable.dietcoke);
+        imageId.add(R.drawable.mtfrank);
+        imageId.add(R.drawable.beefgurr);
+        imageId.add(R.drawable.chickgurr);
+        imageId.add(R.drawable.porkburrito);
+        imageId.add(R.drawable.veggieburrito);
+        imageId.add(R.drawable.porkchipburrito);
+        imageId.add(R.drawable.steakchipburrito);
+        imageId.add(R.drawable.steakchipburrito);
+        imageId.add(R.drawable.steakchipburritobowl);
+        imageId.add(R.drawable.veggieburritobowl);
+        imageId.add(R.drawable.chickguerrburritobowl);
+        imageId.add(R.drawable.boostimmunity);
+        imageId.add(R.drawable.boostenergise);
+        imageId.add(R.drawable.boostwildberry);
+        imageId.add(R.drawable.boostenergy);
+        imageId.add(R.drawable.boosttropical);
+        imageId.add(R.drawable.boostmango);
+        imageId.add(R.drawable.boostwildberry);
+        imageId.add(R.drawable.urgecheese);
+        imageId.add(R.drawable.urgergriller);
+        imageId.add(R.drawable.urgenewyork);
+        imageId.add(R.drawable.urgeboppa);
+        imageId.add(R.drawable.urgepineexp);
+        imageId.add(R.drawable.urgeranch);
+        imageId.add(R.drawable.urgeholysheep);
+        imageId.add(R.drawable.urgezorba);
+        imageId.add(R.drawable.urgesouthbord);
+        imageId.add(R.drawable.urgeshroom);
+        imageId.add(R.drawable.chickenkebab);
+        imageId.add(R.drawable.lambkebab);
+        imageId.add(R.drawable.bigmac);
+        imageId.add(R.drawable.cheeseburger);
+        imageId.add(R.drawable.classicangus);
+        imageId.add(R.drawable.quarterpounder);
+        imageId.add(R.drawable.nuggets);
+        imageId.add(R.drawable.chickcheese);
+        imageId.add(R.drawable.smallfries);
+        imageId.add(R.drawable.mediumfries);
+        imageId.add(R.drawable.largefries);
+        imageId.add(R.drawable.fanta);
+        imageId.add(R.drawable.lift);
+        imageId.add(R.drawable.sprite);
     }
 
 }

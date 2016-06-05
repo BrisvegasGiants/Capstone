@@ -8,14 +8,9 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.google.android.gms.vision.barcode.Barcode;
-
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,12 +48,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //LookupFood Table Columns
     public static final String LUPFOOD_COLUMN_NAME = "Name";
     public static final String LUPFOOD_COLUMN_CALORIES = "Calories";
-    public static final String LUPFOOD_COLUMN_SUGAR = "Sugar";
-    public static final String LUPFOOD_COLUMN_FAT = "Fat";
-    public static final String LUPFOOD_COLUMN_ENERGY = "Energy";
-    public static final String LUPFOOD_COLUMN_SODIUM = "Sodium";
+    public static final String LUPFOOD_COLUMN_KJ = "Kj";
     public static final String LUPFOOD_COLUMN_PROTEIN = "Protein";
-    public static final String LUPFOOD_COLUMN_IMGLOCAL= "ImgLocal";
+    public static final String LUPFOOD_COLUMN_FAT = "Fat";
+    public static final String LUPFOOD_COLUMN_SUGAR = "Sugar";
+    public static final String LUPFOOD_COLUMN_SODIUM = "Sodium";
+
 
     //UserTraits Table Columns
     public static final String UTRAITS_COLUMN_FIRSTNAME = "Firstname";
@@ -91,11 +86,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_USERS = "CREATE TABLE " + TABLE_USERS + "(" + KEY_ID +
             " INTEGER PRIMARY KEY, " + USERS_COLUMN_EMAIL + " TEXT," + USERS_COLUMN_PW +
             " TEXT," + USERS_COLUMN_ALIAS + " TEXT, " + USERS_COLUMN_TEAM + " TEXT);";
+
     private static final String CREATE_TABLE_LOOKUPFOOD = "CREATE TABLE " + TABLE_LOOKUPFOOD + "(" +
-            KEY_ID + " INTEGER PRIMARY KEY," + LUPFOOD_COLUMN_NAME + " INTEGER, " +
-            LUPFOOD_COLUMN_CALORIES + " INTEGER, " + LUPFOOD_COLUMN_SUGAR + " INTEGER, " + LUPFOOD_COLUMN_FAT
-            + " INTEGER, " + LUPFOOD_COLUMN_ENERGY + " INTEGER, " + LUPFOOD_COLUMN_SODIUM + " INTEGER, "
-            + LUPFOOD_COLUMN_PROTEIN + " INTEGER, " + LUPFOOD_COLUMN_IMGLOCAL + " TEXT);";
+            KEY_ID + " INTEGER PRIMARY KEY," + LUPFOOD_COLUMN_NAME + " TEXT, "
+            + LUPFOOD_COLUMN_KJ + " INTEGER, " + LUPFOOD_COLUMN_CALORIES + " INTEGER, " +
+            LUPFOOD_COLUMN_PROTEIN + " INTEGER, "+ LUPFOOD_COLUMN_FAT + " INTEGER, "
+            + LUPFOOD_COLUMN_SUGAR + " INTEGER, "   + LUPFOOD_COLUMN_SODIUM + " INTEGER);";
 
     private static final String CREATE_TABLE_USERTRAITS = "CREATE TABLE " + TABLE_USERTRAITS + "(" + KEY_ID
             + " INTEGER PRIMARY KEY, " + UTRAITS_COLUMN_FIRSTNAME + " TEXT, " + UTRAITS_COLUMN_LASTNAME +
@@ -220,19 +216,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //Inserts a Food into LOOKUPFOOD
     //@// TODO: 8/05/2016 MAKE THIS CONSTRUCTER TAKE A FOOD ITEM!
-    public boolean insertFood(int id, String name, int calories, int sugar, int fat, int energy, int sodium,
-                              int protein, String imageLocal) {
+    public boolean insertFood(int id, String name, int calories, int sugar, int fat, int kj, int sodium,
+                              int protein) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("ID", id);
         contentValues.put("Name", name);
+        contentValues.put("Kj", kj);
         contentValues.put("Calories", calories);
-        contentValues.put("Sugar", sugar);
-        contentValues.put("Fat", fat);
-        contentValues.put("Energy", energy);
-        contentValues.put("Sodium", sodium);
         contentValues.put("Protein", protein);
-        contentValues.put("ImgLocal", imageLocal);
+        contentValues.put("Fat", fat);
+        contentValues.put("Sugar", sugar);
+        contentValues.put("Sodium", sodium);
         db.insert(TABLE_LOOKUPFOOD, null, contentValues);
         return true;
     }
@@ -436,12 +431,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put("Name", name);
         contentValues.put("Calories", calories);
-        contentValues.put("Sugar", sugar);
-        contentValues.put("Fat", fat);
         contentValues.put("Energy", energy);
-        contentValues.put("Sodium", sodium);
         contentValues.put("Protein", protein);
-        contentValues.put("ImgLocal", imageLocal);
+        contentValues.put("Fat", fat);
+        contentValues.put("Sugar", sugar);
+        contentValues.put("Sodium", sodium);
+
         db.update(TABLE_LOOKUPFOOD, contentValues, "id = ? ", new String[]{String.valueOf(id)});
         return true;
     }
@@ -481,10 +476,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ArrayList<FoodItem> results = new ArrayList<FoodItem>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery(select,null);
+        Log.e("FOOD = ", "ALL FOOD");
         if(res.moveToFirst()){
             do {
                 FoodItem food = new FoodItem(res.getInt(0),res.getString(1),res.getInt(2),res.getInt(3),res.getInt(4),
-                        res.getInt(5),res.getInt(6),res.getInt(7),res.getString(8));
+                        res.getInt(5),res.getInt(6),res.getInt(7));
+                Log.e("FOOD = ", food.dbWriteFoodConsumed());
                 results.add(food);
             }while(res.moveToNext());
             if(res != null && !res.isClosed())
@@ -504,7 +501,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(res.moveToFirst()){
             do {
                 FoodItem food = new FoodItem(res.getInt(0),res.getString(1),res.getInt(2),res.getInt(3),res.getInt(4),
-                        res.getInt(5),res.getInt(6),res.getInt(7),res.getString(8));
+                        res.getInt(5),res.getInt(6),res.getInt(7));
                 results.add(food);
                 Log.v("FOOD SEARCH FOUND: ", food.getName());
             }while(res.moveToNext());
@@ -525,7 +522,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(res.moveToFirst()){
             do {
                 FoodItem food = new FoodItem(res.getInt(0),res.getString(1),res.getInt(2),res.getInt(3),res.getInt(4),
-                        res.getInt(5),res.getInt(6),res.getInt(7),res.getString(8));
+                        res.getInt(5),res.getInt(6),res.getInt(7));
                 results.add(food);
             }while(res.moveToNext());
             if(res != null && !res.isClosed())
@@ -606,6 +603,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return allRows;
     }
 
+    public String getUserAlias (int userID){
+        SQLiteDatabase db = this.getReadableDatabase();
+        String alias;
+        String query = "SELECT Alias FROM " + TABLE_USERS + " WHERE ID=?";
+        Cursor res = db.rawQuery(query, new String[]{String.valueOf(userID)});
+        if(res.moveToFirst()) {
+            alias = res.getString(0);
+        }
+        else {
+            alias = "Unknown User";
+            System.out.print("ORDERHEADER GET ALL ORDERS WASNT FOUND");
+            res.close();
+            db.close();
+        }
+        res.close();
+        db.close();
+        return alias;
+    }
+
     /*SAVE DATA TO TABLES
     SAVE USERS DATA
     SAVE FOOD DATA
@@ -664,9 +680,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String[] input;
             foodLine = foodString.get(i);
             input = foodLine.split(" ");
+            Log.v("input0 = ", input[0]);Log.v("input0 = ", input[1]);Log.v("input0 = ", input[2]);Log.v("input0 = ", input[3]);
+            Log.v("input0 = ", input[4]);Log.v("input0 = ", input[5]);Log.v("input0 = ", input[6]);Log.v("input0 = ", input[7]);
             insertFood(Integer.parseInt(input[0]),input[1],Integer.parseInt(input[2]),Integer.parseInt(input[3])
                     ,Integer.parseInt(input[4]),Integer.parseInt(input[5]),Integer.parseInt(input[6]),
-                    Integer.parseInt(input[7]),input[8]);
+                    Integer.parseInt(input[7]));
             System.out.printf("DB LOOKUPFOOD Insert Statement executed successfully");
         }
 

@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private int USERID;
     private User loggedinUser;
     private User userGoals;
+    private String alias;
 
     public SQLiteDatabase db;
     public DatabaseHelper databaseHelper;
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         loggedinUser = databaseHelper.getUserTraits(USERID);
         userGoals = databaseHelper.getUserGoals(USERID);
         allFoodOrders = databaseHelper.showTodaysFood(USERID);
+        alias = databaseHelper.getUserAlias(USERID);
         allFoods = databaseHelper.allFood();
 
         Log.v("MAIN ACTIVITY USERID= ", String.valueOf(USERID));
@@ -88,13 +90,13 @@ public class MainActivity extends AppCompatActivity {
         sugarCounterProgressBar = (ProgressBar) findViewById(R.id.progressBarSugar);
 
         if(loggedinUser.getId() == 0){
-            Toast.makeText(getBaseContext(), "Hi " + loggedinUser.getAlias() + "!" +
+            Toast.makeText(getBaseContext(), "Hi " + alias + "!" +
                     "Please enter your personal details through the settings window!",
                     Toast.LENGTH_LONG).show();
         }
         else if(userGoals.getId() == 0){
-            Toast.makeText(getBaseContext(), "Hi " + loggedinUser.getAlias() + "!" +
-                            "Please enter your GOALS details through the settings window!",
+            Toast.makeText(getBaseContext(), "Hi " + alias + "!" +
+                            " Please enter your GOALS details through the settings window!",
                     Toast.LENGTH_LONG).show();
         }
         else if (userGoals.getId() != 0) {
