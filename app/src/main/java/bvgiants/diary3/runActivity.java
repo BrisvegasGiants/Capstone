@@ -51,11 +51,14 @@ public class runActivity extends AppCompatActivity {
     static int totalSteps;
     static float distanceValue;
     static float percentageValue;
+    private float currentStepsPercent;
 
+    // DB Variables
     public SQLiteDatabase db;
     public DatabaseHelper databaseHelper;
     private int USERID;
     private User user;
+    private User userGoals;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,8 +76,8 @@ public class runActivity extends AppCompatActivity {
         user = databaseHelper.getUserGoals(USERID);
         int stepGoal = user.getStepGoal();
         startBackgroundProcess(this.findViewById(android.R.id.content), mContext);
-
-        Log.e("GOALS", "Step Counter is :" + totalSteps);
+        userGoals = databaseHelper.getUserGoals(USERID);
+        //Log.e("GOALS", "Step Counter is :" + totalSteps);
 
         Thread t = new Thread() {
 
@@ -82,13 +85,19 @@ public class runActivity extends AppCompatActivity {
             public void run() {
                 try {
                     while (!isInterrupted()) {
-                        Thread.sleep(1000);
+                        Thread.sleep(5000);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                currentStepsPercent = ((float) totalSteps / userGoals.getStepGoal()) * 100;
                                 ((TextView)findViewById(R.id.stepCounterView)).setText(""+totalSteps);
                                 ((TextView)findViewById(R.id.distanceCounterView)).setText(""+distanceValue);
-                                ((TextView)findViewById(R.id.percentageCounterView)).setText(String.format("%.2f", percentageValue)+" %");
+                                if (currentStepsPercent == 0) {
+                                    ((TextView) findViewById(R.id.percentageCounterView)).setText("None Set");
+                                } else {
+                                    ((TextView) findViewById(R.id.percentageCounterView)).setText(String.format("%.2f", currentStepsPercent) + "%");
+                                }
+
                             }
                         });
                     }

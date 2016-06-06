@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         try {
                             while (!isInterrupted()) {
-                                Thread.sleep(1000);
+                                Thread.sleep(10000);
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
