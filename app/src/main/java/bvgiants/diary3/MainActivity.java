@@ -215,14 +215,17 @@ public class MainActivity extends AppCompatActivity {
         switch (v.getId()) {
             case (R.id.buttonRun):
                 Intent startRun = new Intent(this, runActivity.class);
+                Bundle userCreds = new Bundle();
+                userCreds.putInt("UserID", USERID);
+                startRun.putExtras(userCreds);
                 startActivity(startRun);
                 break;
 
             case (R.id.buttonEat):
                 Intent startEat = new Intent(this, EatActivity.class);
-                Bundle userCreds = new Bundle();
-                userCreds.putInt("UserID", USERID);
-                startEat.putExtras(userCreds);
+                Bundle userCreds1 = new Bundle();
+                userCreds1.putInt("UserID", USERID);
+                startEat.putExtras(userCreds1);
                 startActivity(startEat);
                 break;
 
