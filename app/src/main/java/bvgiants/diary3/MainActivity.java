@@ -48,6 +48,10 @@ public class MainActivity extends AppCompatActivity {
     private float currentEnergPercent;
     private float currentSugPercent;
 
+    private TextView stepsProgressText;
+    private TextView calorieProgressText;
+    private TextView kjProgressText;
+    private TextView sugarProgressText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,27 +105,13 @@ public class MainActivity extends AppCompatActivity {
         kJCounterProgressBar = (ProgressBar) findViewById(R.id.progressBarKilojoules);
         sugarCounterProgressBar = (ProgressBar) findViewById(R.id.progressBarSugar);
 
-        if (loggedinUser.getId() == 0) {
-            Log.e("HELLOWORLD", "STAGE ONE COMPLETE");
-            Toast.makeText(getBaseContext(), "Hi " + alias + "! " +
-                            "Please enter your personal details through the settings window!",
-                    Toast.LENGTH_LONG).show();
-        } else if (userGoals.getId() == 0) {
-            Log.e("HELLOWORLD", "STAGE TWO COMPLETE");
-            Toast.makeText(getBaseContext(), "Hi " + alias + "! " +
-                            " Please enter your GOALS details through the settings window!",
-                    Toast.LENGTH_LONG).show();
-
             Log.e("USERGOALS ID= ", String.valueOf(userGoals.getId()));
             if (loggedinUser.getId() == 0 || userGoals.getId() == 0) {
-                Log.e("HELLOWORLD", "STAGE THREE COMPLETE");
                 if (loggedinUser.getAge() == 0 || loggedinUser.getWeight() == 0) {
-                    Log.e("HELLOWORLD", "STAGE FOUR COMPLETE");
                     Toast.makeText(getBaseContext(), "Hi " + alias + "!" + "\n" +
                                     "Please enter your personal details through the settings window!",
                             Toast.LENGTH_LONG).show();
                 } else if (userGoals.getStepGoal() == 0 || userGoals.getKilojoulesGoal() == 0) {
-                    Log.e("HELLOWORLD", "STAGE FIVE COMPLETE");
                     Toast.makeText(getBaseContext(), "Hi " + alias + "!" + "\n" +
                                     "Please enter your GOALS details through the settings window!",
                             Toast.LENGTH_LONG).show();
@@ -129,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
             if (userGoals.getId() > 0) {
-                Log.e("HELLOWORLD", "IT SHOULD WORK?");
                 stepCounterProgressBar.setMax(userGoals.getStepGoal());
                 calorieCounterProgressBar.setMax(userGoals.getCalorieGoal());
                 kJCounterProgressBar.setMax(userGoals.getKilojoulesGoal());
@@ -138,19 +127,16 @@ public class MainActivity extends AppCompatActivity {
                 currentCalPercent = ((float) calorieCounter / userGoals.getCalorieGoal()) * 100;
                 currentEnergPercent = ((float) kJcounter / userGoals.getKilojoulesGoal()) * 100;
                 currentSugPercent = ((float) sugarCounter / userGoals.getSugarGoal()) * 100;
+                stepCounterProgressBar.setProgress(10000);
+                calorieCounterProgressBar.setProgress(calorieCounter);
+                kJCounterProgressBar.setProgress(kJcounter);
+                sugarCounterProgressBar.setProgress(sugarCounter);
                 Log.e("CurrentSteps% ", String.valueOf(currentStepsPercent));
                 Log.e("GOALS Step =", String.valueOf(userGoals.getStepGoal()));
                 Log.e("GOALS Cal=", String.valueOf(userGoals.getCalorieGoal()));
                 Log.e("GOALS Kil=", String.valueOf(userGoals.getKilojoulesGoal()));
                 Log.e("GOALS Sugar=", String.valueOf(userGoals.getSugarGoal()));
             }
-
-
-            stepCounterProgressBar.setProgress(10000);
-            calorieCounterProgressBar.setProgress(calorieCounter);
-            kJCounterProgressBar.setProgress(kJcounter);
-            sugarCounterProgressBar.setProgress(sugarCounter);
-
 
             // Have to change the percentage in the progress bars
 
@@ -160,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
             ((TextView) findViewById(R.id.currentSugar)).setText(String.format("%.2f", currentSugPercent) + "%");
 
 
-        }
+
     }
 
     @Override
@@ -188,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (id == R.id.action_about) {
-            Intent startAbout = new Intent(this, about_us.class);
+            Intent startAbout = new Intent(this, About_Us.class);
             Bundle userCreds = new Bundle();
             userCreds.putInt("UserID", USERID);
             startAbout.putExtras(userCreds);

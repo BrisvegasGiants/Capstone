@@ -110,7 +110,7 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         if (id == R.id.action_about) {
-            Intent startAbout = new Intent(this, about_us.class);
+            Intent startAbout = new Intent(this, About_Us.class);
             Bundle userCreds = new Bundle();
             userCreds.putInt("UserID", USERID);
             startAbout.putExtras(userCreds);
