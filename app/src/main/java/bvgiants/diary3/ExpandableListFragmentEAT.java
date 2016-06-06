@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 /**
  * Created by kenst on 6/05/2016.
+ * This fragment holds the EatActivity's displayed food depending on what button is pressed.
  */
 public class ExpandableListFragmentEAT extends Fragment {
 
@@ -23,23 +24,23 @@ public class ExpandableListFragmentEAT extends Fragment {
     private ArrayList<OrderRow> monthlyFoodOrders = new ArrayList<>();
     private ArrayList<FoodItem> allFood = new ArrayList<>();
     private ArrayList<FoodItem> foodDisplayed = new ArrayList<>();
-    public ArrayList<Integer> foodDisplayedImages = new ArrayList<Integer>();
-    public ArrayList<String> itemname = new ArrayList<String>();
-    public ArrayList<Integer> imageId = new ArrayList<Integer>();
+    private ArrayList<Integer> foodDisplayedImages = new ArrayList<Integer>();
+    private ArrayList<Integer> imageId = new ArrayList<Integer>();
     private EatActivity activity;
-    LayoutInflater inflater;
-    private int SELECTION;
+    private LayoutInflater inflater;
+    // 0=Today 1=Week 2=Month
+    private int SELECTION; //Nessesary to determin what button was pushed from previous activity
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         this.inflater = inflater;
-        // View v = inflater.inflate(R.layout.expandable_list,container,false);
+
         activity = (EatActivity) getActivity();
         todaysFoodOrders = activity.getTodaysOrders();
         weeklyFoodOrders = activity.getWeeklyOrders();
         monthlyFoodOrders = activity.getMonthlyOrders();
         SELECTION = activity.getSelection();
         allFood = activity.getAllFood();
-        addFoodImages();
+        addFoodImages(); //Creates all food images manually
 
         return workOutWhichTimePeriod();
 
@@ -85,9 +86,8 @@ public class ExpandableListFragmentEAT extends Fragment {
 
         @Override
         public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
-            //TextView textView = new TextView(ExpandableListFragment.this.getActivity());
-            //textView.setText(getGroup(i).name);
-
+            //Depending on the users button press selection, this will now build the required foods
+            //to display
         if(SELECTION == 0){
             View rowView = inflater.inflate(R.layout.consumed_foods_eat_activity, null, true);
             TextView txtTitle = (TextView) rowView.findViewById(R.id.consumed_txt);
@@ -149,6 +149,7 @@ public class ExpandableListFragmentEAT extends Fragment {
 
     }
 
+    //Will inflate the correct food depending on selection
     public View workOutWhichTimePeriod(){
 
         Log.v("SELECTION =", String.valueOf(SELECTION));
@@ -182,7 +183,6 @@ public class ExpandableListFragmentEAT extends Fragment {
                     if (weeklyFoodOrders.get(i).getFoodId() == allFood.get(k).getFoodId()) {
                         foodDisplayed.add(allFood.get(k));
                         foodDisplayedImages.add(imageId.get(k));
-                        Log.v("WEEKLY FOOD ORDERS ", weeklyFoodOrders.get(i).dbWriteOrdersToFile());
                     }
                 }
             }
@@ -207,7 +207,6 @@ public class ExpandableListFragmentEAT extends Fragment {
                     if (monthlyFoodOrders.get(i).getFoodId() == allFood.get(k).getFoodId()) {
                         foodDisplayed.add(allFood.get(k));
                         foodDisplayedImages.add(imageId.get(k));
-                        Log.v("MONTHLY FOOD ORDERS ", monthlyFoodOrders.get(i).dbWriteOrdersToFile());
                     }
                 }
             }
@@ -229,6 +228,9 @@ public class ExpandableListFragmentEAT extends Fragment {
 
     }
 
+    //Adds all images to the array.  This was nessesary due to not being able to grab these id's
+    //automatically at run time.  Ideal world would have these stored on a websever and the app scrapes
+    //images from server.
     public void addFoodImages(){
 
         imageId.add(R.drawable.chickteriyaki);

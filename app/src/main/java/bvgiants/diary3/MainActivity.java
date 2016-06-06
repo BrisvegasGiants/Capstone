@@ -18,6 +18,9 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
+/* Main page the user is placed on after logging into the application.  Holds buttons to enable user
+to move through the app, contains 'At A Glance' to see how the user is tracking in key areas etc
+ */
 public class MainActivity extends AppCompatActivity {
 
 
@@ -48,10 +51,6 @@ public class MainActivity extends AppCompatActivity {
     private float currentEnergPercent;
     private float currentSugPercent;
 
-    private TextView stepsProgressText;
-    private TextView calorieProgressText;
-    private TextView kjProgressText;
-    private TextView sugarProgressText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         alias = databaseHelper.getUserAlias(USERID);
         allFoods = databaseHelper.allFood();
 
-        Log.v("MAIN ACTIVITY USERID= ", String.valueOf(USERID));
+        //Reset Variables each time to ensure they refresh correctly
         calorieCounter = 0;
         kJcounter = 0;
         sugarCounter = 0;
@@ -79,45 +78,42 @@ public class MainActivity extends AppCompatActivity {
         currentCalPercent = 0;
         currentEnergPercent = 0;
         currentSugPercent = 0;
+
+        //Takes the users food orders which are obtained through a database query, then adds up
+        //the required totals based on all foods
         for (int i = 0; i < allFoodOrders.size(); i++) {
             for (int k = 0; k < allFoods.size(); k++) {
                 if (allFoodOrders.get(i).getFoodId() == allFoods.get(k).getFoodId()) {
                     allFoodConsumed.add(allFoods.get(k));
                     calorieCounter += allFoods.get(k).getCalories();
-                    Log.v("FOOD CALORIES", String.valueOf(calorieCounter));
                     kJcounter += allFoods.get(k).getEnergy();
-                    Log.v("FOOD ENERGY", String.valueOf(kJcounter));
                     sugarCounter += allFoods.get(k).getSugar();
-                    Log.e("FOOD ITEM =", allFoods.get(k).toString());
                 }
             }
         }
 
         startBackgroundProcess(this.findViewById(android.R.id.content), context);
 
-
-        // Not loading in because google fit isn't connecting yet
-        //((ProgressBar)findViewById(R.id.progressBarStepsGoal)).setProgress((int)percentageValue);
-        //Log.e("Progress Bar", "Progress Bar is: " + percentageValue);
-
         stepCounterProgressBar = (ProgressBar) findViewById(R.id.progressBarStepsGoal);
         calorieCounterProgressBar = (ProgressBar) findViewById(R.id.progressBarCalories);
         kJCounterProgressBar = (ProgressBar) findViewById(R.id.progressBarKilojoules);
         sugarCounterProgressBar = (ProgressBar) findViewById(R.id.progressBarSugar);
 
-            Log.e("USERGOALS ID= ", String.valueOf(userGoals.getId()));
-            if (loggedinUser.getId() == 0 || userGoals.getId() == 0) {
-                if (loggedinUser.getAge() == 0 || loggedinUser.getWeight() == 0) {
+        //Check if user has Goals or Traits added.  If not toast them and advise them to add them.
+        if (loggedinUser.getId() == 0 || userGoals.getId() == 0) {
+            if (loggedinUser.getAge() == 0 || loggedinUser.getWeight() == 0) {
                     Toast.makeText(getBaseContext(), "Hi " + alias + "!" + "\n" +
                                     "Please enter your personal details through the settings window!",
                             Toast.LENGTH_LONG).show();
-                } else if (userGoals.getStepGoal() == 0 || userGoals.getKilojoulesGoal() == 0) {
+            } else if (userGoals.getStepGoal() == 0 || userGoals.getKilojoulesGoal() == 0) {
                     Toast.makeText(getBaseContext(), "Hi " + alias + "!" + "\n" +
                                     "Please enter your GOALS details through the settings window!",
                             Toast.LENGTH_LONG).show();
-                }
+            }
 
             }
+
+        //At this point, load up progress bars based on what user has identified as goals.
             if (userGoals.getId() > 0) {
                 stepCounterProgressBar.setMax(userGoals.getStepGoal());
                 calorieCounterProgressBar.setMax(userGoals.getCalorieGoal());
@@ -131,11 +127,6 @@ public class MainActivity extends AppCompatActivity {
                 calorieCounterProgressBar.setProgress(calorieCounter);
                 kJCounterProgressBar.setProgress(kJcounter);
                 sugarCounterProgressBar.setProgress(sugarCounter);
-                Log.e("CurrentSteps% ", String.valueOf(currentStepsPercent));
-                Log.e("GOALS Step =", String.valueOf(userGoals.getStepGoal()));
-                Log.e("GOALS Cal=", String.valueOf(userGoals.getCalorieGoal()));
-                Log.e("GOALS Kil=", String.valueOf(userGoals.getKilojoulesGoal()));
-                Log.e("GOALS Sugar=", String.valueOf(userGoals.getSugarGoal()));
             }
 
             // Have to change the percentage in the progress bars

@@ -38,20 +38,10 @@ public class FoodItem {
         this.protein = protein;
     }
 
-    public FoodItem(int orderID,int foodID, String location){
-        this.orderID = orderID;
-        this.foodId = foodID;
-        this.location = location;
-    }
-
     public String toString(){
         return "Name " + this.name + "Energy" + this.energy + "Calories " +  this.calories +
                 "Protein " + this.protein + " Fat " + this.fat + " Sugar " +  this.sugar + " Sodium "
         + this.sodium;
-    }
-
-    public String dbWriteFoodConsumed(){
-        return this.orderID + " " + this.foodId + " " + this.location +  "\n";
     }
 
     public void setOrderID(int orderID) {

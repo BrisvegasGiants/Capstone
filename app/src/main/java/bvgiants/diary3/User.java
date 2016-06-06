@@ -60,10 +60,6 @@ public class User {
     }
 
     //Method to return a string capable of being stored in the UserTraitsTxtFile
-    public String dbWriteUserTraits(){
-        return id + " " + firstName + " " + lastName + " " + height + " " + weight + " " + age
-                + " " + gender + "\n";
-    }
 
     public String userGoals(){
         return id + " " + sugarGoal + " " + stepGoal + " " + kilojoulesGoal + " " + calorieGoal + "\n";

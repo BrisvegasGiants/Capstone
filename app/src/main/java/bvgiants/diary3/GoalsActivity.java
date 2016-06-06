@@ -24,10 +24,9 @@ public class GoalsActivity extends AppCompatActivity {
 
 
     //Database init
-    public SQLiteDatabase db;
-    public DatabaseHelper databaseHelper;
-    public User User;
-    public static Context context;
+    private SQLiteDatabase db;
+    private DatabaseHelper databaseHelper;
+    private static Context context;
     private int USERID;
     private User user;
 
@@ -38,15 +37,7 @@ public class GoalsActivity extends AppCompatActivity {
     private EditText kjInput;
     private EditText calInput;
 
-    Button saveButton;
-
-    // Constant nutrition Ints. Probably need some for minimum/maximum etc etc
-    public static final int RECOMMENDED_SUGAR = 1;
-    public static final int RECOMMENDED_STEPS = 1;
-    public static final int RECOMMENDED_CALORIES = 1;
-    public static final int RECOMMENDED_KJS = 1;
-    public static final int MINIMUM_CALORIES = 1;
-
+    private Button saveButton;
     private boolean found;
 
     // On Create
@@ -65,7 +56,7 @@ public class GoalsActivity extends AppCompatActivity {
         kjInput = (EditText) findViewById(R.id.kJGoal);
         calInput = (EditText) findViewById(R.id.calGoal);
         USERID = getIntent().getIntExtra("UserID", 0);
-        Log.v("GOAL ACTIVITY USERID= ", String.valueOf(USERID));
+
         //Initialise database
         context = getApplicationContext();
         databaseHelper = new DatabaseHelper(context);
@@ -275,34 +266,4 @@ public class GoalsActivity extends AppCompatActivity {
         startActivity(startHome);
     } //End onSaveSuccess
 
-
-    /*if(loggedinUser.getId() != 0){
-
-        if(loggedinUser.getGender().matches("Male") == true) {
-            if (loggedinUser.getAge() < 19)
-                kJCounterProgressBar.setMax(13950);
-            if (loggedinUser.getAge() > 19 && loggedinUser.getAge() < 30)
-                kJCounterProgressBar.setMax(12950);
-            else if (loggedinUser.getAge() > 30 && loggedinUser.getAge() < 51)
-                kJCounterProgressBar.setMax(12350);
-            else if (loggedinUser.getAge() > 50 && loggedinUser.getAge() < 71)
-                kJCounterProgressBar.setMax(11450);
-            else
-                kJCounterProgressBar.setMax(9900);
-        }
-
-        else if (loggedinUser.getGender().matches("Female") == true){
-            if (loggedinUser.getAge() < 19)
-                kJCounterProgressBar.setMax(11155);
-            if (loggedinUser.getAge() > 19 && loggedinUser.getAge() < 30)
-                kJCounterProgressBar.setMax(10455);
-            else if (loggedinUser.getAge() > 30 && loggedinUser.getAge() < 51)
-                kJCounterProgressBar.setMax(9900);
-            else if (loggedinUser.getAge() > 50 && loggedinUser.getAge() < 71)
-                kJCounterProgressBar.setMax(9450);
-            else
-                kJCounterProgressBar.setMax(8550);
-        }
-
-    }*/
 } // End Class

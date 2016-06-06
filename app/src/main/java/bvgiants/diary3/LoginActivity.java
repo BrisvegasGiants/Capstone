@@ -103,9 +103,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
 
-        //this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
-
         context = getApplicationContext();
                 // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
@@ -150,49 +147,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-      /*  //Button which acts to load SQLiteDB data
-        Button loadData = (Button) findViewById(R.id.loadData);
-        loadData.setOnClickListener(new OnClickListener() {
-
-                public void onClick(View view) {
-                    try{
-                        databaseHelper.saveDataToUserTable(context, "Users");
-                        databaseHelper.saveDataToLookupFoodTable(context, "LookupFood");
-                        CharSequence text = "You've successfully loaded SQL Tables";
-                        int duration = Toast.LENGTH_LONG;
-                        Toast toast = Toast.makeText(context,text,duration);
-                        toast.show();
-                    }
-                    catch (IOException e){
-                        e.printStackTrace();
-                    }
-
-                }
-            });
-
-        //BUTTON to delete all current database data for testing purposes.
-        //@// TODO: 2/05/2016 remove once functional! 
-        Button deleteData = (Button) findViewById(R.id.deleteDBData);
-        deleteData.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try{
-                    String result;
-                    result = databaseHelper.delete(db);
-                    int duration = Toast.LENGTH_LONG;
-                    Toast toast = Toast.makeText(context,result,duration);
-                    toast.show();
-                }catch (SQLiteException e){
-                    e.printStackTrace();
-                }
-
-            }
-        }); */
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
-        //startBackgroundProcess(this.findViewById(android.R.id.content));
 
         if (savedInstanceState != null) {
             authInProgress = savedInstanceState.getBoolean(AUTH_PENDING);
@@ -244,7 +202,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Delete DB
             try {
                 String result;
-                //result = databaseHelper.delete();
+                //// TODO: 6/06/2016 Change this back to delete all tables/reload stuff
                 result = databaseHelper.recreateUserTraits();
                 int duration = Toast.LENGTH_LONG;
                 Toast toast = Toast.makeText(context,result,duration);
@@ -256,12 +214,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
         return super.onOptionsItemSelected(item);
     }
-
-    /*
-    public void startBackgroundProcess(View view){
-        startService(new Intent(getBaseContext(), BackgroundService.class));
-    }
-*/
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
@@ -278,15 +230,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         } else {
             Log.e("GoogleFit", "authInProgress");
         }
-
-        // Error while connecting. Try to resolve using the pending intent returned.
-        /*
-        if (result.getErrorCode() == FitnessStatusCodes.NEEDS_OAUTH_PERMISSIONS) {
-            try {
-                result.startResolutionForResult(this, REQUEST_OAUTH);
-            } catch (SendIntentException e) {
-            }
-        }*/
     } // End onConnectionFailed
 
 
@@ -314,48 +257,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         outState.putBoolean(AUTH_PENDING, authInProgress);
     } // End onSaveInstanceState
 
-    /*
-    @Override
-    public void onStart() {
-        super.onStart();
-        mGoogleFitClient.connect();
-    } // End onStart
-*/
 
     @Override
     public void onConnected(Bundle bundle) {
         Log.e("Google Fit", "Google Fit has connected");
         Toast.makeText(LoginActivity.this, "Google Services Have Connected", Toast.LENGTH_SHORT).show();
         ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        /*
-        DataSourcesRequest dataSourceRequest = new DataSourcesRequest.Builder()
-                .setDataTypes(DataType.TYPE_STEP_COUNT_CUMULATIVE )
-                .setDataSourceTypes( DataSource.TYPE_RAW)
-                .build();
-
-        ResultCallback<DataSourcesResult> dataSourcesResultCallback = new ResultCallback<DataSourcesResult>() {
-            @Override
-            public void onResult(DataSourcesResult dataSourcesResult) {
-                for ( DataSource dataSource : dataSourcesResult.getDataSources()){
-                    if (DataType.TYPE_STEP_COUNT_CUMULATIVE.equals( dataSource.getDataType())){
-                        registerFitnessDataListener(dataSource, DataType.TYPE_STEP_COUNT_CUMULATIVE);
-                    }
-                }
-            } //End onResult
-        }; //End ResultCallback
-
-        Fitness.SensorsApi.findDataSources(mApiClient, dataSourceRequest).setResultCallback(dataSourcesResultCallback);
-
-        /*
-        // Connected to Google Fit Client.
-        Fitness.SensorsApi.add(
-                mGoogleApiClient,
-                new SensorRequest.Builder()
-                        .setDataType(DataType.TYPE_STEP_COUNT_CUMULATIVE)
-                        .build(),
-                this);
-        */
-
 
     } // end onConnected
 
@@ -411,7 +318,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
-
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
@@ -434,24 +340,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         boolean cancel = false;
         View focusView = null;
 
-        //@ToDO Remove this code once final login process is complete
-        // Check for a valid password, if the user entered one.
-        /*if (!TextUtils.isEmpty(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
-            cancel = true;
-        }
-
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
-            cancel = true;
-        } else */ if (credsChecker(email,password) == false){
+        if (credsChecker(email,password) == false){
           focusView = mEmailView;
            cancel = true;
         }
@@ -473,21 +362,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private boolean credsChecker (String email, String pw){
 
         //Check String for login, will toast result if user is found in DB or not.
-        // TODO: 30/04/2016  Remove once working!
-        CharSequence found = "Welcome to Health Diary!";
-        CharSequence notFound = "Invalid Username or Password!";
+
         int duration = Toast.LENGTH_LONG;
 
         try {
             if (databaseHelper.getUser(email, pw) == true) {
-                //Toast toast = Toast.makeText(context, found, duration);
-                //toast.show();
                 userToLogin = databaseHelper.loggedInUser(email,pw);
                 USERID = userToLogin.getId();
                 return true;
             } else {
-                // Toast toast = Toast.makeText(context,notFound,duration);
-                //toast.show();
                 return false;
             }
         }catch (Exception e){
@@ -495,16 +378,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             toast.show();
             return false;
         }
-    }
-
-    private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains("@");
-    }
-
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
     }
 
     /**

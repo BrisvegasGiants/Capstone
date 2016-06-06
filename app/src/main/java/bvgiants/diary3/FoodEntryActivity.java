@@ -75,36 +75,32 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
 
     private int USERID;
 
-    ListView list;
+    private ListView list;
     public CustomListAdapter adapter;
     public static Context context;
     public SQLiteDatabase db;
     public DatabaseHelper databaseHelper;
     public ArrayList<String> foodNames = new ArrayList<String>();
-    public ArrayList<String> chosenFoods = new ArrayList<String>();
 
     public ArrayList<Integer> imageId = new ArrayList<Integer>();
-    public ArrayList<Integer> imageIdToAdd = new ArrayList<Integer>();
 
-    private ListView myList;
     private SearchView searchView;
     private ArrayList<FoodItem> allFood = new ArrayList<FoodItem>();
 
     private ArrayList<FoodItem> usersFoods = new ArrayList<FoodItem>();
-    ArrayList<FoodItem> delimitedFoods = new ArrayList<FoodItem>();
+    private ArrayList<FoodItem> delimitedFoods = new ArrayList<FoodItem>();
 
-    ArrayList<Integer> delimitedImages = new ArrayList<Integer>();
-    ArrayList<String> delimitedNames = new ArrayList<String>();
+    private ArrayList<Integer> delimitedImages = new ArrayList<Integer>();
+    private ArrayList<String> delimitedNames = new ArrayList<String>();
 
-    ArrayList<Integer> userFoodImages = new ArrayList<Integer>();
-    ArrayList<String> userFoodNames = new ArrayList<String>();
+    private ArrayList<Integer> userFoodImages = new ArrayList<Integer>();
+    private ArrayList<String> userFoodNames = new ArrayList<String>();
 
     private Button addToDiary;
 
-    Context mContext;
-    int foodLocationCount;
+    private Context mContext;
     public GoogleApiClient mGoogleMapsClient;
-    Location mLastLocation;
+    private Location mLastLocation;
     private static int instanceCounter = 1;
 
 
@@ -124,16 +120,10 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
 
         USERID = getIntent().getIntExtra("UserID", 0);
 
-        //Will need another way to get images eventually
-
-
         allFood = databaseHelper.allFood();
         for (int i = 0; i < allFood.size(); i++) {
             foodNames.add(allFood.get(i).name);
-            //imageId.add(Integer.parseInt(allFood.get(i).getImagelocal()));
         }
-
-        //myList = (ListView) findViewById(R.id.list);
 
         adapter = new CustomListAdapter(this, foodNames, imageId);
         list = (ListView) findViewById(R.id.list);
@@ -156,19 +146,13 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
                 // If the item is in the list, take it off the list, and change the background back to white
                 // Otherwise, add the item to the list and make background Blue
                 if (usersFoods.contains(selecteditem)) {
-                    //parent.getChildAt(position).setBackgroundColor(Color.WHITE);
                     usersFoods.remove(selecteditem);
-                    //list.setVisibility(View.GONE);
                     searchView.refreshDrawableState();
                 } else {
                     Toast.makeText(getApplicationContext(), selecteditem.getName(), Toast.LENGTH_SHORT).show();
                     usersFoods.add(selecteditem);
                     Log.v("userFoods size = ", String.valueOf(usersFoods.size()));
-                    //list.setVisibility(View.GONE);
                     searchView.refreshDrawableState();
-                    //searchView.clearFocus();
-
-                    //parent.getChildAt(position).setBackgroundColor(Color.BLUE);
                 }
             }
         });
@@ -191,30 +175,6 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
         addToDiary();
 
     }
-
-    /*public void onBackPressed(){
-
-        if(searchView.hasFocus()){
-            list.setVisibility(View.GONE);
-            searchView.clearFocus();
-            createUsersSelectedFoods();
-
-        }
-        else if (searchView.isActivated()){
-            list.setVisibility(View.GONE);
-            searchView.clearFocus();
-            createUsersSelectedFoods();
-            super.onBackPressed();
-        }
-        else {
-            /*Intent loadEat = new Intent(this, EatActivity.class);
-            Bundle userCreds = new Bundle();
-            userCreds.putInt("UserID", USERID);
-            loadEat.putExtras(userCreds);
-            startActivity(loadEat);
-            super.onBackPressed();
-        }
-    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -271,7 +231,6 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
         addToDiary.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Log.v("ADD TO DIARY! ", " I'VE REGISTERED A CLICK!");
                 try{
                     databaseHelper.saveDataToFoodConsumedTable(usersFoods, USERID);
                     Bundle userCreds = new Bundle();
@@ -313,10 +272,8 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
     } // End logFoodPin
 
     public boolean onClose() {
-        //searchView.refreshDrawableState();
         list.setVisibility(View.GONE);
         searchView.clearFocus();
-        //createUsersSelectedFoods();
         return false;
     }
 

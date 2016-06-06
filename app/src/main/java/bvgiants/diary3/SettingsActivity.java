@@ -36,7 +36,6 @@ public class SettingsActivity extends AppCompatActivity {
         profileButton = (Button) findViewById(R.id.buttonProfile);
         goalsButton = (Button) findViewById(R.id.buttonGoals);
 
-        Log.v("SETTINGS USERID= ", String.valueOf(USERID));
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

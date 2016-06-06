@@ -20,6 +20,13 @@ import java.util.Locale;
  * Created by kenst on 2/05/2016.
  * This is a pretty epic file, but I believe it to be nessesary due to the complexity of the proposed
  * system and lack of access to QUT database to store tables, stored procedures/views.
+ * This class MUST be called before the app is run for the first time, without it there are not food
+ * entries, no user data can be saved and the app WILL CRASH.  Use the settings button in the top RIGHT
+ * corner of the login activity to load the database.
+ *
+ * A basic user file, and lookup food text files are used to import the data.  These files must follow
+ * strict data entry otherwise they will fail.  Users is fairly straight forward, however LookupFood
+ * MUST follow ID, ENERGY(KJ), CALORIES, PROTEIN, FAT, SUGAR, SODIUM.
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -53,7 +60,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String LUPFOOD_COLUMN_FAT = "Fat";
     public static final String LUPFOOD_COLUMN_SUGAR = "Sugar";
     public static final String LUPFOOD_COLUMN_SODIUM = "Sodium";
-
 
     //UserTraits Table Columns
     public static final String UTRAITS_COLUMN_FIRSTNAME = "Firstname";
@@ -113,11 +119,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + USERGOALS_COLUMN_STEPS + " INTEGER, " + USERGOALS_COLUMN_KILOJOULES + " INTEGER, " +
             USERGOALS_COLUMN_CALORIES + " INTEGER);";
 
-    //To save creating table LOOKUPORDERTYPE, the below variables take the place of the table.
-    //add more as required.
 
+    /*Variable to hold Database entry type in OrderHeader.  Origionally it was planned to have more
+    than one order type, but this was later removed but to help with future app expansion this was
+    left in place
+    */
     private static final int LOOKUPORDERTYPE_FOODENTRY = 1;
-    private static final int LOOKUPORDERTYPE_LOCATIONENTRY = 2;
 
 
     public DatabaseHelper (Context context){
@@ -162,7 +169,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return "DELETING OF TABLES FAILED!";
     }
 
-    //This method is nessesary to clear the XXXX TABLE each time a mainly because if we don't we'll
+    //This method is nessesary to clear the XXXX TABLE each time mainly because if we don't we'll
     //get duplicate entries in the UserTraits.txt and the read statement will have issues.
     public String recreateUserTraits (){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -176,32 +183,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void recreateFoodConsumed (){
-        SQLiteDatabase db = this.getWritableDatabase();
-        try{
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_FOODCONSUMED);
-            db.execSQL(CREATE_TABLE_FOODCONSUMED);
-        } catch (SQLiteException e){
-            System.out.print(e.toString());
-        }
-    }
+    /*************************      INSERT STATEMENTS *************************/
 
-    public void recreateOrderHeader (){
-        SQLiteDatabase db = this.getWritableDatabase();
-        try{
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDERHEADER);
-            db.execSQL(CREATE_TABLE_ORDERHEADER);
-        } catch (SQLiteException e){
-            System.out.print(e.toString());
-        }
-    }
-
-    /* INSERT STATEMENTS
-    INSERT USERS
-    INSERT LOOKUPFOOD
-     */
-    //Inserts a User into USERS TABLE
-    //TODO Add feature to enable user to create account
     public boolean insertUser( User user) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -214,8 +197,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    //Inserts a Food into LOOKUPFOOD
-    //@// TODO: 8/05/2016 MAKE THIS CONSTRUCTER TAKE A FOOD ITEM!
     public boolean insertFood(FoodItem food) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -231,8 +212,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    //Inserts a User traits into TABLE USERTRAITS
-    //TODO Add feature to enable user to create account
     public boolean insertUserTraits(User user) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -286,33 +265,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    /* GET STATEMENTS
-    GET USER
-    GET FOOD
-     */
+    public void saveDataToOrderHeader(int orderID, int orderTypeCode, String date, String time,
+                                      int userID) throws IOException {
 
-    public User getUserGoals(int userID){
-        SQLiteDatabase db = this.getReadableDatabase();
-        Log.v("GOAL ACTIVITY USERID= ", String.valueOf(userID));
-        User user;
-        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_USERGOALS + " WHERE UserID=?",
-                new String[]{String.valueOf(userID)});
-        if(res.moveToFirst()) {
-            user = new User (res.getInt(0),res.getInt(1), res.getInt(2),
-                    res.getInt(3), res.getInt(4));
-            Log.v("USER GOALS FOUND", user.userGoals());
-            res.close();
-            db.close();
-        }
-        else {
-            Log.v("USER GOALS AREN'T FOUND", "ERROR");
-            user = new User (0,0,0,0,0);
-            res.close();
-            db.close();
-        }
-        return user;
+        insertOrderHeader(orderID,orderTypeCode,date,time,userID);
+
     }
 
+    public void saveDataToFoodConsumedTable(ArrayList<FoodItem> recordedFoodEaten, int userID)
+            throws IOException {
+        int orderID = 0;
+
+        for(int i = 0; i < recordedFoodEaten.size();i++){
+            orderID = createOrderID();
+            saveDataToOrderHeader(orderID,LOOKUPORDERTYPE_FOODENTRY,justGetDate(), justGetTime(),userID);
+            recordedFoodEaten.get(i).setOrderID(orderID);
+            recordedFoodEaten.get(i).setLocation("FAKE LOCATION");
+            insertFoodConsumed(recordedFoodEaten.get(i));
+        }
+
+    }
+
+    /* ---------------------------- END INSERT STATEMENTS ----------------------- */
+
+    /************************* DATABASE QUERIES GET USER DETAILS **********************************/
+
+    //Database check to ensure user is present in the system.  Used in Login Activity, provides check
+    //functionality only.
     public boolean getUser(String email, String pw) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_USERS + " WHERE EmailAdd=? AND Password=?",
@@ -330,6 +309,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    //Creates a user object once the above getUser method has been called. Technically redundant as
+    //above method can handle this, however was seperated to help with error checking.
     public User loggedInUser(String email, String pw){
         SQLiteDatabase db = this.getReadableDatabase();
         User user;
@@ -351,23 +332,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public boolean getFood(String name) {
+    //Looks up and returns a Users Goals.  If no goals found, creates a blank user to return
+    //so that toast can be created notifing the user to enter details.  Used in Main Activity
+    public User getUserGoals(int userID){
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_LOOKUPFOOD + " WHERE Name=?",
-                new String[]{name});
+        Log.v("GOAL ACTIVITY USERID= ", String.valueOf(userID));
+        User user;
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_USERGOALS + " WHERE UserID=?",
+                new String[]{String.valueOf(userID)});
         if(res.moveToFirst()) {
+            user = new User (res.getInt(0),res.getInt(1), res.getInt(2),
+                    res.getInt(3), res.getInt(4));
             res.close();
             db.close();
-            return true;
         }
         else {
-            System.out.print("FOOD ISN'T FOUND");
+            Log.v("USER GOALS AREN'T FOUND", "ERROR");
+            user = new User (0,0,0,0,0);
             res.close();
             db.close();
-            return false;
         }
+        return user;
     }
 
+    //Looks up and returns a Users Traits (Age, Weight etc).  If no traits found, creates a blank user to return
+    //so that toast can be created notifing the user to enter details.  Used in Main Activity
     public User getUserTraits(int userID) {
         SQLiteDatabase db = this.getReadableDatabase();
         Log.v("getUserTraits USERID= ", String.valueOf(userID));
@@ -377,7 +366,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(res.moveToFirst()) {
             user = new User (res.getInt(0),res.getString(1), res.getString(2),
                     res.getInt(3), res.getInt(4),res.getInt(5), res.getString(6));
-            Log.v("USER TRAITS FOUND", user.userTraits());
             res.close();
             db.close();
         }
@@ -390,29 +378,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return user;
     }
 
-    public boolean getFoodConsumed(int orderID) {
+    public String getUserAlias (int userID){
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_FOODCONSUMED + " WHERE ID=?",
-                new String[]{String.valueOf(orderID)});
+        String alias;
+        String query = "SELECT Alias FROM " + TABLE_USERS + " WHERE ID=?";
+        Cursor res = db.rawQuery(query, new String[]{String.valueOf(userID)});
         if(res.moveToFirst()) {
-            res.close();
-            db.close();
-            return true;
+            alias = res.getString(0);
         }
         else {
-            System.out.print("FOOD CONSUMED WASNT FOUND");
+            alias = "Unknown User";
             res.close();
             db.close();
-            return false;
         }
+        res.close();
+        db.close();
+        return alias;
     }
 
-    /* UPDATE STATEMENTS
-    UPDATE USER
-    UPDATE FOOD
-    @todo use Objects rather than construction method!
-     */
+    /*------------------------------- END DATABSE QUERIES FOR USERS DETAILS ----------------------*/
 
+    /* *********************** DATABSE QUEIES TO UPDATE TABLES ***********************************/
+
+    //Method not actually implemented due to this feature not being created yet.  Was planned to enable
+    //Users to update their passwords and other details.
     public boolean updateUser(Integer id, String email, String password, String alias, String team) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -421,22 +410,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("Alias", alias);
         contentValues.put("Team", team);
         db.update(TABLE_USERS, contentValues, "id = ? ", new String[]{Integer.toString(id)});
-        return true;
-    }
-
-    public boolean updateFood(Integer id, String name, int calories, int sugar, int fat, int energy,
-                              int sodium, int protein, String imageLocal) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("Name", name);
-        contentValues.put("Calories", calories);
-        contentValues.put("Energy", energy);
-        contentValues.put("Protein", protein);
-        contentValues.put("Fat", fat);
-        contentValues.put("Sugar", sugar);
-        contentValues.put("Sodium", sodium);
-
-        db.update(TABLE_LOOKUPFOOD, contentValues, "id = ? ", new String[]{String.valueOf(id)});
         return true;
     }
 
@@ -466,9 +439,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    /*GET ALL TABLE ITEMS
-    GET FOOD
-    */
+    /*------------------------------- END DATABSE UPDATE QUERIES --------------------------------*/
+
+    /* *********************** DATABSE QUEIES TO GET FOOD STUFFS ***********************************/
+
     public ArrayList<FoodItem> allFood(){
 
         String select = "SELECT ID, Name, Kj, Calories, Protein, Fat, Sugar, Sodium  FROM " + TABLE_LOOKUPFOOD;
@@ -488,9 +462,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return results;
     }
 
-    // GET USER SEARCHED ITEMS
+    // Used in search bar to display food items.
     public ArrayList<FoodItem> foodSearch(String searchResult) {
-        String select = "SELECT * FROM " + TABLE_LOOKUPFOOD + " WHERE Name LIKE " + searchResult + "%";
 
         ArrayList<FoodItem> results = new ArrayList<FoodItem>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -510,85 +483,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return results;
     }
 
-        // GET USER SEARCHED ITEMS
-    public ArrayList<FoodItem> userSearch(String searchResult) {
-        String select = "SELECT * FROM " + TABLE_LOOKUPFOOD + "WHERE Name LIKE "  + searchResult + "%";
-
-        ArrayList<FoodItem> results = new ArrayList<FoodItem>();
+    public ArrayList<OrderRow> showTodaysFood(int userID) throws SQLiteException{
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery(select,null);
-        if(res.moveToFirst()){
-            do {
-                FoodItem food = new FoodItem(res.getInt(0),res.getString(1),res.getInt(2),res.getInt(3),res.getInt(4),
-                        res.getInt(5),res.getInt(6),res.getInt(7));
-                results.add(food);
-            }while(res.moveToNext());
-            if(res != null && !res.isClosed())
-                res.close();
-        }
-        return results;
-    }
-
-    public ArrayList<OrderRow> getAllUsersFoodConsumed(int userID) {
-        Log.v("USER ID = ", String.valueOf(userID));
-        ArrayList<OrderRow> allResults = new ArrayList<OrderRow>();
-        SQLiteDatabase db = this.getReadableDatabase();
+        String date = justGetDate();
+        ArrayList<OrderRow> allRows = new ArrayList<OrderRow>();
         String query = "SELECT oh.OrderDate, oh.OrderTime, fc.FoodID, fc.Location" +
                 " FROM " + TABLE_ORDERHEADER + " oh" +
                 " LEFT OUTER JOIN "+ TABLE_FOODCONSUMED + " fc" +
-                " ON oh.OrderID = fc.ID";
-        //String query = "SELECT * FROM " + TABLE_ORDERHEADER + " WHERE UserID= " +
-          //     userID + " AND ORDERTYPECODE= " + LOOKUPORDERTYPE_FOODENTRY;
-        Cursor res = db.rawQuery(query, null);
+                " ON oh.OrderID = fc.ID" +
+                " WHERE oh.OrderDate=?" +
+                " AND oh.UserID=?";
+
+        Cursor res = db.rawQuery(query, new String[]{date,String.valueOf(userID)});
+
         if(res.moveToFirst()) {
             do {
                 OrderRow entry = new OrderRow(res.getString(0), res.getString(1), res.getInt(2),
                         res.getString(3));
-                allResults.add(entry);
-            }while(res.moveToNext());
-
-        }
-        else {
-            System.out.print("ORDERHEADER GET USERORDERS WASNT FOUND");
-            res.close();
-            db.close();
-        }
-        res.close();
-        db.close();
-        return allResults;
-    }
-
-    public ArrayList<OrderRow> NEWgetAllUsersFoodConsumed(int userID) {
-        ArrayList<OrderRow> allResults = new ArrayList<OrderRow>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT * FROM " + TABLE_FOODCONSUMED + " WHERE UserID= " +
-                userID;
-            Cursor res = db.rawQuery(query, null);
-            if(res.moveToFirst()) {
-            OrderRow entry = new OrderRow(res.getInt(0), res.getInt(1),res.getString(2),
-                    res.getInt(3));
-            allResults.add(entry);
-            res.close();
-            db.close();
-        }
-        else {
-            System.out.print("ORDERHEADER GET USERORDERS WASNT FOUND");
-            res.close();
-            db.close();
-        }
-        return allResults;
-    }
-
-    public ArrayList<OrderRow> getAllOrders(){
-        ArrayList<OrderRow> allRows = new ArrayList<OrderRow>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT * FROM " + TABLE_ORDERHEADER;
-        Cursor res = db.rawQuery(query, null);
-        if(res.moveToFirst()) {
-            do {
-                OrderRow entry = new OrderRow(res.getInt(0), res.getInt(1), res.getString(2),
-                        res.getInt(3));
                 allRows.add(entry);
+
             }while(res.moveToNext());
         }
         else {
@@ -601,31 +514,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return allRows;
     }
 
-    public String getUserAlias (int userID){
+    public ArrayList<OrderRow> allUserFoodOrders(int userID) throws SQLiteException{
         SQLiteDatabase db = this.getReadableDatabase();
-        String alias;
-        String query = "SELECT Alias FROM " + TABLE_USERS + " WHERE ID=?";
+        ArrayList<OrderRow> allRows = new ArrayList<OrderRow>();
+        String query = "SELECT oh.OrderDate, oh.OrderTime, fc.FoodID, fc.Location" +
+                " FROM " + TABLE_ORDERHEADER + " oh" +
+                " LEFT OUTER JOIN "+ TABLE_FOODCONSUMED + " fc" +
+                " ON oh.OrderID = fc.ID" +
+                " WHERE oh.UserID=?";
+
         Cursor res = db.rawQuery(query, new String[]{String.valueOf(userID)});
         if(res.moveToFirst()) {
-            alias = res.getString(0);
+            do {
+                OrderRow entry = new OrderRow(res.getString(0), res.getString(1), res.getInt(2),
+                        res.getString(3));
+                allRows.add(entry);
+
+            }while(res.moveToNext());
         }
         else {
-            alias = "Unknown User";
             System.out.print("ORDERHEADER GET ALL ORDERS WASNT FOUND");
             res.close();
             db.close();
         }
         res.close();
         db.close();
-        return alias;
+        return allRows;
     }
 
-    /*SAVE DATA TO TABLES
-    SAVE USERS DATA
-    SAVE FOOD DATA
-    Will read each line of the XXX.txt file located in the assets folder.
-    Once the line have been read, it will split the line and create new users in the db.
-     */
+    /*------------------------------- END DATABSE FOOD STUFFS QUERIES --------------------------------*/
+
+    /* *********************** QUERIES TO SAVE DATA FROM TXT FILES ***********************************/
+
+    //Text files located in Assests folder.
 
     public void saveDataToUserTable(Context context, String filename) throws IOException {
 
@@ -678,172 +599,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String[] input;
             foodLine = foodString.get(i);
             input = foodLine.split(" ");
-            FoodItem newFoodEntry = new FoodItem(Integer.parseInt(input[0]),input[1],Integer.parseInt(input[2]),Integer.parseInt(input[3])
+            FoodItem newFoodEntry = new FoodItem(Integer.parseInt(input[0]),input[1],
+                    Integer.parseInt(input[2]),Integer.parseInt(input[3])
                     ,Integer.parseInt(input[4]),Integer.parseInt(input[5]),Integer.parseInt(input[6]),
                     Integer.parseInt(input[7]));
-            Log.v("input0 = ", input[0]);Log.v("input1 = ", input[1]);Log.v("input2 = ", input[2]);Log.v("input3 = ", input[3]);
-            Log.v("input4 = ", input[4]);Log.v("input5 = ", input[5]);Log.v("input6 = ", input[6]);Log.v("input7 = ", input[7]);
             insertFood(newFoodEntry);
-            System.out.printf("DB LOOKUPFOOD Insert Statement executed successfully");
         }
 
     }
 
-    /*
-    SAVE DATA TO VARIOUS SQLITE DB TABLES.
-    NOTE: IT IS IMPOSSIBLE TO SAVE THESE DB TABLES TO TXT FILES, AS ANYTHING IN THE ASSESTS FOLDER
-    CANNOT BE MODIFIED AFTER RUNTIME!
 
-    ONLY OPTION WOULD BE TO SAVE A TXT FILE ON THE LOCAL DEVICE OR USER SERVER HOSTED DB.
-      */
-    public void saveDataToUserTraits(Context context, String filename, int userId,
-                                     User user) throws IOException {
+     /*------------------------------- END QUERIES TO SAVE DATA FROM TXT FILES ---------------------*/
 
-            System.out.printf("%s\n",user.toString());
-            insertUserTraits(user);
-            System.out.printf("DB USERTRAITS TABLE Insert Statement executed successfully");
+    /* *********************** HELPER METHODS ***********************************/
 
-    }
-
-    public void saveDataToFoodConsumedTable(ArrayList<FoodItem> recordedFoodEaten, int userID)
-            throws IOException {
-
-        //Create a new orderID
-
-        //Create Order @// TODO: 9/05/2016 CURRENT JUST ADDS KEN USER
-        int orderID = 0;
-
-        for(int i = 0; i < recordedFoodEaten.size();i++){
-            orderID = createOrderID();
-            saveDataToOrderHeader(orderID,LOOKUPORDERTYPE_FOODENTRY,justGetDate(), justGetTime(),userID);
-            recordedFoodEaten.get(i).setOrderID(orderID);
-            recordedFoodEaten.get(i).setLocation("FAKE LOCATION");
-            Log.v(recordedFoodEaten.get(i).dbWriteFoodConsumed(), "WRITE TO DB");
-            insertFoodConsumed(recordedFoodEaten.get(i));
-        }
-
-    }
-
-    public void saveDataToOrderHeader(int orderID, int orderTypeCode, String date, String time,
-                                      int userID) throws IOException {
-
-            insertOrderHeader(orderID,orderTypeCode,date,time,userID);
-
-    }
-
-    public Cursor searchLookupFood (String inputText) throws SQLiteException {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_LOOKUPFOOD + " WHERE Name LIKE=?",
-                new String[]{inputText,"%"});
-
-        if(res != null){
-            res.moveToFirst();
-        }
-        return res;
-    }
-
-
-    public ArrayList<OrderRow> showTodaysFood(int userID) throws SQLiteException{
-        SQLiteDatabase db = this.getReadableDatabase();
-        //Select * from OrderHeader
-        //left outer join FoodConsumed on OrderHeader.OrderID = FoodConsumed.ID
-        //where OrderHeader.Date = todays date
-        String date = justGetDate();
-        ArrayList<OrderRow> allRows = new ArrayList<OrderRow>();
-        String query = "SELECT oh.OrderDate, oh.OrderTime, fc.FoodID, fc.Location" +
-                " FROM " + TABLE_ORDERHEADER + " oh" +
-                " LEFT OUTER JOIN "+ TABLE_FOODCONSUMED + " fc" +
-                " ON oh.OrderID = fc.ID" +
-                " WHERE oh.OrderDate=?" +
-                " AND oh.UserID=?";
-        //= date('now','-1 day');";
-
-        Cursor res = db.rawQuery(query, new String[]{date,String.valueOf(userID)});
-
-        if(res.moveToFirst()) {
-            do {
-                OrderRow entry = new OrderRow(res.getString(0), res.getString(1), res.getInt(2),
-                        res.getString(3));
-                //Log.v("RES 0 " , res.getString(0));
-                //Log.v("RES 1 ", res.getString(1));
-                //Log.v("RES 2 ", res.getString(2));
-                //Log.v("RES 3 ", res.getString(3));
-                allRows.add(entry);
-
-            }while(res.moveToNext());
-        }
-        else {
-            System.out.print("ORDERHEADER GET ALL ORDERS WASNT FOUND");
-            res.close();
-            db.close();
-        }
-        res.close();
-        db.close();
-        return allRows;
-    }
-
-    public ArrayList<OrderRow> allUserFoodOrders(int userID) throws SQLiteException{
-        SQLiteDatabase db = this.getReadableDatabase();
-        //Select * from OrderHeader
-        //left outer join FoodConsumed on OrderHeader.OrderID = FoodConsumed.ID
-        //where OrderHeader.Date = todays date
-        String date = justGetDate();
-        String pastDate = getLastWeek();
-        Log.v("LastWeek", pastDate);
-        ArrayList<OrderRow> allRows = new ArrayList<OrderRow>();
-        String query = "SELECT oh.OrderDate, oh.OrderTime, fc.FoodID, fc.Location" +
-                " FROM " + TABLE_ORDERHEADER + " oh" +
-                " LEFT OUTER JOIN "+ TABLE_FOODCONSUMED + " fc" +
-                " ON oh.OrderID = fc.ID" +
-                " WHERE oh.UserID=?";
-        String query2 = "SELECT oh.OrderDate, oh.OrderTime, fc.FoodID, fc.Location" +
-                " FROM " + TABLE_ORDERHEADER + " oh" +
-                " LEFT OUTER JOIN "+ TABLE_FOODCONSUMED + " fc" +
-                " ON oh.OrderID = fc.ID" +
-                " WHERE oh.OrderDate BETWEEN " + date + " AND " + pastDate +
-                " AND oh.UserID=" + userID;
-        //= date('now','-1 day');";
-
-        Cursor res = db.rawQuery(query, new String[]{String.valueOf(userID)});
-        //Cursor res = db.rawQuery(query2, null);
-        if(res.moveToFirst()) {
-            do {
-                OrderRow entry = new OrderRow(res.getString(0), res.getString(1), res.getInt(2),
-                        res.getString(3));
-                Log.v("RES 0 " , res.getString(0));
-                Log.v("RES 1 ", res.getString(1));
-                Log.v("RES 2 ", res.getString(2));
-                Log.v("RES 3 ", res.getString(3));
-                allRows.add(entry);
-
-            }while(res.moveToNext());
-        }
-        else {
-            System.out.print("ORDERHEADER GET ALL ORDERS WASNT FOUND");
-            res.close();
-            db.close();
-        }
-        res.close();
-        db.close();
-        return allRows;
-    }
-
-
-    /*
-    HELPER METHODS
-     */
-    public String getDateTime() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(
-                "yyyy-MM-dd hh:mm", Locale.getDefault());
-        Date date = new Date();
-        return dateFormat.format(date);
-    }
-
-    public String getLastWeek(){
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        Date date = new Date();
-        return  dateFormat.format(date.getTime() - 604800000L);
-    }
 
     public String justGetDate(){
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -857,6 +626,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return  dateFormat.format(date);
     }
 
+    //Creates random OrderID
+    // TODO: 6/06/2016 Still need to check all current OrderId's incase duplication occurs and breaks table
     public int createOrderID(){
         int orderID = (int) (Math.random() * 10000 + 1);
         return orderID;

@@ -1,28 +1,16 @@
 package bvgiants.diary3;
 
-import android.app.Activity;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.location.Location;
-import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.os.IBinder;
-import android.content.Intent;
 import android.os.Bundle;
-
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -37,40 +25,31 @@ import com.google.android.gms.fitness.request.DataSourcesRequest;
 import com.google.android.gms.fitness.request.OnDataPointListener;
 import com.google.android.gms.fitness.request.SensorRequest;
 import com.google.android.gms.fitness.result.DataSourcesResult;
-import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Dylan on 10/05/2016.
+ * Background service to initialise step counter and to continue to count steps during app life cycle.
+ *
  */
 public class BackgroundService extends Service implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         OnDataPointListener {
 
-    private static final int REQUEST_OAUTH = 1;
-    private static final String AUTH_PENDING = "auth_state_pending";
-    private boolean authInProgress = false;
     public GoogleApiClient mGoogleFitClient; // NAME UPDATED: Was Previously called mApiClient;
-    GoogleApiClient mGoogleMapsClient; // NAME UPDATED: Was Previously called mGoogleApiClient;
+    private GoogleApiClient mGoogleMapsClient; // NAME UPDATED: Was Previously called mGoogleApiClient;
 
-    IBinder mBinder;
-    int mStartMode;
+    private Handler handler;
 
-    Handler handler;
+    private Location mLastLocation;
+    private Location mSecLocation;
 
-    Location mLastLocation;
-    Location mSecLocation;
-
-    static GoogleMap mMap;
-    int locationCount;
+    private static GoogleMap mMap;
+    private int locationCount;
 
     @Nullable
     @Override
@@ -102,23 +81,6 @@ public class BackgroundService extends Service implements
             mGoogleMapsClient.connect();
             Log.e("Google Maps", "Background Service : Google Maps Connection Started");
         }
-
-        /*
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
-
-        client.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Maps Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://bvgiants.diary3/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(client, viewAction);
-    */
 
         return START_STICKY;
 
@@ -153,7 +115,6 @@ public class BackgroundService extends Service implements
             Log.e("Google Maps", "Found Location! " + "Lat: " + myLat + " " + "Long: " + myLong);
         }
 
-        //locationCount++;
         SharedPreferences mapReferences = this.getSharedPreferences("DropPins", MODE_PRIVATE);
         SharedPreferences.Editor editor = mapReferences.edit();
             editor.putString("lat" + Integer.toString((locationCount-1)), Double.toString(mLastLocation.getLatitude()));
@@ -220,24 +181,6 @@ public class BackgroundService extends Service implements
                 });
     } // End regsterFitnessDataListener
 
-
-/*
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_OAUTH) {
-            authInProgress = false;
-            if (resultCode == RESULT_OK){
-                if (!mGoogleFitClient.isConnecting() && !mGoogleFitClient.isConnected()) {
-                    mGoogleFitClient.connect();
-                }
-            } else if (resultCode == RESULT_CANCELED) {
-                Log.e("Google Fit", "RESULT_CANCELED");
-            }
-        } else {
-            Log.e("Google Fit", "requestCode NOT request_oauth");
-        }
-    } // End onActivityResult
-*/
-
     @Override
     public void onDataPoint(DataPoint dataPoint) {
         for( final Field field : dataPoint.getDataType().getFields() ) {
@@ -284,19 +227,6 @@ public class BackgroundService extends Service implements
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.e("Google Fit", "Background Service : Connection Failed - " + connectionResult);
-/*
-        if (!authInProgress) {
-            try {
 
-                authInProgress = true;
-                //connectionResult.startResolutionForResult(getBaseContext().this, REQUEST_OAUTH);
-                connectionResult.startResolutionForResult(getApplicationContext()., REQUEST_OAUTH);
-            } catch (IntentSender.SendIntentException e) {
-                //Err...
-            }
-        } else {
-            Log.e("GoogleFit", "authInProgress");
-        }
-*/
     }
 }

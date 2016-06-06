@@ -27,9 +27,6 @@ public class OrderRow {
         this.location = location;
     }
 
-    public String dbWriteOrdersToFile (){
-        return orderID + " " + orderTypeCode + " " + date + " " + userID + "\n";
-    }
 
     public String todaysFoodCheck(){
         return date + " " + time + " " + foodId + " " + location;

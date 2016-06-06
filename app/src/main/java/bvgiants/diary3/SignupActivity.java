@@ -46,7 +46,6 @@ public class SignupActivity extends AppCompatActivity {
         signUpButton = (Button) findViewById(R.id.signUp);
         alreadyMember = (TextView) findViewById(R.id.alreadymember);
         mPasswordView = (EditText) findViewById(R.id.passwordText);
-        //mNameView = (EditText) findViewById(R.id.nameText);
         aliasView = (EditText) findViewById(R.id.aliasText);
         context = getApplicationContext();
         mEmailView = (EditText) findViewById(R.id.emailText);
@@ -104,13 +103,6 @@ public class SignupActivity extends AppCompatActivity {
         databaseHelper.insertUser(newUser);
         onSignupSuccess();
 
-       /* new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        onSignupSuccess();
-                        progress.dismiss();
-                    }
-                }, 3000); */
     }
 
     public int createUserID(){
@@ -126,12 +118,6 @@ public class SignupActivity extends AppCompatActivity {
         String password = mPasswordView.getText().toString();
         String alias = aliasView.getText().toString();
 
-        /*if (name.isEmpty() || name.length() < 3) {
-            mNameView.setError("at least 3 characters");
-            valid = false;
-        } else {
-            mNameView.setError(null);
-        }*/
 
         if (alias.isEmpty() || alias.length() < 3) {
             aliasView.setError("at least 3 characters");

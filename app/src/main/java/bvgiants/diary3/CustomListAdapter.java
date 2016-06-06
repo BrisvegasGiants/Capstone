@@ -1,7 +1,5 @@
 package bvgiants.diary3;
 
-import android.app.ListActivity;
-import android.os.Bundle;
 import android.widget.ArrayAdapter;
 
 /**
@@ -13,7 +11,6 @@ import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,6 +22,7 @@ public class CustomListAdapter extends ArrayAdapter<String> {
     private final ArrayList<String> itemname;
     private final ArrayList<Integer> imgid;
 
+    //List Constructor
     public CustomListAdapter(Activity context, ArrayList<String> itemname, ArrayList<Integer> imgid) {
         super(context, R.layout.content_food_entry, itemname);
         // TODO Auto-generated constructor stub
@@ -34,6 +32,7 @@ public class CustomListAdapter extends ArrayAdapter<String> {
         this.imgid=imgid;
     }
 
+    //Creates required rows for each entry, setting text and images.
     public View getView(int position,View view,ViewGroup parent) {
         LayoutInflater inflater=context.getLayoutInflater();
         View rowView=inflater.inflate(R.layout.list_single, null,true);

@@ -42,7 +42,7 @@ public class ProfileActivity extends AppCompatActivity{
     private EditText age;
     private EditText gender;
 
-    Button saveButton;
+    private Button saveButton;
 
 
     @Override
@@ -67,9 +67,7 @@ public class ProfileActivity extends AppCompatActivity{
         context = getApplicationContext();
         databaseHelper = new DatabaseHelper(context);
         db = databaseHelper.getWritableDatabase();
-        Log.v("PROFILE USERID= ", String.valueOf(USERID));
         user = databaseHelper.getUserTraits(USERID);
-        Log.v("USER TRAITS= ", user.userTraits());
 
         if(user.getId() != 0){
             firstName.setText(user.getFirstName());
@@ -78,12 +76,10 @@ public class ProfileActivity extends AppCompatActivity{
             weight.setText(String.valueOf(user.getWeight()));
             age.setText(String.valueOf(user.getAge()));
             gender.setText(String.valueOf(user.getGender()));
-            Log.v("USER FOUND!", "FOUND YOU!");
             found = true;
         }
         else {
             found = false;
-            Log.v("USER NOT FOUND!", "FOUND YOU!");
         }
 
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -138,8 +134,6 @@ public class ProfileActivity extends AppCompatActivity{
 
         return super.onOptionsItemSelected(item);
     }
-
-
 
     public void saveUser() {
         if (!validate()) {
@@ -242,12 +236,10 @@ public class ProfileActivity extends AppCompatActivity{
         if(found == false) {
             //User newUser = new User(USERID, fName, lName, userHeight, userWeight, userAge, userGender);
             databaseHelper.insertUserTraits(user);
-            Log.v("USER 0 =", user.dbWriteUserTraits());
             onSaveSuccess();
         }
         else if(found == true){
             databaseHelper.updateUserTraits(user.getId(), user);
-            Log.v("USER ?=", user.dbWriteUserTraits());
             onSaveSuccess();
         }
     } //End UpdateUser
