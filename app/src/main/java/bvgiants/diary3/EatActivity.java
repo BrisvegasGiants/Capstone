@@ -117,6 +117,15 @@ public class EatActivity extends AppCompatActivity {
             return true;
         }
 
+        if (id == R.id.action_about) {
+            Intent startAbout = new Intent(this, about_us.class);
+            Bundle userCreds = new Bundle();
+            userCreds.putInt("UserID", USERID);
+            startAbout.putExtras(userCreds);
+            startActivity(startAbout);
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

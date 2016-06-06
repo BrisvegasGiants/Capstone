@@ -163,31 +163,42 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-        @Override
-        public boolean onCreateOptionsMenu (Menu menu){
-            // Inflate the menu; this adds items to the action bar if it is present.
-            getMenuInflater().inflate(R.menu.eat_menu, menu);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.eat_menu, menu);
+        return true;
+    }
+
+    // Inflate the top menu bar.
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+            Intent startSettings = new Intent(this, SettingsActivity.class);
+            Bundle userCreds = new Bundle();
+            userCreds.putInt("UserID", USERID);
+            startSettings.putExtras(userCreds);
+            startActivity(startSettings);
             return true;
         }
 
-        @Override
-        public boolean onOptionsItemSelected (MenuItem item){
-            // Handle action bar item clicks here. The action bar will
-            // automatically handle clicks on the Home/Up button, so long
-            // as you specify a parent activity in AndroidManifest.xml.
-            int id = item.getItemId();
-
-            if (id == R.id.action_settings) {
-                Intent startSettings = new Intent(this, SettingsActivity.class);
-                Bundle userCreds = new Bundle();
-                userCreds.putInt("UserID", USERID);
-                startSettings.putExtras(userCreds);
-                startActivity(startSettings);
-                return true;
-            }
-
-            return super.onOptionsItemSelected(item);
+        if (id == R.id.action_about) {
+            Intent startAbout = new Intent(this, about_us.class);
+            Bundle userCreds = new Bundle();
+            userCreds.putInt("UserID", USERID);
+            startAbout.putExtras(userCreds);
+            startActivity(startAbout);
+            return true;
         }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 
         // Takes user to selected screen(Activity)
 

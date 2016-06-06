@@ -239,12 +239,21 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
             return true;
         }
 
-        if (id ==R.id.action_home) {
+        if (id == R.id.action_home) {
             Intent startHome = new Intent(this, MainActivity.class);
             Bundle userCreds = new Bundle();
             userCreds.putInt("UserID", USERID);
             startHome.putExtras(userCreds);
             startActivity(startHome);
+            return true;
+        }
+
+        if (id == R.id.action_about) {
+            Intent startAbout = new Intent(this, about_us.class);
+            Bundle userCreds = new Bundle();
+            userCreds.putInt("UserID", USERID);
+            startAbout.putExtras(userCreds);
+            startActivity(startAbout);
             return true;
         }
 

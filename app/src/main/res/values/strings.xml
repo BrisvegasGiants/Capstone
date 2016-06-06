@@ -66,4 +66,33 @@
     <string name="title_activity_about_us">about_us</string>
 
 
+    <!-- About Section string -->
+
+    <string name = "about_us">
+    QUT INB302 Capstone Project HEALTH DIARY: \n\n
+    Capstone Team: Brisvegas Giants \n
+    Application Version: 3.4 \n
+    Team Members: 05279616 Ken Lewis,
+        08562971 Zack Watson,
+        Alex Tulic,
+       08594031  Dylan Schumacher
+        Taylor Beer \n
+        Project Supervisor: Dr. Dhaval Vyas\n\n
+
+Application outline: \n An interactive health and fitness diary by the "Brisvegas Giants"
+team as part of the requirements for the subject INB302 - IT
+Capstone. The HealthDiary encourages users to live a healthier lifestyle by tracking user steps,
+        logging foods and their nutritional content and allowing users to set their own personal
+        goals.\n\n
+Further Details: Please see ReadMe.txt with project folder for list of known bugs, features still to
+        be developed and additional information.
+
+
+
+
+
+
+    </string>
+
+
 </resources>

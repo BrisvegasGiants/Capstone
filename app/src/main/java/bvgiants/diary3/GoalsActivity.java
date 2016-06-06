@@ -54,6 +54,7 @@ public class GoalsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goals);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
 
@@ -91,7 +92,6 @@ public class GoalsActivity extends AppCompatActivity {
         });
     }
 
-    // Inflate the top menu bar.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -99,6 +99,7 @@ public class GoalsActivity extends AppCompatActivity {
         return true;
     }
 
+    // Inflate the top menu bar.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -108,14 +109,31 @@ public class GoalsActivity extends AppCompatActivity {
 
         if (id == R.id.action_settings) {
             Intent startSettings = new Intent(this, SettingsActivity.class);
+            Bundle userCreds = new Bundle();
+            userCreds.putInt("UserID", USERID);
+            startSettings.putExtras(userCreds);
             startActivity(startSettings);
             return true;
         }
+
         if (id == R.id.action_home) {
             Intent startHome = new Intent(this, MainActivity.class);
+            Bundle userCreds = new Bundle();
+            userCreds.putInt("UserID", USERID);
+            startHome.putExtras(userCreds);
             startActivity(startHome);
             return true;
         }
+
+        if (id == R.id.action_about) {
+            Intent startAbout = new Intent(this, about_us.class);
+            Bundle userCreds = new Bundle();
+            userCreds.putInt("UserID", USERID);
+            startAbout.putExtras(userCreds);
+            startActivity(startAbout);
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

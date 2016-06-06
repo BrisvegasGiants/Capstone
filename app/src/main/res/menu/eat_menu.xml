@@ -24,5 +24,10 @@
         android:title="Delete DB"
         app:showAsAction="never"/>
 
+    <item android:id="@+id/action_about"
+        android:title="About"
+        android:orderInCategory="300"
+        app:showAsAction="never"/>
+
 
 </menu>

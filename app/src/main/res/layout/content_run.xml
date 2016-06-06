@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:text="@string/default_value"
         android:id="@+id/distanceCounterView"
-        android:textSize="50sp"
+        android:textSize="30sp"
         android:layout_marginTop="42dp"
         android:layout_below="@+id/view3"
         android:layout_alignStart="@+id/stepCounterView" />
@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:text="@string/default_value"
             android:id="@+id/stepCounterView"
-            android:textSize="50sp"
+            android:textSize="30sp"
             android:layout_marginTop="170dp"
             android:layout_marginLeft="30dp"
              />
@@ -60,9 +60,9 @@
             android:text="@string/step_suffix"
             android:id="@+id/stepsSuffix"
             android:textSize="30sp"
-            android:layout_marginStart="100dp"
-            android:layout_marginTop="180dp"
-            android:textStyle="italic"/>
+            android:textStyle="italic"
+            android:layout_below="@+id/stepCounterView"
+            android:layout_alignStart="@+id/distanceSuffix" />
 
 
     <ImageView
@@ -100,7 +100,7 @@
             android:layout_height="wrap_content"
             android:text="0"
             android:id="@+id/percentageCounterView"
-            android:textSize="50sp"
+            android:textSize="30sp"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="40dp"
             android:layout_alignStart="@+id/distanceCounterView" />
@@ -112,9 +112,9 @@
             android:text="@string/distance_suffix"
             android:id="@+id/distanceSuffix"
             android:textSize="32sp"
-        android:layout_alignBottom="@+id/distanceCounterView"
-        android:layout_alignStart="@+id/stepsSuffix"
-        android:textStyle="italic"/>
+        android:textStyle="italic"
+        android:layout_alignBottom="@+id/imageView5"
+        android:layout_toStartOf="@+id/textView2" />
 
 
     <ImageView
@@ -123,12 +123,13 @@
         android:src="@drawable/map"
         android:layout_below="@+id/view3"
         android:layout_alignEnd="@+id/textView2"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="20dp"
+        android:id="@+id/imageView5" />
 
     <TextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="Of your goal"
+    android:text="of your goal"
     android:textSize="23sp"
         android:id="@+id/textView2"
         android:layout_alignBottom="@+id/percentageCounterView"

@@ -103,6 +103,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
 
+        //this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+
         context = getApplicationContext();
                 // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
@@ -449,15 +452,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             focusView = mEmailView;
             cancel = true;
         } else */ if (credsChecker(email,password) == false){
-            focusView = mEmailView;
-            cancel = true;
+          focusView = mEmailView;
+           cancel = true;
         }
 
 
         if (cancel) {
             // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            focusView.requestFocus();
+            // form fieldith an error.
+           // focusView.requestFocus();
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
