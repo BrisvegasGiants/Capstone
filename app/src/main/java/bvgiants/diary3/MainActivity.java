@@ -3,10 +3,8 @@ package bvgiants.diary3;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -123,6 +121,8 @@ public class MainActivity extends AppCompatActivity {
                 currentCalPercent = ((float) calorieCounter / userGoals.getCalorieGoal()) * 100;
                 currentEnergPercent = ((float) kJcounter / userGoals.getKilojoulesGoal()) * 100;
                 currentSugPercent = ((float) sugarCounter / userGoals.getSugarGoal()) * 100;
+
+
                 stepCounterProgressBar.setProgress(10000);
                 calorieCounterProgressBar.setProgress(calorieCounter);
                 kJCounterProgressBar.setProgress(kJcounter);
@@ -135,8 +135,6 @@ public class MainActivity extends AppCompatActivity {
             ((TextView) findViewById(R.id.currentCalorie)).setText(String.format("%.2f", currentCalPercent) + "%");
             ((TextView) findViewById(R.id.currentKJ)).setText(String.format("%.2f", currentEnergPercent) + "%");
             ((TextView) findViewById(R.id.currentSugar)).setText(String.format("%.2f", currentSugPercent) + "%");
-
-
 
     }
 
