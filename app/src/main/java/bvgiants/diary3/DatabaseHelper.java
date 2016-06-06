@@ -280,7 +280,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             orderID = createOrderID();
             saveDataToOrderHeader(orderID,LOOKUPORDERTYPE_FOODENTRY,justGetDate(), justGetTime(),userID);
             recordedFoodEaten.get(i).setOrderID(orderID);
-            recordedFoodEaten.get(i).setLocation("FAKE LOCATION");
+            //recordedFoodEaten.get(i).setLocation("FAKE LOCATION");
             insertFoodConsumed(recordedFoodEaten.get(i));
         }
 

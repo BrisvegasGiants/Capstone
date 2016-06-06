@@ -7,6 +7,8 @@ import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -64,6 +66,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -137,11 +140,13 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
 
                 FoodItem selecteditem;
                 // selectedItem holds a FoodItem object of the item selected from the list
-                if(delimitedFoods.isEmpty())
+                if(delimitedFoods.isEmpty()) {
                     selecteditem = allFood.get(position);
-                else
+                    selecteditem.setLocation(returnFoodLocation());
+                } else {
                     selecteditem = delimitedFoods.get(position);
-
+                    selecteditem.setLocation(returnFoodLocation());
+                }
                 // Check if the selected item is in the list of selected foods.
                 // If the item is in the list, take it off the list, and change the background back to white
                 // Otherwise, add the item to the list and make background Blue
@@ -246,6 +251,27 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
         });
     }
 
+    public String returnFoodLocation(){
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+
+        double latitude = LocationServices.FusedLocationApi.getLastLocation(mGoogleMapsClient).getLatitude();
+        double longitude = LocationServices.FusedLocationApi.getLastLocation(mGoogleMapsClient).getLongitude();
+
+        String city="";
+
+        try {
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            Address returnedAddress = addresses.get(0);
+            city = returnedAddress.getLocality();
+            Log.e("Found address DURING!", city);
+            return city;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.e("Found Address AFTERWARDS!", city);
+        return city;
+    }
+
     public void logFoodPin(){
         // Set the location
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleMapsClient);
@@ -267,6 +293,7 @@ public class FoodEntryActivity extends AppCompatActivity implements SearchView.O
                     + " | Logged at co-ordinates: "+mLastLocation.getLatitude()+ " , " + mLastLocation.getLongitude()
                     + " | Food Item(s): " + getUserFoodNames());
         editor.apply();
+        returnFoodLocation();
         //Increase the counter to keep track of which item is which
         instanceCounter++;
     } // End logFoodPin
