@@ -59,6 +59,8 @@ public class runActivity extends AppCompatActivity {
 
         startBackgroundProcess(this.findViewById(android.R.id.content), mContext);
 
+        Log.e("GOALS", "Step Counter is :" + totalSteps);
+
         Thread t = new Thread() {
 
             @Override

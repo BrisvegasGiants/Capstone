@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Context context;
     static float percentageValue;
+    static int tallySteps;
     private int USERID;
     private User loggedinUser;
     private User userGoals;
@@ -67,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
         allFoodOrders = databaseHelper.showTodaysFood(USERID);
         alias = databaseHelper.getUserAlias(USERID);
         allFoods = databaseHelper.allFood();
+
+
 
         //Reset Variables each time to ensure they refresh correctly
         calorieCounter = 0;
@@ -113,11 +116,37 @@ public class MainActivity extends AppCompatActivity {
 
         //At this point, load up progress bars based on what user has identified as goals.
             if (userGoals.getId() > 0) {
+
+                Thread t = new Thread() {
+
+                    @Override
+                    public void run() {
+                        try {
+                            while (!isInterrupted()) {
+                                Thread.sleep(1000);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Log.e("GOALS", "IN LOOP - Current Step Amount is : " + tallySteps + " | Current step goals is :" + userGoals.getStepGoal());
+                                        Log.e("GOALS", "IN LOOP - Current Step Percentage is :" + currentStepsPercent);
+                                        currentStepsPercent = ((float) tallySteps / userGoals.getStepGoal()) * 100;
+                                        ((TextView) findViewById(R.id.currentSteps)).setText(String.format("%.2f", currentStepsPercent) + "%");
+                                    }
+                                });
+                            }
+                        } catch (InterruptedException e) {
+
+                        }
+                    }
+                };
+
+                t.start();
+
                 stepCounterProgressBar.setMax(userGoals.getStepGoal());
                 calorieCounterProgressBar.setMax(userGoals.getCalorieGoal());
                 kJCounterProgressBar.setMax(userGoals.getKilojoulesGoal());
                 sugarCounterProgressBar.setMax(userGoals.getSugarGoal());
-                currentStepsPercent = ((float) 10000 / userGoals.getStepGoal()) * 100;
+                //currentStepsPercent = ((float) tallySteps / userGoals.getStepGoal()) * 100;
                 currentCalPercent = ((float) calorieCounter / userGoals.getCalorieGoal()) * 100;
                 currentEnergPercent = ((float) kJcounter / userGoals.getKilojoulesGoal()) * 100;
                 currentSugPercent = ((float) sugarCounter / userGoals.getSugarGoal()) * 100;
@@ -127,11 +156,11 @@ public class MainActivity extends AppCompatActivity {
                 calorieCounterProgressBar.setProgress(calorieCounter);
                 kJCounterProgressBar.setProgress(kJcounter);
                 sugarCounterProgressBar.setProgress(sugarCounter);
+
             }
 
             // Have to change the percentage in the progress bars
-
-            ((TextView) findViewById(R.id.currentSteps)).setText(String.format("%.2f", currentStepsPercent) + "%");
+            //((TextView) findViewById(R.id.currentSteps)).setText(String.format("%.2f", currentStepsPercent) + "%");
             ((TextView) findViewById(R.id.currentCalorie)).setText(String.format("%.2f", currentCalPercent) + "%");
             ((TextView) findViewById(R.id.currentKJ)).setText(String.format("%.2f", currentEnergPercent) + "%");
             ((TextView) findViewById(R.id.currentSugar)).setText(String.format("%.2f", currentSugPercent) + "%");

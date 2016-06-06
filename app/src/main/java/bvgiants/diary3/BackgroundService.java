@@ -3,6 +3,7 @@ package bvgiants.diary3;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.os.Handler;
 import android.os.IBinder;
@@ -192,6 +193,7 @@ public class BackgroundService extends Service implements
             //Calc Distance (No. Steps * Step Length).
             int amtSteps = value.asInt();
             runActivity.totalSteps = amtSteps;
+            MainActivity.tallySteps = amtSteps;
             final float distanceValue = (float) (amtSteps * 0.75);
             runActivity.distanceValue = distanceValue;
             // Calculate Percentage to goal
@@ -217,7 +219,6 @@ public class BackgroundService extends Service implements
             });
         }
     } // End onDataPoint
-
 
     private void runOnUiThread(Runnable runnable) {
         handler.post(runnable);
