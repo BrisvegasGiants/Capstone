@@ -88,7 +88,7 @@ public class ExpandableListFragmentEAT extends Fragment {
             //TextView textView = new TextView(ExpandableListFragment.this.getActivity());
             //textView.setText(getGroup(i).name);
 
-
+        if(SELECTION == 0){
             View rowView = inflater.inflate(R.layout.consumed_foods_eat_activity, null, true);
             TextView txtTitle = (TextView) rowView.findViewById(R.id.consumed_txt);
             if (foodDisplayedImages != null) {
@@ -98,9 +98,39 @@ public class ExpandableListFragmentEAT extends Fragment {
             TextView extratxt = (TextView) rowView.findViewById(R.id.consumed_textView1);
 
             txtTitle.setText("Food\n" + foodDisplayed.get(i).getName());
-            extratxt.setText("When: " + todaysFoodOrders.get(i).getTime() +
-                             "\nWhere: " + todaysFoodOrders.get(i).getLocation());
+            extratxt.setText("When: "  + todaysFoodOrders.get(i).getDate() + " " + todaysFoodOrders.get(i).getTime() +
+                    "\nWhere: " + todaysFoodOrders.get(i).getLocation());
             return rowView;
+        }
+        else if (SELECTION == 1){
+            View rowView = inflater.inflate(R.layout.consumed_foods_eat_activity, null, true);
+            TextView txtTitle = (TextView) rowView.findViewById(R.id.consumed_txt);
+            if (foodDisplayedImages != null) {
+                ImageView imageView = (ImageView) rowView.findViewById(R.id.consumed_img);
+                imageView.setImageResource(foodDisplayedImages.get(i));
+            }
+            TextView extratxt = (TextView) rowView.findViewById(R.id.consumed_textView1);
+
+            txtTitle.setText("Food\n" + foodDisplayed.get(i).getName());
+            extratxt.setText("When: "  + weeklyFoodOrders.get(i).getDate() + " " + weeklyFoodOrders.get(i).getTime() +
+                    "\nWhere: " + weeklyFoodOrders.get(i).getLocation());
+            return rowView;
+        }
+        else {
+            View rowView = inflater.inflate(R.layout.consumed_foods_eat_activity, null, true);
+            TextView txtTitle = (TextView) rowView.findViewById(R.id.consumed_txt);
+            if (foodDisplayedImages != null) {
+                ImageView imageView = (ImageView) rowView.findViewById(R.id.consumed_img);
+                imageView.setImageResource(foodDisplayedImages.get(i));
+            }
+            TextView extratxt = (TextView) rowView.findViewById(R.id.consumed_textView1);
+
+            txtTitle.setText("Food\n" + foodDisplayed.get(i).getName());
+            extratxt.setText("When: "  + monthlyFoodOrders.get(i).getDate() + " " + monthlyFoodOrders.get(i).getTime() +
+                    "\nWhere: " + monthlyFoodOrders.get(i).getLocation());
+            return rowView;
+        }
+
 
         }
 

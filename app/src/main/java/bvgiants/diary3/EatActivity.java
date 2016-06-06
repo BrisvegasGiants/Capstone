@@ -216,6 +216,7 @@ public class EatActivity extends AppCompatActivity {
         week.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 SELECTION = 1;
+
                 createFoodFragment();
             }
         });
