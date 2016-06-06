@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -129,8 +130,11 @@ public class MainActivity extends AppCompatActivity {
                                     public void run() {
                                         Log.e("GOALS", "IN LOOP - Current Step Amount is : " + tallySteps + " | Current step goals is :" + userGoals.getStepGoal());
                                         Log.e("GOALS", "IN LOOP - Current Step Percentage is :" + currentStepsPercent);
+
                                         currentStepsPercent = ((float) tallySteps / userGoals.getStepGoal()) * 100;
                                         ((TextView) findViewById(R.id.currentSteps)).setText(String.format("%.2f", currentStepsPercent) + "%");
+                                        Log.e("GOALS", "IN LOOP - Step Percent is " + (int)currentStepsPercent );
+                                        stepCounterProgressBar.setProgress(tallySteps);
                                     }
                                 });
                             }
@@ -152,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
                 currentSugPercent = ((float) sugarCounter / userGoals.getSugarGoal()) * 100;
 
 
-                stepCounterProgressBar.setProgress(10000);
+
                 calorieCounterProgressBar.setProgress(calorieCounter);
                 kJCounterProgressBar.setProgress(kJcounter);
                 sugarCounterProgressBar.setProgress(sugarCounter);
